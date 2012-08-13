@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-08-12T18:45:17-07:00</updated>
+  <updated>2012-08-12T19:31:24-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,77 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rebrand blog and some new feature]]></title>
+    <link href="http://khakimov.github.com/blog/2012/08/12/rebrand-blog-and-some-new-feature/"/>
+    <updated>2012-08-12T19:09:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/08/12/rebrand-blog-and-some-new-feature</id>
+    <content type="html"><![CDATA[<p>Today is Sunday and as usually I spent this day reading and hacking. K&amp;R for sure is a best book ever if you want to understand C and the most important part is exercises. Very interesting and useful. But today I will not talk about programming, I want to introduce new version of this blog with new design and one feature which, I hope, will provide more interactive.</p>
+
+<p>I&#8217;m not crazy and understand nobody read this and this lines I wrote only for myself, but anyway it sounds interesting, why not to try?</p>
+
+<p>I added function to be able to comment any part of post, even just one word. I think this is going to be very useful to comment some code. Double click on any text and will see [comment] button, like this:</p>
+
+<p><img src="http://pix.am/yM4z.png" alt="Example screenshot with comment button" /></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</span><span class='line'>
+</span><span class='line'> <span class="k">module</span> <span class="nn">EchoServer</span>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">post_init</span>
+</span><span class='line'>     <span class="nb">puts</span> <span class="s2">&quot;-- someone connected to the echo server!&quot;</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
+</span><span class='line'>     <span class="n">send_data</span> <span class="s2">&quot;&gt;&gt;&gt;you sent: </span><span class="si">#{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>     <span class="n">close_connection</span> <span class="k">if</span> <span class="n">data</span> <span class="o">=~</span> <span class="sr">/quit/i</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">unbind</span>
+</span><span class='line'>     <span class="nb">puts</span> <span class="s2">&quot;-- someone disconnected from the echo server!&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Note that this will block current thread.</span>
+</span><span class='line'><span class="no">EventMachine</span><span class="o">.</span><span class="n">run</span> <span class="p">{</span>
+</span><span class='line'>  <span class="no">EventMachine</span><span class="o">.</span><span class="n">start_server</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">8081</span><span class="p">,</span> <span class="no">EchoServer</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;m also want to share interesting posts I reading during the day with my thoughts and comments. Mostly from <a href="http://news.ycombinator.com/">HN</a> and <a href="http://quora.com">Quora</a>. Will see how it will work, some examples what I&#8217;m reading on <strong>quora</strong>:</p>
+
+<ol>
+<li><p><a href="http://www.quora.com/Sleep/What-is-the-ideal-time-to-go-to-bed">What is the ideal time to go to bed?</a>.</p></li>
+<li><p><a href="http://www.quora.com/What-important-things-do-people-learn-in-university-that-would-be-hard-to-learn-on-their-own">What important things do people learn in university that would be hard to learn on their own?</a>.</p></li>
+<li><p><a href="http://www.quora.com/How-much-money-does-a-successful-high-end-restaurant-make">How much money does a successful, high-end restaurant make?</a>.</p></li>
+</ol>
+
+
+<p>Any ideas/thought/sugestions?</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Twitter Mass Unfollow with Ruby]]></title>
@@ -3288,48 +3359,6 @@ Connection: Keep-Alive</p>
 <p><img src="http://pix.am/y55O.png" alt="test" /></p>
 
 <p>So, people in any country install the server and people can get/update information trough their internet connection if somebody will blocked twitter as example. If direct connection doesn&#8217;t work, install ruby script and activate victim mode, connect to blocked website through Aides servers.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[First Rails project: Thoughts]]></title>
-    <link href="http://khakimov.github.com/blog/2012/04/14/first-rails-project-thoughts/"/>
-    <updated>2012-04-14T22:06:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/04/14/first-rails-project-thoughts</id>
-    <content type="html"><![CDATA[<p>Huh, long time no post there. I&#8217;ve been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants, drank some wine, beer, white russian and even sake. Whole week was disconnected and didn&#8217;t touch laptop (confess, only hackernews), so now I&#8217;m really ready back to the big fight. So, I came back from airport and in few hours finished my first small project on Rails.</p>
-
-<p><img src="http://distilleryimage6.s3.amazonaws.com/72f5c216810511e1a39b1231381b7ba1_7.jpg" alt="Santa Monica beach" /></p>
-
-<h2>idea</h2>
-
-<p>I just built the place where I can put my thoughts with timeline. Possibly I&#8217;ll add questions about any sphere of our lives, like <em>&#8220;What do you think about love?&#8221;</em> or <em>&#8220;What do you think about your age?&#8221;</em> and look at the progress with my thoughts through time. Everything changing in our world and my thoughts are not exception, so I want to look at the progress and how it is changing. Anyway, first version is <a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">here</a>:</p>
-
-<p><img src="http://pix.am/bJ5h.png" alt="" /></p>
-
-<h2>technology</h2>
-
-<p>I&#8217;ve used js library <a href="http://timeline.verite.co/">timeline</a> as a core and implement it to work with rails.</p>
-
-<blockquote><ul>
-<li>Full stack:
-
-<ul>
-<li>ruby on rails</li>
-<li><a href="https://github.com/plataformatec/devise">devise - Flexible authentication solution for Rails</a></li>
-<li><a href="http://timeline.verite.co/">timeline js library</a></li>
-<li>jquery</li>
-<li><a href="http://twitter.github.com/bootstrap/">twitter bootstrap</a></li>
-<li>heroku</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-
-<h2>bugs</h2>
-
-<p>Yea, a lot of bugs and roughness with ui, html, css and js. Currently my priority are just code the ruby code and practice with rails and not stuck with js/html/css/design. I&#8217;m always thinking about perfection and that was a reason heretofore why I gave up with many ideas and hobbies, I didn&#8217;t realize one small but very valuable thing - as a beginner you can&#8217;t do everything perfect. I always compared my code with some opensource project and it was always reason for melancholy, because I though that my code worst ever and I will never able to build something by myself. But the path of trial and error showed me the truth - just practice and focus on one thing.</p>
-
-<h2><a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">My thoughts timeline</a></h2>
 ]]></content>
   </entry>
   
