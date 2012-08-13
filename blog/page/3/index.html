@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="Huh, long time no post there. I&#8217;ve been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants &hellip;">
+	<meta name="description" content="Today I decided to try EventMachine in action. EventMachine provides a fast, lightweight framework for implementing Ruby programs that can use the &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,94 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/04/16/freedom-of-information/">Freedom of Information</a></h1>
+	<div class="entry-content">
+		<p>Today I decided to try EventMachine in action. EventMachine provides a fast, lightweight framework for implementing Ruby programs that can use the network to communicate with other processes. As usual I can&#8217;t just repeat &#8220;hello world&#8221; examples, like here is a fully-functional echo server:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">EchoServer</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">post_init</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;-- someone connected to the echo server!&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
+</span><span class='line'>    <span class="n">send_data</span> <span class="s2">&quot;&gt;&gt;&gt;you sent: </span><span class="si">#{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>    <span class="n">close_connection</span> <span class="k">if</span> <span class="n">data</span> <span class="o">=~</span> <span class="sr">/quit/i</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">unbind</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;-- someone disconnected from the echo server!&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">EventMachine</span><span class="o">::</span><span class="n">run</span> <span class="p">{</span>
+</span><span class='line'>  <span class="no">EventMachine</span><span class="o">::</span><span class="n">start_server</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">8081</span><span class="p">,</span> <span class="no">EchoServer</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I need something to work on, something valuable. I&#8217;ve thought about <a href="http://en.wikipedia.org/wiki/Internet_censorship_in_the_People's_Republic_of_China">censorship in internet</a>, blocking <a href="http://en.wikipedia.org/wiki/Censorship_of_Twitter">twitter</a>, <a href="http://en.wikipedia.org/wiki/Censorship_of_YouTube">youtube</a> and <a href="http://en.wikipedia.org/wiki/Censorship#Internet">other</a> and want to build proxy, something like tor, but just for few websites like twitter, facebook and youtube for example.</p>
+
+<h2>idea</h2>
+
+<p>To build small app on ruby which shoud be easy to install and has two modes. <strong>Aides</strong> (servers) and <strong>victims</strong> (client) mode. Aides will provide a proxy connection, but for security reason only to access to the lists of allowed websites, so nobody will not use it to do some bad things, only victims who are looking for access to twitter/facebook/youtube will able to access and use it.</p>
+
+<p><img src="http://pix.am/y55O.png" alt="test" /></p>
+
+<p>So, people in any country install the server and people can get/update information trough their internet connection if somebody will blocked twitter as example. If direct connection doesn&#8217;t work, install ruby script and activate victim mode, connect to blocked website through Aides servers.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-16T14:07:00-07:00" pubdate data-updated="true">Apr 16<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/eventmachine/'>eventmachine</a>, <a class='category' href='/blog/categories/idea/'>idea</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">

@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-08-13T10:14:01-07:00</updated>
+  <updated>2012-08-13T16:18:23-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,23 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Money CAN buy happiness]]></title>
+    <link href="http://khakimov.github.com/blog/2012/08/13/money-can-buy-happiness/"/>
+    <updated>2012-08-13T16:05:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/08/13/money-can-buy-happiness</id>
+    <content type="html"><![CDATA[<ol>
+<li><p><a href="http://www.quora.com/Life-Lessons/What-life-lessons-are-counter-intuitive-or-go-against-common-sense-or-wisdom">What life lessons are counter-intuitive or go against common sense or wisdom?</a> Focus on spending this money in ways that improve your happiness and reduce your stress levels, and be cautious about using it to buy things that other people say you &#8220;should&#8221; buy.</p></li>
+<li><p><a href="http://www.quora.com/Life-Advice/How-do-I-stop-myself-feeling-low-when-I-think-of-people-who-have-achieved-so-much-in-life">How do I stop myself feeling low when I think of people who have achieved so much in life?</a> You stop feeling low, by stop waiting. History is full of people who did remarkable things at every age. Become yourself.</p></li>
+<li><p><a href="http://www.quora.com/What-was-the-turning-point-in-the-lives-of-various-Quora-users-and-how-has-it-turned-them-into-the-person-they-are-today">What was the turning point in the lives of various Quora users, and how has it turned them into the person they are today?</a> Brian Fey and his story is amazing, read it!</p></li>
+<li><p><a href="http://www.quora.com/What-are-some-of-the-best-quotes-about-how-to-live-your-life">What are some of the best quotes about how to live your life?</a></p></li>
+</ol>
+
+
+<blockquote><p>It is not the critic who counts; not the man who points out how the strong man stumbles, or where the doer of deeds could have done them better. The credit belongs to the man who is actually in the arena, whose face is marred by dust and sweat and blood; who strives valiantly; who errs, who comes short again and again, because there is no effort without error and shortcoming; but who does actually strive to do the deeds; who knows great enthusiasms, the great devotions; who spends himself in a worthy cause; who at the best knows in the end the triumph of high achievement, and who at the worst, if he fails, at least fails while daring greatly, so that his place shall never be with those cold and timid souls who neither know victory nor defeat.</p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rebrand blog and some new feature]]></title>
@@ -3297,68 +3314,6 @@ Connection: Keep-Alive</p>
 <p>We added BATCH_SIZE and it helped to control the queue of requests, so if we increase BATCH_SIZE = 1000 then we will get same problem: 351 successful, 649 failures in 5.57171 s.</p>
 
 <p>BATCH_SIZE = 100 # => 1000 successful, 0 failures in 1.215148 s</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Freedom of information]]></title>
-    <link href="http://khakimov.github.com/blog/2012/04/16/freedom-of-information/"/>
-    <updated>2012-04-16T14:07:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/04/16/freedom-of-information</id>
-    <content type="html"><![CDATA[<p>Today I decided to try EventMachine in action. EventMachine provides a fast, lightweight framework for implementing Ruby programs that can use the network to communicate with other processes. As usual I can&#8217;t just repeat &#8220;hello world&#8221; examples, like here is a fully-functional echo server:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">module</span> <span class="nn">EchoServer</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">post_init</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;-- someone connected to the echo server!&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
-</span><span class='line'>    <span class="n">send_data</span> <span class="s2">&quot;&gt;&gt;&gt;you sent: </span><span class="si">#{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>    <span class="n">close_connection</span> <span class="k">if</span> <span class="n">data</span> <span class="o">=~</span> <span class="sr">/quit/i</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">unbind</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;-- someone disconnected from the echo server!&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">EventMachine</span><span class="o">::</span><span class="n">run</span> <span class="p">{</span>
-</span><span class='line'>  <span class="no">EventMachine</span><span class="o">::</span><span class="n">start_server</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">8081</span><span class="p">,</span> <span class="no">EchoServer</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I need something to work on, something valuable. I&#8217;ve thought about <a href="http://en.wikipedia.org/wiki/Internet_censorship_in_the_People's_Republic_of_China">censorship in internet</a>, blocking <a href="http://en.wikipedia.org/wiki/Censorship_of_Twitter">twitter</a>, <a href="http://en.wikipedia.org/wiki/Censorship_of_YouTube">youtube</a> and <a href="http://en.wikipedia.org/wiki/Censorship#Internet">other</a> and want to build proxy, something like tor, but just for few websites like twitter, facebook and youtube for example.</p>
-
-<h2>idea</h2>
-
-<p>To build small app on ruby which shoud be easy to install and has two modes. <strong>Aides</strong> (servers) and <strong>victims</strong> (client) mode. Aides will provide a proxy connection, but for security reason only to access to the lists of allowed websites, so nobody will not use it to do some bad things, only victims who are looking for access to twitter/facebook/youtube will able to access and use it.</p>
-
-<p><img src="http://pix.am/y55O.png" alt="test" /></p>
-
-<p>So, people in any country install the server and people can get/update information trough their internet connection if somebody will blocked twitter as example. If direct connection doesn&#8217;t work, install ruby script and activate victim mode, connect to blocked website through Aides servers.</p>
 ]]></content>
   </entry>
   
