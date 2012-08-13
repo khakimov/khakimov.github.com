@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: tutorial | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/tutorial/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Playing with Rails]]></title>
+    <link href="http://khakimov.github.com/blog/2012/05/07/playing-with-rails/"/>
+    <updated>2012-05-07T23:55:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/05/07/playing-with-rails</id>
+    <content type="html"><![CDATA[<p>Only with Rails I've realized meaning of the word REST and how RESTful Controller works. When you will understand CRUD and Scaffolding, you will easily create simple application, like one more blog or twitter clone ;)</p>
+
+<p>CRUD = CREATE, SELECT, UPDATE, DELETE in database and create, show, update and destroy in Rails.</p>
+
+<p>When we are using create HTTP sends POST request. For destroy - DELETE request. update - PUT and show simple GET. This is very useful, because you don't need to create different paths for object you going to work with. For example,</p>
+
+<ul>
+<li>create - will send POST /users</li>
+<li>update - will send PUT /users/1</li>
+<li>destroy - will send DELETE /users/1</li>
+<li>show - will send /users/1</li>
+</ul>
+
+
+<p>I haven't seen this in Django, only with Rails realized this simplicity of REST.</p>
+
+<p>I know, I know what already exists a tons of tutorials with Rails, but because it's good to repeat some fundomental stuff I'm also going to create one more. I'm going to build simple application called <strong>Morning Pages</strong>. I read the book <em>Pragmatic Thinking and Learning</em> and author describes one technic with same name "Morning Pages" when you wake up and start writing just random things from your head.</p>
+
+<p><img src="http://pix.am/CuqHl.png" alt="" /></p>
+
+<p>Specs:
+morning page has title, body, created and updated time.</p>
+
+<p>We want to be able:</p>
+
+<ul>
+<li>add new morning page</li>
+<li>edit morning page</li>
+<li>delete morning page</li>
+<li>show morning page</li>
+</ul>
+
+
+<p>Let's start:</p>
+
+<p>```
+rails new morning_page</p>
+
+<h1>here is trick with <a href="http://stackoverflow.com/questions/646951/singular-or-plural-controller-and-helper-names-in-rails">plural and singular</a>.</h1>
+
+<p>rails generate controller MorningPages
+rails generate model MorningPage title:string body:text</p>
+
+<p>rake db:migrate
+```</p>
+
+<p>I'm not using scaffold here, because I think will be better to go throught step-by-step will be better to understand how it works. Scanffolding allows you create</p>
+
+<ul>
+<li>4 views (index, show, new and edit)</li>
+<li>a layout file for all of those views</li>
+<li>a stylesheet for all of those views</li>
+<li>a model</li>
+<li>a data migration to establish the tables needed for the model</li>
+<li>a controller to send data</li>
+<li>an empty file for helper methods</li>
+<li>a new route that will map user requests to the controller</li>
+</ul>
+
+
+<p>a lot isnt's? but we are not looking for easy way ;) of course when you will understand how each part works, you can use scaffold. In our case we already created controller MorningPage and model with same name. Now I'm going insert some test data in a database. Open db/seed.db and add few records:</p>
+
+<p><code>ruby seed.db
+puts "Create few records"
+MorningPage.create(title: 'Day 1', body: 'Good morning! Sunny day!')
+MorningPage.create(title: 'Day 2', body: 'Hello! Such a wonderful day.')
+</code></p>
+
+<p><strong>seed.db</strong> is just a ruby script, so you can write here anything you want in ruby like cycles, parsing method or whatever. Then you should run <strong>rake db:seed</strong> to execute your's seed.db. Ok, nice, now we have two records in our database and we can also check this with rails console</p>
+
+<p>```
+khakimov in ~/Projects/current/ruby/rails/rails_app/morning on master
+± rails console
+Loading development environment (Rails 3.2.3)</p>
+
+<blockquote><blockquote><p>MorningPage.all()
+=> [#<MorningPage id: 1, title: "Day 1", body: "Good morning! Sunny day!", created_at: "2012-05-08 23:29:58", updated_at: "2012-05-09 20:50:56">, ...]
+```</p></blockquote></blockquote>
+
+<p>so far, so good with model. move on to controller. We don't have any action methods yet, like index, show, edit... Open app/controllers/morning_pages_controller.rb and add index, show, new, edit, create, update and destroy:</p>
+
+<p>``` ruby morining_page_controller.rb
+class MorningPagesController &lt; ApplicationController</p>
+
+<pre><code>def index
+    @messages = MorningPage.all()
+end
+
+def show
+    @message = MorningPage.find(params[:id])
+end
+
+def new
+end
+
+def edit
+    @morning_page = MorningPage.find(params[:id])
+end
+
+def create
+    #logger.debug(params)
+    @morning_page = MorningPage.new(params[:morning_page])
+
+    if @morning_page.save
+        redirect_to @morning_page
+    else
+        render :action =&gt; "new"
+    end
+
+end
+
+def update
+    @morning_page = MorningPage.find(params[:id])
+
+    if @morning_page.update_attributes(params[:morning_page])
+        redirect_to @morning_page
+    else
+        render :action =&gt; :edit
+    end
+end
+
+def destroy
+    @morning_page = MorningPage.find(params[:id])
+
+    if @morning_page.destroy
+        redirect_to morning_page_index_path
+    else
+        render :action =&gt; :index, :notice =&gt; "fail"
+    end
+end
+</code></pre>
+
+<p>end
+```</p>
+
+<p>in our config/routes.rb file don't forget to add which will allow route request to the methods</p>
+
+<p>```
+  root :to => 'morning_pages#index'</p>
+
+<p>  resources :morning_pages
+```</p>
+
+<p>ok, now our application can route request, but we can't check it without layouts. So, create views/morning_pages/ with files:</p>
+
+<p>``` html edit.html.erb</p>
+
+<ul class="content">
+<%= form_for(@morning_page, :url => {:action => :update}) do |f| %>
+    <li class="text_field">
+        <%= f.label :title %>
+        <%= f.text_field :title, :placeholder => 'Title', :size => 'auto' %>
+    </li>
+
+    <li class="text_field">
+        <%= f.label :body %><br />
+        <%= f.text_area :body, :placeholder => 'Body' %><br />
+    </li>
+    <%= f.submit "Modify Page", :class => "buttonize submit_form", :id => 'form_submitter' %>
+
+<% end %>
+</ul>
+
+
+<p>```</p>
+
+<p>``` html index.html.erb</p>
+
+<ul class="content home clearfix users">
+
+<% if !@messages.blank? %>
+  <% for item in @messages %>
+    <li class="post clearfix <%= cycle('jared','daslee')%>">
+        <p class="title">
+          <%= item.updated_at.to_formatted_s(:long) %>
+          <%= link_to(item.title, morning_page_path(item), :class => 'clearfix') %> 
+          <%= link_to("edit", edit_morning_page_path(item)) %> |
+          <%= link_to("delete", morning_page_path(item), 
+              :confirm => 'Are you sure?', :method => :delete) %>
+      </p>
+    </li>
+  <% end %>
+<% else %>
+  
+<% end %>
+    <li class="post clearfix"></li>
+</ul>
+
+
+<p>```</p>
+
+<p>``` html new.html.erb</p>
+
+<ul class="content">
+<%= form_for(:morning_page, :url => {:action => :create}) do |f| %>
+    <li class="text_field">
+        <%= f.label :title %>
+        <%= f.text_field :title, :placeholder => 'Title', :size => 'auto' %>
+    </li>
+
+    <li class="text_field">
+        <%= f.label :body %><br />
+        <%= f.text_area :body, :placeholder => 'Body' %><br />
+    </li>
+    <%= f.submit "Save Page", :class => "buttonize submit_form", :id => 'form_submitter' %>
+
+<% end %>
+</ul>
+
+
+<p>```</p>
+
+<p>``` html show.html.erb</p>
+
+<ul class="content">
+    <li class="text_field">
+        <label for="morning_page_title">Title</label>
+            <p><%= @message.title%><br/></p>
+    </li>
+    <li class="text_field">
+        <label for="morning_page_title">Body</label>
+        <p><%= @message.body %></p>
+    </li>
+</ul>
+
+
+<p>```</p>
+
+<p>It's very hard to describe how to do something, how to build, that's why probably will be better just to check source code or build by you own without copy/paste tutorials. I'm sure that many beginers and not only beginners stuck with ideas, they don't want to build one more blog and this is idea not motivate to code and practice. When you really want to build something, that is the best period to practice and learn stuff, especially if you are doing this with somebody together. A lot of people looking for "weekend" project or to build something and hack with other, but the only place where they can find it is github. Github is good, but how to find in thousands project something simple and interesting for beginers? Will think about this, looks like an interesting idea.</p>
+]]></content>
+  </entry>
+  
+</feed>

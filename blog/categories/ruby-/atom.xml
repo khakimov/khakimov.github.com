@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby, | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/ruby-/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[C-style shorthand conditional operator ?]]></title>
+    <link href="http://khakimov.github.com/blog/2012/03/07/c-style-shorthand-conditional-operator/"/>
+    <updated>2012-03-07T19:15:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/03/07/c-style-shorthand-conditional-operator</id>
+    <content type="html"><![CDATA[<p><code>ruby C-style shorthand conditional operator
+1 == 2 ? "true value" : "false value"
+</code></p>
+
+<p>Returns "false value"</p>
+]]></content>
+  </entry>
+  
+</feed>

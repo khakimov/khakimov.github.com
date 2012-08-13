@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: news | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/news/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Curiosity landed on Mars]]></title>
+    <link href="http://khakimov.github.com/blog/2012/08/06/curiosity-landed-on-Mars/"/>
+    <updated>2012-08-06T18:47:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/08/06/curiosity-landed-on-Mars</id>
+    <content type="html"><![CDATA[<h2>Curiosity's Descent</h2>
+
+<iframe width="560" height="315" src="http://www.youtube.com/embed/UcGMDXy-Y1I?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p><strong>“Touchdown confirmed,” Allen Chen, an engineer in the control room here, said at 10:32 p.m. Sunday. <strong>“We’re safe on Mars.”</strong> The room erupted with cheers, hugs, handshakes and high-fives.</strong></p>
+
+<p>What interesting for me is only one other country, the Soviet Union, has successfully landed anything on Mars, and that spacecraft, Mars 3 in 1971, fell silent shortly after landing. So far, this rover appears to be healthy.</p>
+
+<ol>
+<li><p><a href="http://www.ft.com/cms/s/2/93a47a62-daf0-11e1-8074-00144feab49a.html#axzz22p2ab3qx">A man walks into a bank</a>. Guy deposits a junk-mail cheque for $95,000 – for a joke. The bank cashes it.</p></li>
+<li><p><a href="http://viniciusvacanti.com/2012/08/06/advice-i-wish-i-could-have-given-myself-5-years-ago/">Advice I Wish I Could Have Given Myself 5 Years Ago</a>. Guy (co-founder Yipit well funded startup with 25 employes) fantasize about going back in time and giving himself advice based on what he’s learned over the last 5 years.</p></li>
+<li><p><a href="http://www.wired.com/gadgetlab/2012/08/apple-amazon-mat-honan-hacking/">How Apple and Amazon Security Flaws Led to My Epic Hacking</a>. In the space of one hour, my entire digital life was destroyed... Not bad for begining</p></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

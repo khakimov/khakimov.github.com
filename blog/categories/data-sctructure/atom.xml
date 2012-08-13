@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: data sctructure | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/data-sctructure/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Back to school: Linked List with Ruby]]></title>
+    <link href="http://khakimov.github.com/blog/2012/05/11/back-to-school-linked-list-with-ruby/"/>
+    <updated>2012-05-11T13:27:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/05/11/back-to-school-linked-list-with-ruby</id>
+    <content type="html"><![CDATA[<p>CS106B is awesome! Today was a lecture about <a href="/blog/2012/04/27/data-structure/">Linked List</a> as I've already mention about this Data structures.</p>
+
+<p>Linked lists are among the simplest and most common data structures. They can be used to implement several other common abstract data types, including stacks, queues, associative arrays, and symbolic expressions, though it is not uncommon to implement the other data structures directly without using a list as the basis of implementation. <a href="http://en.wikipedia.org/wiki/Linked_list">wikipedia</a></p>
+
+<p>With C++ we can represent a cell in the linked list as a structure, like</p>
+
+<p>``` c++
+struct Cell {</p>
+
+<pre><code>string value; 
+Cell* next; 
+</code></pre>
+
+<p>};
+```</p>
+
+<p>in Ruby we can also use <a href="http://www.ruby-doc.org/core-1.9.3/Struct.html">Struct</a> and code our LinkedList will be like this:</p>
+
+<p>``` ruby</p>
+
+<h1>create a struct with :value and :next</h1>
+
+<p>Cell = Struct.new(:value, :next)</p>
+
+<h1>create a head of our list</h1>
+
+<p>list = Cell.new("head. hi", nil)</p>
+
+<h1>method which create one more cell and return the struct</h1>
+
+<p>def linked_list(value, cell)</p>
+
+<pre><code>return Cell.new(value, cell)
+</code></pre>
+
+<p>end</p>
+
+<h1>method which recursively print value until the asteroid...</h1>
+
+<p>def recursive_print(list)</p>
+
+<pre><code>p list.value
+recursive_print(list.next) unless list.next == nil
+</code></pre>
+
+<p>end</p>
+
+<h1>create Linked List</h1>
+
+<h1>#<struct Cell value=10, ... next=#<struct Cell value=1, next=#<struct Cell value="head. hi", next=nil></h1>
+
+<p>i = 0
+10.times {</p>
+
+<pre><code>i += 1
+list = linked_list(i, list)
+</code></pre>
+
+<p>}</p>
+
+<p>recursive_print(list) # print out recursively our list
+```</p>
+
+<p>Let's test Linked List and Arrays to insert value in the top.</p>
+
+<p>``` ruby simple_bench.rb</p>
+
+<h1>create a struct with :value and :next</h1>
+
+<p>Cell = Struct.new(:value, :next)</p>
+
+<h1>create a head of our list</h1>
+
+<p>list = Cell.new("head. hi", nil)</p>
+
+<h1>array</h1>
+
+<p>a = []</p>
+
+<h1>method which create one more cell and return the struct</h1>
+
+<p>def linked_list(value, cell)</p>
+
+<pre><code>return Cell.new(value, cell)
+</code></pre>
+
+<p>end</p>
+
+<h1>simple benchmark timer. t1 - t2 = waiting time ;)</h1>
+
+<p>def bench type
+  t1 = Time.now
+  yield
+  t2 = Time.now
+  p "#{type}'s took #{t2 - t1}s"
+end</p>
+
+<p>bench ("array") {
+  100000.times { a.insert 0,10} # O(n)
+}</p>
+
+<p>bench ("linked list") {
+  100000.times { list = linked_list(10, list) } # O(1)
+}</p>
+
+<h1>results</h1>
+
+<p>#</p>
+
+<h1>"array's took 2.661794s"</h1>
+
+<h1>"linked list's took 0.050272s"</h1>
+
+<p>```</p>
+
+<p>I'm not sure this is good example of benchmarking, will check it later. What doest it all mean? If you want insert value in the head of array, array gets a new array and move everything over every time when you insert something.</p>
+
+<p><strong>[1, 2, 3, 4, 5, 6]</strong> -> inserting <strong>10071983</strong> value -> <strong>[10071983, 1, 2, 3, 4, 5, 6]</strong>, so now inserting an element into a top of array can be very costly - O(n) because everytime move everything over.</p>
+
+<p>with linked list you just create cell with element and pointer on next cell. <strong>[1, pointer->nil]</strong> and if we want to add new element, we just set pointer like <strong>[10071983, pointer->next]</strong> where pointer->next is reference to <strong>[1, nil]</strong>. Of course Arrays are cool, because you can do many other things faster than linked list (trade offs), but don't forget about Algorithmic Analysis where you can find what will be faster to use in your case.</p>
+]]></content>
+  </entry>
+  
+</feed>

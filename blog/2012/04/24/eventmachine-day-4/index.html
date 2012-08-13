@@ -1,0 +1,296 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>EventMachine. Day 4 - Doing things</title>
+	<meta name="author" content="khakimov">
+
+	
+	<meta name="description" content="I&#8217;m at MiniService for regular routine, drinking coffee and reading this article I have no idea what I&#8217;m doing and after I read it the &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Doing things" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Doing things</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:khakimov.github.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:khakimov.github.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">EventMachine. Day 4</h1>
+	<div class="entry-content"><p>I&#8217;m at MiniService for regular routine, drinking coffee and reading this article <a href="http://ninjasandrobots.com/you-need-some-experience">I have no idea what I&#8217;m doing</a> and after I read it the only one I wanna say <em>I&#8217;ll figure this out. And you will too =)</em>. Let&#8217;s start!</p>
+
+<p>Yesterday we stoped at <em>EM::Iterator.new(0..100, 50).each</em> and realized if we change it to <em>EM::Iterator.new(0..100000, 50).each</em> then it doesn&#8217;t work well, probably generate thousand request in the same time and overflow the network.</p>
+
+<p>I rewrite client.rb and now it looks better I think (tested on localhost):</p>
+
+<figure class='code'><figcaption><span>client.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;em-http&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># File.open(&quot;1.csv&quot;, &#39;r&#39;) do |f|</span>
+</span><span class='line'><span class="c1">#   while(line = f.gets)</span>
+</span><span class='line'><span class="c1">#     urls &lt;&lt; &quot;http://&quot; + line.split(&quot;,&quot;)[1].strip</span>
+</span><span class='line'><span class="c1">#   end</span>
+</span><span class='line'><span class="c1"># end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">kqueue</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">count_connection</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">total_connection</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://127.0.0.1&quot;</span>
+</span><span class='line'>  <span class="n">connect</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">count_connection</span> <span class="o">&lt;</span> <span class="mi">50</span>
+</span><span class='line'>      <span class="c1"># url = urls.pop</span>
+</span><span class='line'>      <span class="n">http</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">HttpRequest</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="ss">:connect_timeout</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span> <span class="ss">:inactivity_timeout</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">get</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">p</span> <span class="s2">&quot;current connection: </span><span class="si">#{</span><span class="n">count_connection</span><span class="si">}</span><span class="s2"> vs </span><span class="si">#{</span><span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span><span class="si">}</span><span class="s2">, total: </span><span class="si">#{</span><span class="n">total_connection</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>        <span class="n">count_connection</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">count_connection</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">total_connection</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="n">count_connection</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">total_connection</span> <span class="o">&gt;</span> <span class="mi">10000</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">count_connection</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="s2">&quot;Total </span><span class="si">#{</span><span class="n">total_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures in </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;m using callback and recursion, so when I get http.callback program start next connection until I get current_connection &lt; 50.</p>
+
+<figure class='code'><figcaption><span>client.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="s2">&quot;current connection: 5 vs 7, total: 9996&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 5 vs 7, total: 9997&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 5 vs 7, total: 9998&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 5 vs 7, total: 9999&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 5 vs 7, total: 10000&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 5 vs 7, total: 10001&quot;</span>
+</span><span class='line'><span class="s2">&quot;Total 10001, 9996 successful, 4 failures in 5.736506s&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Sounds good, I&#8217;ve installed nginx on remote server in internet (just change url = &#8220;http://127.0.0.1&#8221; to url = &#8220;http://webserver&#8221;) and as a test ran with 100 connections. And got a nice picture <strong>&#8220;Total 10001, 9872 successful, 128 failures in 113.439425s&#8221;</strong> and this is not the end, look at the network monitor:</p>
+
+<p><img src="http://pix.am/C1kb.png" alt="" /></p>
+
+<p>Yes! I used full network channel to get responses from my server. Looks like the end of the story, isn&#8217;t? Stop, let&#8217;s test it with our 1_000_000 webservers. Got this and don&#8217;t know why yet:</p>
+
+<figure class='code'><figcaption><span>client.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="s2">&quot;current connection: 9 vs 11, total: 176, 158 successful, 8 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 9 vs 11, total: 177, 159 successful, 8 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 8 vs 11, total: 178, 161 successful, 8 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 9 vs 10, total: 179, 161 successful, 8 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 10 vs 11, total: 180, 161 successful, 8 failures&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Looks like it works only with 10 connection in the same time and don&#8217;t increase it, why is it possible I don&#8217;t know yet. The only one idea about dns resolver. I&#8217;m going to read and will back to fight tomorrow!</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-24T10:44:00-07:00" pubdate data-updated="true">Apr 24<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/eventmachine/'>eventmachine</a>, <a class='category' href='/blog/categories/network/'>network</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2012
+
+    khakimov
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-31552911-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

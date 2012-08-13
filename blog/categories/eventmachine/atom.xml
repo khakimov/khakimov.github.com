@@ -1,0 +1,1001 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: eventmachine | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/eventmachine/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[EventMachine and WebSockets]]></title>
+    <link href="http://khakimov.github.com/blog/2012/04/30/eventmachine-and-websockets/"/>
+    <updated>2012-04-30T18:46:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/04/30/eventmachine-and-websockets</id>
+    <content type="html"><![CDATA[<p>Few days couldn't use mt keyboard because fell of my bike and hurt my arms. Still using only one hand and that's enough to start doing some epic code ;) Today I'm going to start exploring world of websockets when you can send data from server to client's browser. Two things required - eventmachine as usual and em-websocket (<em>gem install em-websocket</em>)</p>
+
+<p>The simplest echo server/client:</p>
+
+<p>``` ruby
+require 'eventmachine'
+require 'em-websocket'</p>
+
+<p>EM.run do
+  puts "Server started on 127.0.0.1:4000 (open index.html in your browser)"
+  EM::WebSocket.start(:host => '127.0.0.1', :port => 4000) do |websocket|</p>
+
+<pre><code>websocket.onopen { puts "Client connected" }
+websocket.onmessage do |msg|
+  p msg
+  websocket.send(msg)
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>``` html
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd"></p>
+
+<p><html lang="en">
+<head></p>
+
+<pre><code>&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;
+&lt;title&gt;index&lt;/title&gt;
+&lt;script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'&gt;&lt;/script&gt;
+&lt;script&gt;
+  var ws;
+
+  $(document).ready(function()
+  {
+    if (!("WebSocket" in window))
+    {
+      alert("Sorry, WebSockets unavailable.");
+      return;
+    }
+
+    ws = new WebSocket("ws://127.0.0.1:4000/");
+
+    ws.onopen = function() {
+        console.log("connected...");
+        ws.send("hello server");
+        ws.send("hello again");  
+    };
+    ws.onmessage = function(evt)
+    {
+        console.log(evt);
+        $('#echo').append(evt.data +"&lt;br&gt;");
+    };
+
+    ws.onclose = function()
+    {
+      console.log("socket closed");
+    };
+});
+&lt;/script&gt;
+</code></pre>
+
+<p></head></p>
+
+<pre><code>&lt;body&gt;
+    meh
+    &lt;div id="echo"&gt;&lt;/div&gt;
+&lt;/body&gt;
+</code></pre>
+
+<p></html>
+```</p>
+
+<h2>websocket client side</h2>
+
+<ul>
+<li><strong>ws = new WebSocket("ws://127.0.0.1:4000/");</strong> create WebSocket object</li>
+<li><strong>onopen</strong> - call it when a socket has opened</li>
+<li><strong>onmessage</strong> - call it when a message has been received</li>
+<li><strong>onclose</strong> - when a socket has been closed</li>
+</ul>
+
+
+<h2>websocket server side</h2>
+
+<ul>
+<li><strong>EM::WebSocket.start(:host => '127.0.0.1', :port => 4000) do |websocket|</strong> open and listen requests on port 4000</li>
+<li><strong>onopen</strong> - call it when a socket has opened</li>
+<li><strong>onmessage</strong> - call it when a message has been received</li>
+<li><strong>onclose</strong> - when a socket has been closed</li>
+</ul>
+
+
+<p>Let's play a little bit with websocket and our last project that scans websites and gets <strong>header</strong> (I'm really n00b with frontend stuff, so, don't judge me)</p>
+
+<p>``` html
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd"></p>
+
+<p><html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>index</title>
+  <meta name="author" content="Ruslan Khakimov">
+  <script src='http://127.0.0.1:3000/jquery-1.7.2.js'></script></p>
+
+<pre><code>&lt;script&gt;
+  var ws;
+
+  $(document).ready(function()
+  {
+    if (!("WebSocket" in window))
+    {
+      alert("Sorry, WebSockets unavailable.");
+      return;
+    }
+
+    ws = new WebSocket("ws://127.0.0.1:8080/");
+
+    ws.onopen = function() {
+        console.log("connected...");
+    };
+
+    ws.onmessage = function(evt)
+    {
+        data = JSON.parse(evt.data);
+        nginx = data.nginx;
+        apache = data.apache;
+        ms = data.ms; 
+        total = nginx + apache + ms;
+
+        render_star('nginx', nginx/total * 100);
+        render_star('apache', apache/total * 100);
+        render_star('ms', ms/total * 100);
+
+    };
+
+    ws.onclose = function()
+    {
+      console.log("socket closed");
+    };
+
+    function render_star(name, num){
+      $('#' + name).html('');
+      for(var i =0; i&lt; num; i++) {
+        $('#'+ name).append('*');
+      }
+
+    };
+
+});
+&lt;/script&gt;
+</code></pre>
+
+<p></head>
+<body></p>
+
+<p>  <div id="test"></p>
+
+<pre><code>nginx: &lt;div id="nginx"&gt;&lt;/div&gt;
+apache: &lt;div id="apache"&gt;&lt;/div&gt;
+ms: &lt;div id="ms"&gt;&lt;/div&gt;
+</code></pre>
+
+<p>  </div></p>
+
+<p></body>
+</html>
+```</p>
+
+<p>and server:
+``` ruby server.rb
+require 'eventmachine'
+require "em-websocket"
+require "json"</p>
+
+<p>module EventMachine
+  module DNS</p>
+
+<pre><code>class Request
+  def initialize(socket, hostname)
+    @socket = socket
+    @hostname = hostname
+    @tries = 0
+    @last_send = Time.at(0)
+    @retry_interval = 3
+    @max_tries = 5
+
+    if addrs = Resolver.hosts[hostname]
+      info = {"domain"=&gt; @hostname, "ips" =&gt; addrs}
+      succeed info
+    else
+      EM.next_tick { tick }
+    end
+  end
+
+  def receive_answer(msg)
+    addrs = []
+    msg.each_answer do |name,ttl,data|
+      if data.kind_of?(Resolv::DNS::Resource::IN::A) ||
+          data.kind_of?(Resolv::DNS::Resource::IN::AAAA)
+        addrs &lt;&lt; data.address.to_s
+      end
+    end
+
+    if addrs.empty?
+      fail "rcode=#{msg.rcode}, #{@hostname}"
+    else
+      info = {"domain"=&gt; @hostname, "ips" =&gt; addrs}
+      succeed info
+    end
+  end
+end
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>urls = []</p>
+
+<p>File.open("1.csv", 'r') do |f|
+  while(line = f.gets)</p>
+
+<pre><code>urls &lt;&lt; line.split(",")[1].strip
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>class Client &lt; EM::Connection
+  @@webserver_stats = {"nginx" => 0, "apache" => 0, "ms" => 0}</p>
+
+<p>  def initialize domain, channel</p>
+
+<pre><code>@domain = domain
+comm_inactivity_timeout = 3
+pending_connect_timeout = 5
+@channel = channel
+</code></pre>
+
+<p>  end</p>
+
+<p>  def post_init</p>
+
+<pre><code>send_data "GET / HTTP/1.1\r\nHost: #{@domain}\r\n\r\n"
+</code></pre>
+
+<p>  end</p>
+
+<p>  # Parse answer from webserver and count stats
+  def receive_data data</p>
+
+<pre><code>data =~ /Server: ([^\r\n]*)/
+webserver = $1
+case webserver
+when /nginx/      then  @@webserver_stats.merge({"nginx" =&gt; @@webserver_stats['nginx'] += 1})
+when /Apache/     then  @@webserver_stats.merge({"apache" =&gt; @@webserver_stats['apache'] += 1})
+when /Microsoft/  then  @@webserver_stats.merge({"ms" =&gt; @@webserver_stats['ms'] += 1})
+end
+p webserver
+@channel.push @@webserver_stats
+
+close_connection
+</code></pre>
+
+<p>  end</p>
+
+<p>end</p>
+
+<p>successes = 0
+failures = 0
+total_connection = 0
+t1 = Time.now
+urls_size = urls.size</p>
+
+<p>EM.run do</p>
+
+<p>@channel = EM::Channel.new</p>
+
+<p>  connect = proc {</p>
+
+<pre><code>if EM::connection_count() &lt; 300
+  url = urls.pop
+  dns = EM::DNS::Resolver.resolve url
+
+  dns.callback {|data|
+    successes += 1
+    EM.connect data["ips"][0], 80, Client, data["domain"], @channel unless data["ips"][0].nil?
+  }
+
+  dns.errback { |data| failures += 1 }
+
+  total_connection += 1
+end
+
+if total_connection &lt; urls_size 
+  EM.add_timer(1) { EM.next_tick(&amp;connect) }  #originaly here should be something like 0.002, but this is test
+else
+  EM.add_timer(5) {EM.stop}   # 5 seconds timer to lets finish slow connections
+end
+</code></pre>
+
+<p>  }</p>
+
+<p>  EM.next_tick(&amp;connect)</p>
+
+<p>  # print stats with progress every 3 seconds
+  stats = proc {</p>
+
+<pre><code>  p "current connection: #{EM::connection_count()}, total: #{total_connection}, #{successes}\
+    successful, #{failures} failures, #{ (successes / (Time.now - t1)).to_i} domains/sec"
+  EM.add_timer 3, &amp;stats
+</code></pre>
+
+<p>  }
+  EM.add_timer 3, &amp;stats</p>
+
+<p>  # starts websocket server
+  EM::WebSocket.start(:host => "127.0.0.1", :port => 8080, :debug => false) do |ws|</p>
+
+<p>  ws.onopen {</p>
+
+<pre><code>sid = @channel.subscribe { |msg| ws.send msg.to_json }
+
+ws.onclose {
+  @channel.unsubscribe(sid)
+}
+</code></pre>
+
+<p>  }
+  end
+end</p>
+
+<p>t2 = Time.now
+p "Total #{total_connection}, #{successes} successful, #{failures} failures in #{t2 - t1}s"
+```
+...few days of repairing after bike crash...</p>
+
+<p>Thats how simple using websockets is, and combined with eventmachine, they can be pretty awesome together. This is the end of my journey with EM for this time and I'm going to improve some skills with Rails. Let me know on email ruslan@&lt;%= current_domain_name %> if you have any question about eventmachine.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[EventMachine. Day 4]]></title>
+    <link href="http://khakimov.github.com/blog/2012/04/24/eventmachine-day-4/"/>
+    <updated>2012-04-24T10:44:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/04/24/eventmachine-day-4</id>
+    <content type="html"><![CDATA[<p>I'm at MiniService for regular routine, drinking coffee and reading this article <a href="http://ninjasandrobots.com/you-need-some-experience">I have no idea what I'm doing</a> and after I read it the only one I wanna say <em>I'll figure this out. And you will too =)</em>. Let's start!</p>
+
+<p>Yesterday we stoped at <em>EM::Iterator.new(0..100, 50).each</em> and realized if we change it to <em>EM::Iterator.new(0..100000, 50).each</em> then it doesn't work well, probably generate thousand request in the same time and overflow the network.</p>
+
+<p>I rewrite client.rb and now it looks better I think (tested on localhost):</p>
+
+<p>``` ruby client.rb
+require 'eventmachine'
+require 'em-http'</p>
+
+<p>urls = []</p>
+
+<h1>File.open("1.csv", 'r') do |f|</h1>
+
+<h1>while(line = f.gets)</h1>
+
+<h1>urls &lt;&lt; "http://" + line.split(",")[1].strip</h1>
+
+<h1>end</h1>
+
+<h1>end</h1>
+
+<p>EM.kqueue = true
+successes = 0
+failures = 0
+count_connection = 0
+total_connection = 0
+t1 = Time.now</p>
+
+<p>EM.run do
+  url = "http://127.0.0.1"
+  connect = proc {</p>
+
+<pre><code>if count_connection &lt; 50
+  # url = urls.pop
+  http = EM::HttpRequest.new(url, :connect_timeout =&gt; 3, :inactivity_timeout =&gt; 5).get
+
+  http.callback { 
+    p "current connection: #{count_connection} vs #{EM::connection_count()}, total: #{total_connection}"
+    count_connection -= 1
+    successes += 1
+    }
+
+  http.errback { 
+    count_connection -= 1
+    failures += 1
+    }
+
+  total_connection += 1
+  count_connection += 1
+  EM.stop if total_connection &gt; 10000
+end
+
+EM.next_tick(&amp;connect)
+</code></pre>
+
+<p>  }
+  count_connection += 1
+  EM.next_tick(&amp;connect)<br/>
+end
+t2 = Time.now</p>
+
+<p>p "Total #{total_connection}, #{successes} successful, #{failures} failures in #{t2 - t1}s"
+```</p>
+
+<p>I'm using callback and recursion, so when I get http.callback program start next connection until I get current_connection &lt; 50.</p>
+
+<p><code>
+"current connection: 5 vs 7, total: 9996"
+"current connection: 5 vs 7, total: 9997"
+"current connection: 5 vs 7, total: 9998"
+"current connection: 5 vs 7, total: 9999"
+"current connection: 5 vs 7, total: 10000"
+"current connection: 5 vs 7, total: 10001"
+"Total 10001, 9996 successful, 4 failures in 5.736506s"
+</code></p>
+
+<p>Sounds good, I've installed nginx on remote server in internet (just change url = "http://127.0.0.1" to url = "http://webserver") and as a test ran with 100 connections. And got a nice picture <strong>"Total 10001, 9872 successful, 128 failures in 113.439425s"</strong> and this is not the end, look at the network monitor:</p>
+
+<p><img src="http://pix.am/C1kb.png" alt="" /></p>
+
+<p>Yes! I used full network channel to get responses from my server. Looks like the end of the story, isn't? Stop, let's test it with our 1_000_000 webservers. Got this and don't know why yet:</p>
+
+<p><code>
+"current connection: 9 vs 11, total: 176, 158 successful, 8 failures"
+"current connection: 9 vs 11, total: 177, 159 successful, 8 failures"
+"current connection: 8 vs 11, total: 178, 161 successful, 8 failures"
+"current connection: 9 vs 10, total: 179, 161 successful, 8 failures"
+"current connection: 10 vs 11, total: 180, 161 successful, 8 failures"
+</code></p>
+
+<p>Looks like it works only with 10 connection in the same time and don't increase it, why is it possible I don't know yet. The only one idea about dns resolver. I'm going to read and will back to fight tomorrow!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[EventMachine. Day 3]]></title>
+    <link href="http://khakimov.github.com/blog/2012/04/23/eventmachine-day-3/"/>
+    <updated>2012-04-23T12:41:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/04/23/eventmachine-day-3</id>
+    <content type="html"><![CDATA[<p>Just bought large coffee from Coupa cafe and ready for the next fight. Today I read few article and checked few github repositories with eventmachine examples.</p>
+
+<p><a href="http://blog.nominet.org.uk/tech/2007/10/12/dnsruby-and-eventmachine/">Dnsruby and EventMachine</a></p>
+
+<p>So, now I'm reading about <a href="http://eventmachine.rubyforge.org/docs/DEFERRABLES.html">Deferrables</a> and the only one thing I'm gonna share with you - <em>You may need to read the following material through more than once before you get the idea.</em> =)</p>
+
+<blockquote><p>The Deferrable pattern allows you to specify any number of Ruby code blocks (callbacks or errbacks) that will be executed at some future time when the status of the Deferrable object changes. How might that be useful? Well, imagine that you’re implementing an HTTP server, but you need to make a call to some other server in order to fulfill a client request.</p></blockquote>
+
+<p>When you'll read it you'll realize that we've already used EM::Deferrable. For example when we are using EM::Protocols::HttpClient#request it returns a Deferrable object.</p>
+
+<p>``` ruby
+df = EM::Protocols::HttpClient.request( :host=>"www.example.com", :request=>"/index.html" )</p>
+
+<p>df.callback {|response|
+  puts "Succeeded: #{response[:content]}"
+  EM.stop
+}</p>
+
+<p>df.errback {|response|
+  puts "ERROR: #{response[:status]}"
+  EM.stop
+}
+```</p>
+
+<p>It works, but still speed is not good as I'm looking for. My idea is creating a pool with 200 connections in the same time and recursively adding new connection each time when old connection finished. Some specs here:</p>
+
+<ul>
+<li>200 connections in the same time always</li>
+<li>connection timeout = 3 seconds</li>
+<li>connection innactive = 5 seconds</li>
+</ul>
+
+
+<p><img src="http://pix.am/HTuTl.png" alt="" /></p>
+
+<p>Because I don't have internet connection in the library I'm going build server with random timeout response between 1-3 seconds. Let's do it with eventmachine ;)</p>
+
+<p>``` ruby server.rb
+require 'eventmachine'</p>
+
+<p>class Server &lt; EventMachine::Connection</p>
+
+<p>  def receive_data(data)</p>
+
+<pre><code>p EM.connection_count
+sleep(rand()*2)
+send_data "200"
+close_connection_after_writing
+</code></pre>
+
+<p>  end</p>
+
+<p>end</p>
+
+<p>EM.run do
+  EM::start_server "0.0.0.0", 8000, Server
+end
+```</p>
+
+<p>``` ruby client.rb
+require 'eventmachine'</p>
+
+<p>class Client &lt; EM::Connection</p>
+
+<p>  def initialize num, started_at</p>
+
+<pre><code>@num = num
+@started_at = started_at
+</code></pre>
+
+<p>  end</p>
+
+<p>  def post_init</p>
+
+<pre><code>  send_data "hi\r\n"
+</code></pre>
+
+<p>  end</p>
+
+<p>  def receive_data data</p>
+
+<pre><code>p "#{@num} - #{Time.now - @started_at}- #{data}"
+close_connection
+</code></pre>
+
+<p>  end</p>
+
+<p>end</p>
+
+<p>EM.run do
+  EM::Iterator.new(0..100, 5).each { |num, iter|</p>
+
+<pre><code>EM.connect "127.0.0.1", 8000, Client, num, Time.now()
+iter.next
+</code></pre>
+
+<p>  }
+end
+```</p>
+
+<p>2 hours break and here I am, though a little bit more and here is new version of previous awful code:</p>
+
+<p>``` ruby server.rb
+require 'eventmachine'</p>
+
+<p>EM.run do</p>
+
+<pre><code>EM::start_server "0.0.0.0", 8000 do |serv|
+  def serv.receive_data data
+    EM.add_timer(rand()*4) { 
+      send_data "200" 
+      close_connection_after_writing
+    }
+    puts EM.connection_count
+  end
+end
+</code></pre>
+
+<p>end
+```</p>
+
+<p>``` ruby client.rb
+require 'eventmachine'</p>
+
+<p>class Client &lt; EM::Connection</p>
+
+<p>  def initialize num, started_at</p>
+
+<pre><code>@num = num
+@started_at = started_at
+</code></pre>
+
+<p>  end</p>
+
+<p>  def post_init</p>
+
+<pre><code>  send_data "ping"
+</code></pre>
+
+<p>  end</p>
+
+<p>  def receive_data data</p>
+
+<pre><code>p "#{@num} - #{Time.now - @started_at}- #{data}"
+close_connection
+</code></pre>
+
+<p>  end</p>
+
+<p>end</p>
+
+<p>EM.run do
+  EM::Iterator.new(0..100, 5).each { |num, iter|</p>
+
+<pre><code>EM.connect "127.0.0.1", 8000, Client, num, Time.now()
+iter.next
+</code></pre>
+
+<p>  }
+end
+```</p>
+
+<p>because in prev version of server.rb I've used sleep, that was a problem for reactor (EM) and it blocked the process. So, now results looks better:</p>
+
+<p>```
+ruby client.rb</p>
+
+<p>...
+"31 - 3.348352- 200"
+"62 - 3.571507- 200"
+"91 - 3.582121- 200"
+"29 - 3.602537- 200"
+"92 - 3.59524- 200"
+"1 - 3.671826- 200"
+"35 - 3.686029- 200"
+"80 - 3.776847- 200"
+"63 - 3.800448- 200"
+"43 - 3.856598- 200"
+"30 - 3.906939- 200"
+```</p>
+
+<p>BUT if you write EM::Iterator.new(0..10000, 50).each it will be frozen for 10-20 seconds and only then you will get a result. Day 3 and again fail. But tomorrow is going be more interesting, because the truth is out there...</p>
+
+<p>To read:</p>
+
+<p><a href="http://nutrun.com/weblog/2008/05/04/distributed-programming-with-jabber-and-eventmachine.html">Distributed programming with Jabber and EventMachine</a>
+<a href="http://blog.nominet.org.uk/tech/2007/10/12/dnsruby-and-eventmachine/">Dnsruby and EventMachine</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[EventMachine and web crawler]]></title>
+    <link href="http://khakimov.github.com/blog/2012/04/21/eventmachine-and-web-crawler/"/>
+    <updated>2012-04-21T14:47:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/04/21/eventmachine-and-web-crawler</id>
+    <content type="html"><![CDATA[<p>When I came back at home yesterday and tested the code on real data I realized that wasn't work well. 1000 urls was ok, but 1_000_000 wasn't, EM didn't callback anything.</p>
+
+<p>``` ruby
+require 'eventmachine'</p>
+
+<p>urls = []</p>
+
+<p>File.open("1.csv", 'r') do |f|
+  while(line = f.gets)</p>
+
+<pre><code>urls &lt;&lt; line.split(",")[1].strip
+#urls &lt;&lt; "http://127.0.0.1"
+</code></pre>
+
+<p>  end
+end
+p urls.size</p>
+
+<p>module DumbHttpClient
+   def post_init</p>
+
+<pre><code> send_data "GET / HTTP/1.1\r\nHost: _\r\n\r\n"
+ @data = ""
+ @parsed = false
+</code></pre>
+
+<p>   end</p>
+
+<p>   def receive_data data</p>
+
+<pre><code> @data &lt;&lt; data
+ if !@parsed and @data =~ /[\n][\r]*[\n]/m
+   @parsed = true
+   p data
+   close_connection
+ end
+</code></pre>
+
+<p>   end</p>
+
+<p>   def unbind</p>
+
+<pre><code> puts "A connection has terminated"
+</code></pre>
+
+<p>   end
+ end</p>
+
+<p> EventMachine::run {
+   urls.each do |url|</p>
+
+<pre><code> begin
+   EventMachine::connect url, 80, DumbHttpClient
+ rescue EventMachine::ConnectionError
+   p "Something wrong with #{url}"
+ end
+ p EM::connection_count()
+</code></pre>
+
+<p>   end
+ }</p>
+
+<p> puts "The event loop has ended"
+```</p>
+
+<p>This simple example which just send/receive data from web. It works well only if you try to grab ~1000 websites. Before gets result its going through <em>.each</em> and only after finish this loop starts sending data and receive_data. Version with BATCH_SIZE that I did yesterday pretend to create queue and that's why it works with 1_000_000 urls, but after first hundred requests speed goes down.</p>
+
+<p>Then I've read about <a href="http://rdoc.info/github/eventmachine/eventmachine/master/EventMachine/Iterator">EM::Iterator</a> and did this example:</p>
+
+<p>``` ruby
+require 'eventmachine'
+require 'em-http'
+urls = []
+File.open("1.csv", 'r') do |f|
+  while(line = f.gets)</p>
+
+<pre><code>urls &lt;&lt; "http://" + line.split(",")[1].strip
+</code></pre>
+
+<p>  end
+end
+BATCH_SIZE = 100</p>
+
+<p>EM.kqueue = true
+successes = 0
+failures = 0
+EventMachine.run {
+  pending = 0
+  EM.add_periodic_timer(1) do</p>
+
+<pre><code>batch, urls = urls[0..(BATCH_SIZE-1)], (urls[BATCH_SIZE..-1] || []) 
+EM::Iterator.new(batch, 100).each do |url,iter| 
+  http = EM::HttpRequest.new(url, :connect_timeout =&gt; 3, :inactivity_timeout =&gt; 5).get 
+
+  http.callback {
+    puts "#{url} - #{http.response_header['SERVER']}"
+    successes += 1
+    pending -= 1
+    iter.next
+    EM.stop if pending &lt; 1 &amp;&amp; urls.empty?
+  }
+
+  http.errback {
+    puts "#{url}\n - #{http.error}"
+    failures += 1
+    pending -= 1
+    iter.next
+    EM.stop if pending &lt; 1 &amp;&amp; urls.empty?
+  }
+  pending += 1
+  iter.next
+end
+puts "#{pending} pending. #{successes} successful, #{failures} failures"
+p EM::connection_count()
+</code></pre>
+
+<p>  end
+}
+```</p>
+
+<p>Works, but speed not as I expected. Network used only 200kb/s and 1mbit once at the pick. So, that means parallels works not as we want, we want to use network as much as possible.</p>
+
+<p>Then I've read about <a href="https://github.com/igrigorik/em-synchrony">em-synchrony</a> and did this example of crawler (ruby 1.9.3 and em-synchrony):</p>
+
+<p>``` ruby
+require 'em-synchrony'
+require 'em-synchrony/em-http'</p>
+
+<p>urls = []</p>
+
+<p>File.open("10k.csv", 'r') do |f|
+  while(line = f.gets)</p>
+
+<pre><code>urls &lt;&lt; "http://" + line.split(",")[1].strip
+</code></pre>
+
+<p>  end
+end
+p urls.size
+t1 = Time.now
+successes = 0
+failures = 0
+EM.synchrony do
+  concurrency = 200
+  pending = 0
+  # iterator will execute async blocks until completion, .each, .inject also work!
+  results = EM::Synchrony::Iterator.new(urls, concurrency).map do |url, iter|</p>
+
+<pre><code>  # fire async requests, on completion advance the iterator
+  http = EventMachine::HttpRequest.new(url).aget
+  http.callback { 
+    iter.return(http) 
+    successes += 1
+    pending -= 1
+    puts "#{successes} successful, #{failures} failures, connection #{EM::connection_count()}"
+    }
+  http.errback { 
+    iter.return(http) 
+    failures += 1
+    pending -= 1
+    }
+</code></pre>
+
+<p>  end</p>
+
+<p>  p results # all completed requests
+  EventMachine.stop
+end
+t2 = Time.now</p>
+
+<p>puts "#{successes} successful, #{failures} failures in #{t2 - t1} s"
+```</p>
+
+<p>Since I've done a lot of examples I've learned a good lesson - never block the main EM.run {}:</p>
+
+<ul>
+<li>no sleep(1)</li>
+<li>no long loops like I did 10_000.each</li>
+<li>no blocking I/O</li>
+</ul>
+
+
+<p>concurrency = 1000</p>
+
+<p>935 successful, 65 failures in 186.044609 s</p>
+
+<p>concurrency = 50</p>
+
+<p>957 successful, 43 failures in 67.982429 s</p>
+
+<p>concurrency = 300</p>
+
+<p>956 successful, 44 failures in 26.822961 s</p>
+
+<p>In the next post I'm going to try EM::Deferrable and will see how it will work. Still don't have good solution, so, keep digging. I just wanna get the shit out of my internet connection, like using bandwidth as can as possible ;)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby with EventMachine and JRuby with real threads: Part I]]></title>
+    <link href="http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads/"/>
+    <updated>2012-04-19T12:53:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads</id>
+    <content type="html"><![CDATA[<p>Welcome to the world of extremely high scalability, performance and stability for the most demanding production environments. Today I'm going to learn and describe a little bit about EventMachine that is a high perfomance implementation of the <a href="http://en.wikipedia.org/wiki/Reactor_pattern">Reactor Pattern</a>.</p>
+
+<p>Basically, we can use it for critical networked applications, including web servers and proxies, email and IM production systems, authentication/authorization processors, and many more. In my case in attracted me with simplicity of using with tons tcp connections for scanning web as example.</p>
+
+<p>Recommended links:</p>
+
+<ul>
+<li>[1] <a href="http://rubyeventmachine.com/">http://rubyeventmachine.com/</a></li>
+<li>[2] <a href="http://eventmachine.rubyforge.org/">http://eventmachine.rubyforge.org/</a></li>
+<li>[3] <a href="http://peepcode.com">peepcode screencast about eventmachine</a></li>
+</ul>
+
+
+<p>Simple example of Echo server (telnet 127.0.0.1 8000):</p>
+
+<p>``` ruby
+require "eventmachine"</p>
+
+<p>module EchoServer
+  def post_init</p>
+
+<pre><code>puts "connected"
+</code></pre>
+
+<p>  end</p>
+
+<p>  def receive_data(data)</p>
+
+<pre><code>close_connection_after_writing if data =~ /quit/
+send_data "=&gt; you sent: #{data}"
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>EM.run do
+  EM.start_server "127.0.0.1", 8000, EchoServer
+  puts "runnning echo server on 8000"
+end
+```</p>
+
+<p>Here is example of web scanner (we have to use asynchronous libraries with EventMachine, you can't use any I/O blocking process in EM.run {} environment):</p>
+
+<p>``` ruby
+require 'eventmachine'
+require 'em-http-request' # asynchronous version</p>
+
+<p>pending = 1000
+t1 = Time.now
+EM.run {
+  1000.times do</p>
+
+<pre><code>  url = "http://127.0.0.1"
+  http = EM::HttpRequest.new(url).get
+
+  http.callback {
+    puts "#{url} - #{http.response_header['SERVER']}"
+    pending -= 1
+    EM.stop if pending &lt; 1
+  }
+
+  http.errback {
+    puts "#{url}\n - #{http.error}"
+    pending -= 1
+    EM.stop if pending &lt; 1
+  }
+</code></pre>
+
+<p>  end
+}
+t2 = Time.now
+puts "Took #{t2 - t1}s"
+```</p>
+
+<p>This is not good example, because it doesn't work well. When I'm trying to run its only gets 355 request succeed. I don't know yet why (my version is many connection in the same time and it's just doesn't process all of them) but my supposition is we should use batch, like 100 connection in the same time. Let's try to implement it:</p>
+
+<p>``` ruby
+require 'eventmachine'
+require 'em-http-request'</p>
+
+<p>urls = []</p>
+
+<p>10000.times do</p>
+
+<pre><code>urls &lt;&lt; "http://127.0.0.1"
+</code></pre>
+
+<p>end</p>
+
+<p>BATCH_SIZE = 100
+successes = 0
+failures = 0
+t1 = Time.now
+EM.run {
+  pending = 0
+  EM.add_periodic_timer(0.1) do</p>
+
+<pre><code># urls = urls[BATCH_SIZE..-1] every loop. 1000, 900, 800 .. 200, 100, 0
+batch, urls = urls[0..(BATCH_SIZE-1)], (urls[BATCH_SIZE..-1] || [])
+batch.each do |url|
+  http = EM::HttpRequest.new(url).get
+
+  http.callback {
+    puts "#{url} - #{http.response_header['SERVER']}"
+    successes += 1
+    pending -= 1
+    EM.stop if pending &lt; 1 &amp;&amp; urls.empty?
+  }
+
+  http.errback {
+    puts "#{url}\n - #{http.error}"
+    failures += 1
+    pending -= 1
+    EM.stop if pending &lt; 1 &amp;&amp; urls.empty?
+  }
+  pending += 1
+end
+puts "#{pending} pending"
+</code></pre>
+
+<p>  end
+}
+t2 = Time.now
+puts "#{successes} successful, #{failures} failures in #{t2 - t1}s"
+```</p>
+
+<p>We added BATCH_SIZE and it helped to control the queue of requests, so if we increase BATCH_SIZE = 1000 then we will get same problem: 351 successful, 649 failures in 5.57171 s.</p>
+
+<p>BATCH_SIZE = 100 # => 1000 successful, 0 failures in 1.215148 s</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: green threads | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/green-threads/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby with EventMachine and JRuby with real threads: Part I]]></title>
+    <link href="http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads/"/>
+    <updated>2012-04-19T12:53:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads</id>
+    <content type="html"><![CDATA[<p>Welcome to the world of extremely high scalability, performance and stability for the most demanding production environments. Today I'm going to learn and describe a little bit about EventMachine that is a high perfomance implementation of the <a href="http://en.wikipedia.org/wiki/Reactor_pattern">Reactor Pattern</a>.</p>
+
+<p>Basically, we can use it for critical networked applications, including web servers and proxies, email and IM production systems, authentication/authorization processors, and many more. In my case in attracted me with simplicity of using with tons tcp connections for scanning web as example.</p>
+
+<p>Recommended links:</p>
+
+<ul>
+<li>[1] <a href="http://rubyeventmachine.com/">http://rubyeventmachine.com/</a></li>
+<li>[2] <a href="http://eventmachine.rubyforge.org/">http://eventmachine.rubyforge.org/</a></li>
+<li>[3] <a href="http://peepcode.com">peepcode screencast about eventmachine</a></li>
+</ul>
+
+
+<p>Simple example of Echo server (telnet 127.0.0.1 8000):</p>
+
+<p>``` ruby
+require "eventmachine"</p>
+
+<p>module EchoServer
+  def post_init</p>
+
+<pre><code>puts "connected"
+</code></pre>
+
+<p>  end</p>
+
+<p>  def receive_data(data)</p>
+
+<pre><code>close_connection_after_writing if data =~ /quit/
+send_data "=&gt; you sent: #{data}"
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>EM.run do
+  EM.start_server "127.0.0.1", 8000, EchoServer
+  puts "runnning echo server on 8000"
+end
+```</p>
+
+<p>Here is example of web scanner (we have to use asynchronous libraries with EventMachine, you can't use any I/O blocking process in EM.run {} environment):</p>
+
+<p>``` ruby
+require 'eventmachine'
+require 'em-http-request' # asynchronous version</p>
+
+<p>pending = 1000
+t1 = Time.now
+EM.run {
+  1000.times do</p>
+
+<pre><code>  url = "http://127.0.0.1"
+  http = EM::HttpRequest.new(url).get
+
+  http.callback {
+    puts "#{url} - #{http.response_header['SERVER']}"
+    pending -= 1
+    EM.stop if pending &lt; 1
+  }
+
+  http.errback {
+    puts "#{url}\n - #{http.error}"
+    pending -= 1
+    EM.stop if pending &lt; 1
+  }
+</code></pre>
+
+<p>  end
+}
+t2 = Time.now
+puts "Took #{t2 - t1}s"
+```</p>
+
+<p>This is not good example, because it doesn't work well. When I'm trying to run its only gets 355 request succeed. I don't know yet why (my version is many connection in the same time and it's just doesn't process all of them) but my supposition is we should use batch, like 100 connection in the same time. Let's try to implement it:</p>
+
+<p>``` ruby
+require 'eventmachine'
+require 'em-http-request'</p>
+
+<p>urls = []</p>
+
+<p>10000.times do</p>
+
+<pre><code>urls &lt;&lt; "http://127.0.0.1"
+</code></pre>
+
+<p>end</p>
+
+<p>BATCH_SIZE = 100
+successes = 0
+failures = 0
+t1 = Time.now
+EM.run {
+  pending = 0
+  EM.add_periodic_timer(0.1) do</p>
+
+<pre><code># urls = urls[BATCH_SIZE..-1] every loop. 1000, 900, 800 .. 200, 100, 0
+batch, urls = urls[0..(BATCH_SIZE-1)], (urls[BATCH_SIZE..-1] || [])
+batch.each do |url|
+  http = EM::HttpRequest.new(url).get
+
+  http.callback {
+    puts "#{url} - #{http.response_header['SERVER']}"
+    successes += 1
+    pending -= 1
+    EM.stop if pending &lt; 1 &amp;&amp; urls.empty?
+  }
+
+  http.errback {
+    puts "#{url}\n - #{http.error}"
+    failures += 1
+    pending -= 1
+    EM.stop if pending &lt; 1 &amp;&amp; urls.empty?
+  }
+  pending += 1
+end
+puts "#{pending} pending"
+</code></pre>
+
+<p>  end
+}
+t2 = Time.now
+puts "#{successes} successful, #{failures} failures in #{t2 - t1}s"
+```</p>
+
+<p>We added BATCH_SIZE and it helped to control the queue of requests, so if we increase BATCH_SIZE = 1000 then we will get same problem: 351 successful, 649 failures in 5.57171 s.</p>
+
+<p>BATCH_SIZE = 100 # => 1000 successful, 0 failures in 1.215148 s</p>
+]]></content>
+  </entry>
+  
+</feed>

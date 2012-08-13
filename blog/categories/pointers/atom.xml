@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: pointers | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/pointers/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[C Pointers The Hard Way]]></title>
+    <link href="http://khakimov.github.com/blog/2012/07/14/c-pointers-the-hard-way/"/>
+    <updated>2012-07-14T12:57:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/07/14/c-pointers-the-hard-way</id>
+    <content type="html"><![CDATA[<p>Couple weeks ago read on stackoverflow question "<a href="http://stackoverflow.com/questions/4025768/what-do-people-find-difficult-about-c-pointers">What do people find difficult about C pointers?</a>" and I found interesting answers here. One of them is:</p>
+
+<p>  <strong>Many programmers today don't know how their machine works, just as most people who know how to drive a car don't know anything about the engine.</strong></p>
+
+<p>I think main idea to understand how pointers work is doing some code and then debug it where you can see step by step operations with memory and can play with many variations. So, it's easy to say like read this and this and then you will understand how pointers work. In my case AHA-moment with pointers was when I found in gdb commands <strong>print</strong> (Print value of expression EXP) and <strong>x</strong> (Examine memory: x/FMT ADDRESS).</p>
+
+<p>``` c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<p>int main()
+{
+  int i = 10;
+  int <em>p;
+  p = &i;
+  printf("%d", </em>p);
+}
+```</p>
+
+<p><strong>gcc -g -Wall -Werror -O0 -std=c99 -o test test.o -lm</strong></p>
+
+<p>and then <strong>gdb ./test</strong></p>
+
+<p>```
+(gdb) break main
+Breakpoint 1 at 0x100000ee4: file test.c, line 5.
+(gdb) run
+Starting program: /Users/khakimov/Projects/current/c/cs107/lec07/test
+Reading symbols for shared libraries +........................ done</p>
+
+<p>Breakpoint 1, main () at test.c:5
+5         int i = 10;
+(gdb) step
+7         p = &i;
+(gdb) print i
+$1 = 10
+(gdb) p &amp;i
+$2 = (int <em>) 0x7fff5fbfef94
+(gdb) print p
+$4 = (int </em>) 0x7fff5fbfef94
+(gdb) p *p
+$5 = 10
+```</p>
+
+<p>then try to use x to examine memory:</p>
+
+<p><code>
+(gdb) x/1bt p
+0x7fff5fbfef94: 00001010
+(gdb) x/1bt &amp;i
+0x7fff5fbfef94: 00001010
+(gdb) x/1bt *&amp;p
+0x7fff5fbfef94: 00001010
+(gdb) x/1bt &amp;p
+0x7fff5fbfef88: 10010100
+</code></p>
+
+<p>So, my suggestion is read for sure K&amp;R about pointers then open your editor, compile some code and then play with gdb till you will clear understand how and why it works. Good luck!</p>
+]]></content>
+  </entry>
+  
+</feed>

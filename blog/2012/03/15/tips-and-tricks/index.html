@@ -1,0 +1,198 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>tips and tricks - Doing things</title>
+	<meta name="author" content="khakimov">
+
+	
+	<meta name="description" content="Class methods are usually called with the double colon. The respond_to? method is really nice and I plead that you never forget
+it’s there. The &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Doing things" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Doing things</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:khakimov.github.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:khakimov.github.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Tips and Tricks</h1>
+	<div class="entry-content"><p>Class methods are usually called with the double colon.</p>
+
+<p>The respond_to? method is really nice and I plead that you never forget
+it’s there. The respond_to? checks any object to be sure that it has a
+certain method. It then gives back a true or false.</p>
+
+<p>.collect keeps the answer the block gives back and adds it to a new
+Array. The collect method is the perfect way of building a new Array
+which is based on the items in an existing Array.</p>
+
+<p>Always remember that a Module is only an inn. A roof over their heads.
+It is not a self-aware Class and, therefore, cannot be brought to life
+with new.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SkatingContest</span>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">the_winner</span><span class="p">;</span> <span class="vi">@the_winner</span><span class="p">;</span> <span class="k">end</span>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">the_winner</span><span class="o">=</span><span class="p">(</span> <span class="nb">name</span> <span class="p">)</span>
+</span><span class='line'>     <span class="k">unless</span> <span class="nb">name</span><span class="o">.</span><span class="n">respond_to?</span> <span class="ss">:to_str</span>
+</span><span class='line'>       <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;The winner&#39;s name must be a String,</span>
+</span><span class='line'><span class="s2">         not a math problem or a list of names or any of that business.&quot;</span>
+</span><span class='line'>     <span class="k">end</span>
+</span><span class='line'>     <span class="vi">@the_winner</span> <span class="o">=</span> <span class="nb">name</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Adding reference column:</h1>
+
+<p>When you are modifying an existing table then references will not work. And actually, it is not really necessary when integer will work just as well.</p>
+
+<p>I&#8217;d say the advantage of using references instead of a plain integer is that the model will be predefined with belongs_to and since the model is already created and will not be affected when you migrate something existing, the purpose is kind of lost.</p>
+
+<p>So I would do like this instead:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rails</span> <span class="n">g</span> <span class="n">migration</span> <span class="n">add_user_id_to_tester</span> <span class="n">user_id</span><span class="ss">:integer</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then manually add belongs_to :user in the Tester model</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-15T17:15:00-07:00" pubdate data-updated="true">Mar 15<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2012
+
+    khakimov
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-31552911-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

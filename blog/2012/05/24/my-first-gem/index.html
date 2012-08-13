@@ -1,0 +1,173 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>My first gem - Doing things</title>
+	<meta name="author" content="khakimov">
+
+	
+	<meta name="description" content="Long time no post here, was a busy month. Learning a lot of stuff about algorithms as I said before and now I know how packers work (like zip, tar &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Doing things" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Doing things</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:khakimov.github.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:khakimov.github.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">My First Gem</h1>
+	<div class="entry-content"><p>Long time no post here, was a busy month. Learning a lot of stuff about algorithms as I said before and now I know how packers work (like zip, tar etc). Will be also good to complete of those algorithms on ruby, like binary tree search and tries, will see.</p>
+
+<p>Btw, doing some stuff with rails now I&#8217;ve relised my first gem. It called <a href="https://github.com/khakimov/id_encoder">id_encoder</a> and this is pretty cool encoder which helps you generating consecutive, predictable URLs. Here is description:</p>
+
+<blockquote><p>Ruby implementation for generating Tiny URL- and bit.ly-like URLs.</p>
+
+<p>A bit-shuffling approach is used to avoid generating consecutive, predictable URLs. However, the algorithm is deterministic and will guarantee that no collisions will occur.</p>
+
+<p>The URL alphabet is fully customizable and may contain any number of characters. By default, digits and lower-case letters are used, with some removed to avoid confusion between characters like o, O and 0. The default alphabet is shuffled and has a prime number of characters to further improve the results of the algorithm.</p>
+
+<p>The block size specifies how many bits will be shuffled. The lower BLOCK_SIZE bits are reversed. Any bits higher than BLOCK_SIZE will remain as is. BLOCK_SIZE of 0 will leave all bits unaffected and the algorithm will simply be converting your integer to a different base.</p>
+
+<p>The intended use is that incrementing, consecutive integers will be used as keys to generate the short URLs. For example, when creating a new URL, the unique integer ID assigned by a database could be used to generate the URL by using this module. Or a simple counter may be used. As long as the same integer is not used twice, the same short URL will not be generated twice.</p>
+
+<p>The module supports both encoding and decoding of URLs. The min_length parameter allows you to pad the URL if you want it to be a specific length.</p></blockquote>
+
+<p>In few words - you can use it with uniq integer of id record from database and convert to symbols:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>IdEncoder::UrlEncoder.encode_url(10) # =&gt; "csqsc"
+</span><span class='line'>IdEncoder::UrlEncoder.decode_url('csqsc') # =&gt; 10</span></code></pre></td></tr></table></div></figure>
+
+
+<p>cool, isn&#8217;t? Epicly awesome part was using &#8220;low&#8221; ruby like OR/AND, Bitwise &lt;&lt;. Looks like you coding asembler or some machine binary language. It&#8217;s remind me childhod, that I was young and trees was so big I did some asembler code (mov ax, bx &#8230; int 21h &#8230;)</p>
+
+<p>So, next big thing is going to be RSpect. I really want to start using tests and start projects from test and only then code. It looks cool when you know what to do with test, but now this is hard to switch from code to test first. Will update my gem with tests soon!</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T16:04:00-07:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/gem/'>gem</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/rubygems/'>rubygems</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2012
+
+    khakimov
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-31552911-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

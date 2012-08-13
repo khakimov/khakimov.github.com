@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: idea | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/idea/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-08-12T17:46:34-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Freedom of information]]></title>
+    <link href="http://khakimov.github.com/blog/2012/04/16/freedom-of-information/"/>
+    <updated>2012-04-16T14:07:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/04/16/freedom-of-information</id>
+    <content type="html"><![CDATA[<p>Today I decided to try EventMachine in action. EventMachine provides a fast, lightweight framework for implementing Ruby programs that can use the network to communicate with other processes. As usual I can't just repeat "hello world" examples, like here is a fully-functional echo server:</p>
+
+<p>``` ruby
+require 'eventmachine'</p>
+
+<p>module EchoServer
+  def post_init</p>
+
+<pre><code>puts "-- someone connected to the echo server!"
+</code></pre>
+
+<p>  end</p>
+
+<p>  def receive_data data</p>
+
+<pre><code>send_data "&gt;&gt;&gt;you sent: #{data}"
+close_connection if data =~ /quit/i
+</code></pre>
+
+<p>  end</p>
+
+<p>  def unbind</p>
+
+<pre><code>puts "-- someone disconnected from the echo server!"
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>EventMachine::run {
+  EventMachine::start_server "127.0.0.1", 8081, EchoServer
+}
+```</p>
+
+<p>I need something to work on, something valuable. I've thought about <a href="http://en.wikipedia.org/wiki/Internet_censorship_in_the_People's_Republic_of_China">censorship in internet</a>, blocking <a href="http://en.wikipedia.org/wiki/Censorship_of_Twitter">twitter</a>, <a href="http://en.wikipedia.org/wiki/Censorship_of_YouTube">youtube</a> and <a href="http://en.wikipedia.org/wiki/Censorship#Internet">other</a> and want to build proxy, something like tor, but just for few websites like twitter, facebook and youtube for example.</p>
+
+<h2>idea</h2>
+
+<p>To build small app on ruby which shoud be easy to install and has two modes. <strong>Aides</strong> (servers) and <strong>victims</strong> (client) mode. Aides will provide a proxy connection, but for security reason only to access to the lists of allowed websites, so nobody will not use it to do some bad things, only victims who are looking for access to twitter/facebook/youtube will able to access and use it.</p>
+
+<p><img src="http://pix.am/y55O.png" alt="test" /></p>
+
+<p>So, people in any country install the server and people can get/update information trough their internet connection if somebody will blocked twitter as example. If direct connection doesn't work, install ruby script and activate victim mode, connect to blocked website through Aides servers.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Put Off Procrastination]]></title>
+    <link href="http://khakimov.github.com/blog/2012/03/16/put-off-procrastination/"/>
+    <updated>2012-03-16T22:07:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/03/16/put-off-procrastination</id>
+    <content type="html"><![CDATA[<p>I've already written about idea with <a href="http://pupsor.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/">blocker</a> and today I really tired of this and in hour wrote the script which allow you to block facebook, gmail, HN and so on with automatic changing statuses in Skype and Adium (DND).</p>
+
+<p>The project called <a href="https://github.com/pupsor/freodom/">Freodom</a>.</p>
+
+<blockquote><p>  Frēodōm is the Old English word for freedom; the state of being free and unconstrained.</p></blockquote>
+
+<p><img src="http://i103.photobucket.com/albums/m151/KiJosh/procrastination.jpg" alt="put
+off" /></p>
+
+<ol>
+<li>Frēodōm blocks:
+  facebook.com,
+  news.ycombinator.com,
+  reddit.com,
+  gmail.com,
+  ...</li>
+<li>Automatically changes status to DND (skype/adium)</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Next idea for hacking with Ruby]]></title>
+    <link href="http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/"/>
+    <updated>2012-03-07T13:54:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby</id>
+    <content type="html"><![CDATA[<p>Right now I'm sitting at public library of Palo Alto because I have reason. This reason is based on my laziness and totally destructions by anything around me, probably correct word which can describe my problem is procrastination, you can read about  <a href="http://youarenotsosmart.com/2010/10/27/procrastination/">Proctastionation here</a>.</p>
+
+<blockquote><p>  Procrastination is an impulse; it’s buying candy at the checkout. Procrastination is also hyperbolic discounting, taking the sure thing in the present over the caliginous prospect some day far away.</p></blockquote>
+
+<p>So, now you can understand why am I sitting in public library, because this is only one place where I can easily focus and concentrate for doing things or learn to code. Only here I never think about one more cup o tea/coffee or lying to the sofa and think about thinking. But still one bad thing happened here and this thing (I've never thought what I'll able to say this) is internet, to be honest I'm talking about "bad" side of internet like any kind of social networks, AIM, Skype and email.</p>
+
+<p>As you can see those things are our impulse with fast feedback; it's buying candy at the checkout or checking facebook's page, email, twitter, response on each message in Skype and Jabber. To finish my long entry I want to be disconnected for the time when I want to concentrate and focus on current task. But how? Even public library has wi-fi spot. To solve this problem I should disconect myself from the internet or filter it without any "easy" turn off solution, if I want to disconnect for 1 hour - I will and nothing can unblock it except reboot.</p>
+
+<p><img src="http://thejesuswave.files.wordpress.com/2009/03/concentration.gif" alt="Concentrate with Ruby" /></p>
+
+<p>I've seen few apps with same idea, like <a href="http://macfreedom.com/">Freedom</a> that disconect network for a certain time (like have a freedom for 1 hour or 2 hours ;). It costs $10 and works well, but I want to count how many hours I was disconected, maybe try to count how many requests I did to facebook, twitter and how addicted am I and so on.</p>
+
+<p>Few ideas how to do it on mac:</p>
+
+<blockquote><ul>
+<li> /etc/hosts</li>
+<li> ipfw</li>
+<li> just shutdown network interface</li>
+</ul>
+</blockquote>
+
+<p>to be continue...</p>
+]]></content>
+  </entry>
+  
+</feed>
