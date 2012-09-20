@@ -4,7 +4,7 @@
   <title><![CDATA[Category: applescript | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/applescript/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-08-13T17:08:34-07:00</updated>
+  <updated>2012-09-20T10:21:04-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -40,7 +40,7 @@ set callAttemptsCounter to 1</p>
 <p>end repeat
 ```</p>
 
-<p>in terminal then <strong>osascript scriptname</strong> and BOOM! 100 calls every 90 secs. Nothing interesting, but applescript has hidden value.</p>
+<p>in terminal then <strong>osascript scriptname</strong> and BOOM! 100 calls every 90 secs. Nothing interesting, but applescript has hidden value. Stay tuned!</p>
 ]]></content>
   </entry>
   

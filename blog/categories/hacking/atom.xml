@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hacking | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/hacking/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-08-13T17:08:48-07:00</updated>
+  <updated>2012-09-20T10:21:04-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -39,8 +39,6 @@ X-RateLimit-Remaining: 978
 </code></p>
 
 <p>Never've seen this before :lame, but as tip - if you are building API and want to limit requests check this link <a href="http://www.ruby-forum.com/topic/201555">http://www.ruby-forum.com/topic/201555</a>, from flip side you can use it as a counter.</p>
-
-<p>http://www2.portal.wifiwind.com:80/authsrv/login/?gw_address=172.19.245.1&amp;gw_port=2060&amp;gw_id=91ab53ff-b156-4ac4-97ac-95f1e9a70658&amp;url=http%3A//www.apple.com/library/test/success.html</p>
 ]]></content>
   </entry>
   
