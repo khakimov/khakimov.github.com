@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="What are some ways to live a simple lifestyle? All this being said, enjoy yourself. Live simply to allow yourself more time and energy to actually &hellip;">
+	<meta name="description" content="Was an interesting quest to build this thing. At the end I&#8217;ve almost gave up about even test drive it and couple weeks it just waited till my &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,46 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/10/02/weekends-project-quadrocopter-v1-dot-0/">Weekends Project: Quadrocopter v1.0</a></h1>
+	<div class="entry-content">
+		<p>Was an interesting quest to build this thing. At the end I&#8217;ve almost gave up about even test drive it and couple weeks it just waited till my friend asked to try outside, because I&#8217;ve tried to test it at home and it wasn&#8217;t good idea (no pilot expirience, didn&#8217;t know how to controls work and tried to start with perfect vertical lift-off and of course it didn&#8217;t work and I thought something wrong with my hands/software/engines/controllers). <em>An old story, we are afraid to fail at something, so it was really easy to give up than just once test it outside.</em></p>
+
+<p>Anyway, I did it and it flies perfectly. Time to improve pilot/control skills and later will upgrade it with camera and maybe with 3d glasses.</p>
+
+<iframe width="640" height="360" src="http://www.youtube.com/embed/1ws0lYtuihc?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-02T12:03:00-07:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hack/'>hack</a>, <a class='category' href='/blog/categories/palo-alto/'>palo alto</a>, <a class='category' href='/blog/categories/quadrocopter/'>quadrocopter</a>, <a class='category' href='/blog/categories/weekend/'>weekend</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -720,132 +760,6 @@ form that can help us improve the safety and reliability of your code.</li>
 
 
 	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/programming/'>programming</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/07/14/c-pointers-the-hard-way/">C Pointers the Hard Way</a></h1>
-	<div class="entry-content">
-		<p>Couple weeks ago read on stackoverflow question &#8221;<a href="http://stackoverflow.com/questions/4025768/what-do-people-find-difficult-about-c-pointers">What do people find difficult about C pointers?</a>&#8221; and I found interesting answers here. One of them is:</p>
-
-<p>  <strong>Many programmers today don&#8217;t know how their machine works, just as most people who know how to drive a car don&#8217;t know anything about the engine.</strong></p>
-
-<p>I think main idea to understand how pointers work is doing some code and then debug it where you can see step by step operations with memory and can play with many variations. So, it&#8217;s easy to say like read this and this and then you will understand how pointers work. In my case AHA-moment with pointers was when I found in gdb commands <strong>print</strong> (Print value of expression EXP) and <strong>x</strong> (Examine memory: x/FMT ADDRESS).</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>gcc -g -Wall -Werror -O0 -std=c99 -o test test.o -lm</strong></p>
-
-<p>and then <strong>gdb ./test</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="k">break</span> <span class="n">main</span>
-</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span> <span class="n">at</span> <span class="mh">0x100000ee4</span><span class="o">:</span> <span class="n">file</span> <span class="n">test</span><span class="p">.</span><span class="n">c</span><span class="p">,</span> <span class="n">line</span> <span class="mf">5.</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">run</span>
-</span><span class='line'><span class="n">Starting</span> <span class="n">program</span><span class="o">:</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">khakimov</span><span class="o">/</span><span class="n">Projects</span><span class="o">/</span><span class="n">current</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">cs107</span><span class="o">/</span><span class="n">lec07</span><span class="o">/</span><span class="n">test</span>
-</span><span class='line'><span class="n">Reading</span> <span class="n">symbols</span> <span class="k">for</span> <span class="n">shared</span> <span class="n">libraries</span> <span class="o">+</span><span class="p">........................</span> <span class="n">done</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span><span class="p">,</span> <span class="n">main</span> <span class="p">()</span> <span class="n">at</span> <span class="n">test</span><span class="p">.</span><span class="n">c</span><span class="o">:</span><span class="mi">5</span>
-</span><span class='line'><span class="mi">5</span>         <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">step</span>
-</span><span class='line'><span class="mi">7</span>         <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">print</span> <span class="n">i</span>
-</span><span class='line'><span class="err">$</span><span class="mi">1</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">p</span> <span class="o">&amp;</span><span class="n">i</span>
-</span><span class='line'><span class="err">$</span><span class="mi">2</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="mh">0x7fff5fbfef94</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">print</span> <span class="n">p</span>
-</span><span class='line'><span class="err">$</span><span class="mi">4</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="mh">0x7fff5fbfef94</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">p</span> <span class="o">*</span><span class="n">p</span>
-</span><span class='line'><span class="err">$</span><span class="mi">5</span> <span class="o">=</span> <span class="mi">10</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>then try to use x to examine memory:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="n">p</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef94</span><span class="o">:</span> <span class="mo">00001010</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="o">&amp;</span><span class="n">i</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef94</span><span class="o">:</span> <span class="mo">00001010</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="o">*&amp;</span><span class="n">p</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef94</span><span class="o">:</span> <span class="mo">00001010</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="o">&amp;</span><span class="n">p</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef88</span><span class="o">:</span> <span class="mi">10010100</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So, my suggestion is read for sure K&amp;R about pointers then open your editor, compile some code and then play with gdb till you will clear understand how and why it works. Good luck!</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-14T12:57:00-07:00" pubdate data-updated="true">Jul 14<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/pointers/'>pointers</a>, <a class='category' href='/blog/categories/programming/'>programming</a>
 
 
 </div>

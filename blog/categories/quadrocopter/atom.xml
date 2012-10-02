@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: quadrocopter | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/quadrocopter/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-10-02T12:13:03-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Weekends project: Quadrocopter v1.0]]></title>
+    <link href="http://khakimov.github.com/blog/2012/10/02/weekends-project-quadrocopter-v1-dot-0/"/>
+    <updated>2012-10-02T12:03:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/10/02/weekends-project-quadrocopter-v1-dot-0</id>
+    <content type="html"><![CDATA[<p>Was an interesting quest to build this thing. At the end I've almost gave up about even test drive it and couple weeks it just waited till my friend asked to try outside, because I've tried to test it at home and it wasn't good idea (no pilot expirience, didn't know how to controls work and tried to start with perfect vertical lift-off and of course it didn't work and I thought something wrong with my hands/software/engines/controllers). <em>An old story, we are afraid to fail at something, so it was really easy to give up than just once test it outside.</em></p>
+
+<p>Anyway, I did it and it flies perfectly. Time to improve pilot/control skills and later will upgrade it with camera and maybe with 3d glasses.</p>
+
+<iframe width="640" height="360" src="http://www.youtube.com/embed/1ws0lYtuihc?rel=0" frameborder="0" allowfullscreen></iframe>
+
+]]></content>
+  </entry>
+  
+</feed>
