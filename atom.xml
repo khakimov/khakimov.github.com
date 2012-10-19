@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-10-06T19:59:50-07:00</updated>
+  <updated>2012-10-18T22:27:54-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,449 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C Posix Threads boot camp]]></title>
+    <link href="http://khakimov.github.com/blog/2012/10/18/c-posix-threads-boot-camp/"/>
+    <updated>2012-10-18T19:03:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/10/18/c-posix-threads-boot-camp</id>
+    <content type="html"><![CDATA[<p>The White Rabbit put on his spectacles,
+&#8220;Where shall I begin, please your Majesty?&#8221; he asked.
+&#8220;Begin at the beginning,&#8221; the King said, very gravely,
+&#8220;and go on till you come to the end: then stop.&#8221;</p>
+
+<p>Lewis Carroll, Alice&#8217;s Adventures in Wonderland</p>
+
+<p>This is post about threads and the reason why I&#8217;m writing this because I want to know more and more about thread, but before that I have to repeat and refresh everything about this huge topic. I saw funny qoute about the process of learning and doing concurrency code</p>
+
+<p>&#8220;i don&#8217;t know threads!,&#8221; then &#8220;I got it! I know how it works!,&#8221; then &#8220;I don&#8217;t know threads!&#8221; and so on.</p>
+
+<p>So, I&#8217;m going to use here the threads model that is called POSIX threads or Pthreads. Brief story you can read on wikipedia (http://en.wikipedia.org/wiki/POSIX_Threads)[here.] The main thing that its available on many Unix-like OS, and if you are using mac or linux I&#8217;m sure you have file name pthread.h in your libraries directory. The best to start is write &#8220;Hello World&#8221; with threads.</p>
+
+<pre><code>  Master Thread
+        |
+        |        create workers with pthread_create()
+        |
+      // \\      workers start up
+     / | | \
+     | | | |
+     | | | |     workers do their jobs (thread routine)
+     | | | |
+     \ \ / /
+      \\ //      workers terminate
+        |
+        |        join workers with pthread_join()
+        |
+  Master Thread
+</code></pre>
+
+<figure class='code'><figcaption><span>hello.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">/* posix thread */</span>
+</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="cm">/* </span>
+</span><span class='line'><span class="cm">   local variable which will be used to store the thread ID of</span>
+</span><span class='line'><span class="cm">   the peer thread</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="cm">/* </span>
+</span><span class='line'><span class="cm">   pthread_create function creates a new thread (obvious)</span>
+</span><span class='line'><span class="cm">   and runs the thread_routine in the context of the new thread</span>
+</span><span class='line'><span class="cm">   with an input arg NULL (just after thread_routine). In our case</span>
+</span><span class='line'><span class="cm">   we just run thread_routine without any argument. </span>
+</span><span class='line'><span class="cm">   when the call to pthread_create returns - tid contains the ID</span>
+</span><span class='line'><span class="cm">   the new thread</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="cm">/*</span>
+</span><span class='line'><span class="cm">   the main thread waits for the peer thread to terminate with</span>
+</span><span class='line'><span class="cm">   the call pthread_join.</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello world!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>compile and run</p>
+
+<p>○ gcc hello.c -o hello &amp;&amp; ./hello
+Hello world!</p>
+
+<p>Let&#8217;s play a little bit with pthreads, you will see this is much easier than it looks like now.</p>
+
+<figure class='code'><figcaption><span>hello2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
+</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[1] I&#39;ve create a thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[2] pthread_join and wait till its finish his job</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[6] Thread %ld terminated. Now in main!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[7] Time to clean up and exit. Bye!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">dot</span> <span class="o">=</span> <span class="sc">&#39;.&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[3] I&#39;m inside the thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">pthread_self</span><span class="p">());</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[4] Hello world! I&#39;m working...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">%d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[5] Done! Returning to the main thread!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>○ gcc hello2.c -o hello2 &amp;&amp; ./hello2</p>
+
+<figure class='code'><figcaption><span>hello2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">ve</span> <span class="n">create</span> <span class="n">a</span> <span class="kr">thread</span> <span class="mi">4513894400</span>
+</span><span class='line'>  <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">m</span> <span class="n">inside</span> <span class="n">the</span> <span class="kr">thread</span> <span class="mi">4513894400</span>
+</span><span class='line'><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">pthread_join</span> <span class="n">and</span> <span class="n">wait</span> <span class="n">till</span> <span class="n">its</span> <span class="n">finish</span> <span class="n">his</span> <span class="n">job</span>
+</span><span class='line'>  <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="n">Hello</span> <span class="n">world</span><span class="o">!</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">m</span> <span class="n">working</span><span class="p">...</span>
+</span><span class='line'>  <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="n">Done</span><span class="o">!</span> <span class="n">Returning</span> <span class="n">to</span> <span class="n">the</span> <span class="n">main</span> <span class="kr">thread</span><span class="o">!</span>
+</span><span class='line'><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="n">Thread</span> <span class="mi">4513894400</span> <span class="n">terminated</span><span class="p">.</span> <span class="n">Now</span> <span class="n">in</span> <span class="n">main</span><span class="o">!</span>
+</span><span class='line'><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="n">Time</span> <span class="n">to</span> <span class="n">clean</span> <span class="n">up</span> <span class="n">and</span> <span class="n">exit</span><span class="p">.</span> <span class="n">Bye</span><span class="o">!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;ve added while loop into thread_routine function to show how pthread_join works (waits for thread termination). Notice that the pthread_join function can only wait for a specific thread to terminate. Let&#8217;s try to make 5 thread and see how it works:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define NUM_THREADS 5</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">[</span><span class="n">NUM_THREADS</span><span class="p">];</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][1] I&#39;ve create a thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][2] pthread_join and wait till its finish his job</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][6] Thread %ld terminated!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[7] Time to clean up and exit. Bye!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">threadNum</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">dot</span> <span class="o">=</span> <span class="sc">&#39;.&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[t %d]</span><span class="se">\t</span><span class="s">[3] I&#39;m inside the thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">pthread_self</span><span class="p">());</span>
+</span><span class='line'>    <span class="c1">// printf(&quot;\t[4] Hello world! I&#39;m working...\n&quot;);</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\v</span><span class="s">%*d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="o">*</span><span class="mi">15</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[t %d][5] Done! Returning to the main thread!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Looks like matrix in my terminal.</p>
+
+<p><img src="http://pix.am/urR5.png" alt="" /></p>
+
+<p>Before we start talking about <strong>detaching thread</strong>, you can play with this code and threads, if you don&#8217;t understand something try to change code and see how it will work. In my case was a problem with pthread_join, but after couple examples I&#8217;ve realized how it works and moved on.</p>
+
+<p>By default, threads created joinable and joinable thread can be reaped and killed by other threads. On other case, detached thread cannot be reaped or killed by other threads. Its memory resources are freed automatically by the system when it terminates. To &#8220;detach&#8221; the thread we have to use <strong>pthread_detach</strong> function.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;strings.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#include &lt;sys/socket.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;arpa/inet.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="n">open_listenfd</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="o">*</span><span class="n">connfd_p</span><span class="p">,</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientlen</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">clientaddr</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">port</span> <span class="o">=</span> <span class="mi">1337</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">listenfd</span> <span class="o">=</span> <span class="n">open_listenfd</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">connfd_p</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+</span><span class='line'>        <span class="o">*</span><span class="n">connfd_p</span> <span class="o">=</span> <span class="n">accept</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">clientaddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">clientlen</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="n">connfd_p</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span>
+</span><span class='line'><span class="nf">open_listenfd</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">optval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">serveraddr</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">listenfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">optval</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">bzero</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">serveraddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">serveraddr</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">INADDR_ANY</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span> <span class="n">port</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">serveraddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">serveraddr</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">listen</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">4</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">listenfd</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span><span class="o">*</span>
+</span><span class='line'><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">connfd</span> <span class="o">=</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">pthread_detach</span><span class="p">(</span><span class="n">pthread_self</span><span class="p">());</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;New incoming connection...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Done! Close connection!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">close</span><span class="p">(</span><span class="n">connfd</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>huh, tired a little bit, was a C maraphone for couple hours. Here is example of server which waiting connections on tcp port 1337, if somebody connected - creates new thread and start doing his job. I&#8217;ll comment this code in the next post, but it works very well and now you can build your&#8217;s version of web server.</p>
+
+<p>Soon I&#8217;ll write about sharing variables between threads, using mutexes and how to avoid dead locks.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Quadrocopter in the wild]]></title>
@@ -1852,616 +2295,6 @@ morning page has title, body, created and updated time.</p>
 <li><a href="http://en.wikipedia.org/wiki/Binary_search_algorithm">Binary search algorithm</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[EventMachine. Day 5]]></title>
-    <link href="http://khakimov.github.com/blog/2012/04/25/eventmachine-day-5/"/>
-    <updated>2012-04-25T13:59:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/04/25/eventmachine-day-5</id>
-    <content type="html"><![CDATA[<p>Day 5 and I hope today I&#8217;m going solve this quest with EventMachine. The main idea I&#8217;ve got from this - never give up, don’t give up on becoming a programmer.</p>
-
-<p>Yesterday I had a conversation on IRC with <a href="http://github.com/raggi">raggi</a> (today I realized that he is a one of the main EventMachine contributor ;)</p>
-
-<figure class='code'><figcaption><span>&#8220;freenode.net irc #eventmachine channel&#8221;</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">58</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">you</span><span class="err">&#39;</span><span class="n">ll</span> <span class="n">get</span> <span class="o">**</span><span class="n">blocked</span> <span class="n">by</span> <span class="n">domain</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">which</span> <span class="n">will</span> <span class="n">slow</span> <span class="n">down</span> <span class="n">connect</span> <span class="n">rate</span><span class="o">**</span>
-</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">11</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="ow">and</span> <span class="n">many</span> <span class="n">servers</span> <span class="n">will</span> <span class="n">also</span> <span class="n">limit</span> <span class="n">a</span> <span class="n">single</span> <span class="n">ip</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">a</span> <span class="n">max</span> <span class="n">number</span> <span class="n">of</span> <span class="n">times</span>
-</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">21</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">so</span> <span class="n">there</span> <span class="n">are</span> <span class="n">a</span> <span class="n">bunch</span> <span class="n">of</span> <span class="n">potential</span> <span class="n">reasons</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">19</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">em</span><span class="o">-</span><span class="n">http</span><span class="o">-</span><span class="n">request</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">very</span> <span class="n">good</span> <span class="k">for</span> <span class="n">crawling</span>
-</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">32</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">i</span> <span class="n">wrote</span> <span class="n">a</span> <span class="n">commercial</span> <span class="n">crawler</span> <span class="n">on</span> <span class="n">top</span> <span class="n">of</span> <span class="n">it</span><span class="p">,</span> <span class="ow">and</span> <span class="n">had</span> <span class="n">to</span> <span class="n">hack</span> <span class="n">out</span> <span class="n">a</span> <span class="n">lot</span> <span class="n">of</span> <span class="n">shit</span> <span class="n">to</span> <span class="n">make</span> <span class="n">it</span> <span class="n">move</span>
-</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">41</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">it</span> <span class="n">will</span> <span class="n">now</span> <span class="n">fill</span> <span class="n">a</span> <span class="mi">100</span><span class="n">mb</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">though</span>
-</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">17</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">lots</span> <span class="n">of</span> <span class="n">other</span> <span class="n">standard</span> <span class="n">crawler</span> <span class="n">tricks</span> <span class="n">though</span><span class="p">,</span> <span class="n">dynamic</span> <span class="n">resource</span> <span class="n">reallocation</span><span class="p">,</span> <span class="n">dns</span> <span class="n">rotation</span> <span class="n">tracking</span><span class="p">,</span> <span class="n">etc</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>BOOM! Blocked by DNS! BOOM twice! That&#8217;s why I got a problem when using domains names and didn&#8217;t have any problems with direct ip request. I wrote this script and just tested with dns request:</p>
-
-<figure class='code'><figcaption><span>dns.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;100k.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
-</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">gets</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">strip</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">count_connection</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'><span class="n">urls_size</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">size</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">connect</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">current_connection</span> <span class="o">&lt;</span> <span class="mi">200</span>
-</span><span class='line'>      <span class="n">domain</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">pop</span>
-</span><span class='line'>      <span class="n">dns</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resolver</span><span class="o">.</span><span class="n">resolve</span> <span class="n">domain</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">current_connection</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">current_connection</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">count_connection</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>      <span class="n">current_connection</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">count_connection</span> <span class="o">&gt;</span> <span class="n">urls_size</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>    <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="n">count_connection</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>  <span class="n">stats</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;total: </span><span class="si">#{</span><span class="n">count_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures&quot;</span>
-</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">5</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">5</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
-</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">p</span> <span class="s2">&quot;Total </span><span class="si">#{</span><span class="n">count_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures in </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<figure class='code'><figcaption><span>puts every 5 seconds with stats</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="err">○</span> <span class="n">ruby</span> <span class="n">client3</span><span class="o">.</span><span class="n">rb</span>
-</span><span class='line'><span class="s2">&quot;total: 2062, 1768 successful, 93 failures&quot;</span>
-</span><span class='line'><span class="s2">&quot;total: 3193, 2835 successful, 157 failures&quot;</span>
-</span><span class='line'><span class="s2">&quot;total: 4040, 3621 successful, 218 failures&quot;</span>
-</span><span class='line'><span class="s2">&quot;total: 5165, 4698 successful, 266 failures&quot;</span>
-</span><span class='line'><span class="s2">&quot;total: 6010, 5502 successful, 307 failures&quot;</span>
-</span><span class='line'><span class="s2">&quot;total: 7123, 6557 successful, 365 failures&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>&#8220;Total 100001, 94569 successful, 5231 failures in 494.766191s&#8221; if I just use EM::Interator.new it will be faster, but much more failures, because probably dns servers reject many connection from the same IP address, I&#8217;m not sure, but it sounds logical (otherwise we can run this script from 100 boxes with 10k connection in the same time and dns should be response to 1mln request, it&#8217;s kind of ddos, isn&#8217;t). Btw about ddos, yesterday when I tested server/client I didn&#8217;t use any limitation and today got this <em>the node PM14 is being rebooted just now. A ddos attack caused a kernel panic on the network stack.</em> =)</p>
-
-<p>/sleep/</p>
-
-<p>Good morning, yesterday I went to sleep with a smile on my face. Yes, I did it, I got shit out of my connection, but after workout didn&#8217;t have strength to finish this post. This morning I started with <a href="http://en.wikipedia.org/wiki/Monkey_patch">monkey patching</a> because EventMachine Resolver returns only addrs (ips), but I also needed hostnames. This is my first monkey patch I&#8217;ve done. Original  <a href="https://github.com/eventmachine/eventmachine/blob/master/lib/em/resolver.rb">code</a>:</p>
-
-<figure class='code'><figcaption><span>monkey patch</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">EventMachine</span>
-</span><span class='line'>  <span class="k">module</span> <span class="nn">DNS</span>
-</span><span class='line'>    <span class="k">class</span> <span class="nc">Request</span>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
-</span><span class='line'>        <span class="vi">@socket</span> <span class="o">=</span> <span class="n">socket</span>
-</span><span class='line'>        <span class="vi">@hostname</span> <span class="o">=</span> <span class="n">hostname</span>
-</span><span class='line'>        <span class="vi">@tries</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>        <span class="vi">@last_send</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="vi">@retry_interval</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'>        <span class="vi">@max_tries</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span> <span class="o">=</span> <span class="no">Resolver</span><span class="o">.</span><span class="n">hosts</span><span class="o">[</span><span class="n">hostname</span><span class="o">]</span>
-</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span> <span class="c1"># just added this string</span>
-</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>                                  <span class="c1"># to return hash</span>
-</span><span class='line'>        <span class="k">else</span>
-</span><span class='line'>          <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span> <span class="p">{</span> <span class="n">tick</span> <span class="p">}</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">receive_answer</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">addrs</span> <span class="o">=</span> <span class="o">[]</span>
-</span><span class='line'>        <span class="n">msg</span><span class="o">.</span><span class="n">each_answer</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="p">,</span><span class="n">ttl</span><span class="p">,</span><span class="n">data</span><span class="o">|</span>
-</span><span class='line'>          <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="n">A</span><span class="p">)</span> <span class="o">||</span>
-</span><span class='line'>              <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="no">AAAA</span><span class="p">)</span>
-</span><span class='line'>            <span class="n">addrs</span> <span class="o">&lt;&lt;</span> <span class="n">data</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">to_s</span>
-</span><span class='line'>          <span class="k">end</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span><span class="o">.</span><span class="n">empty?</span>
-</span><span class='line'>          <span class="nb">fail</span> <span class="s2">&quot;rcode=</span><span class="si">#{</span><span class="n">msg</span><span class="o">.</span><span class="n">rcode</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>        <span class="k">else</span>
-</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span> <span class="c1"># same thing</span>
-</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Btw, two things I&#8217;ve realized. I have to repeat fundamental about <a href="http://www.ruby-doc.org/core-1.9.3/Hash.html">Hash</a> and <a href="http://www.ruby-doc.org/core-1.9.3/Regexp.html">Regexp</a>.</p>
-
-<p>I got this result and you probably think I&#8217;m happy now. No, not at all. Now count_connection based on DNS requests, when I need count_connection for HTTP connection. To solve it I have to communicate with class Client and count connection there.</p>
-
-<p><img src="http://pix.am/PfIT.png" alt="eventmachine in action" /></p>
-
-<p>As we know class variables is shared among all objects of a class, if you forget - class variables start with two &#8220;at&#8221; signs, such as @@connections. So if we want to count how many current connection, we have to use class variables, something like this:</p>
-
-<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Client</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="vc">@@connections</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">add</span>
-</span><span class='line'>    <span class="vc">@@connections</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">connections</span>
-</span><span class='line'>    <span class="vc">@@connections</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="mi">10</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">add</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">p</span> <span class="no">Client</span><span class="o">.</span><span class="n">connections</span> <span class="c1"># =&gt; 10</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The next thing we have to parse the answers from the website. I&#8217;m looking for header and information about Server. Regular expressions always were pain in ass for me that&#8217;s why I&#8217;m sitting right now with a book &#8220;Progmatic Programmer&#8217;s Guide&#8221; on the page number 76 and reading about Object-Oriented Regular Expressions.</p>
-
-<p>In out class Client we receive and process data in method <strong>receive_data</strong>, here we can write our regexp which will find information that we are looking for:</p>
-
-<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
-</span><span class='line'>  <span class="n">data</span> <span class="o">=~</span> <span class="sr">/Server: ([^\n$]*)$/</span>
-</span><span class='line'>  <span class="n">server_name</span> <span class="o">=</span> <span class="vg">$1</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">close_connection_after_writing</span>
-</span><span class='line'>  <span class="vc">@@connections</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>As I read today this <a href="http://japhr.blogspot.com/2012/04/366-or-how-i-tricked-myself-into-being.html">post</a> the author says</p>
-
-<blockquote><p>I knew nothing about them before I started writing them.</p></blockquote>
-
-<p>Let&#8217;s just write a little bit about regexp by my words and hope it will help me and you to undersand better how it works. This is all my thoughts and I maybe wrong, let me know if I&#8217;m wrong with any definition. Regular expression (regexp) are used to find patterns in a string. Few ways to create regexp:</p>
-
-<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">test_regexp</span> <span class="o">=</span> <span class="no">Regexp</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;^\w+&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="sr">/^\w+/</span>
-</span><span class='line'><span class="n">test_regexp2</span> <span class="o">=</span> <span class="sr">/^w+/</span>             <span class="o">-&gt;</span> <span class="sr">/^\w+/</span>
-</span><span class='line'><span class="n">test_regexp3</span> <span class="o">=</span> <span class="sr">%r{^\w+}</span>          <span class="o">-&gt;</span> <span class="sr">/^\w+/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Probably that was not a good idea to explaine how regexp works, but in few words you have to remember this table:</p>
-
-<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">\</span><span class="n">d</span>      <span class="o">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="o">]</span>                   <span class="no">Digit</span> <span class="n">character</span>
-</span><span class='line'><span class="p">\</span><span class="n">D</span>      <span class="o">[^</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="o">]</span>                  <span class="no">Any</span> <span class="n">character</span> <span class="n">except</span> <span class="n">a</span> <span class="n">digit</span>
-</span><span class='line'><span class="p">\</span><span class="n">s</span>      <span class="o">[</span><span class="p">\</span><span class="n">s</span><span class="p">\</span><span class="n">t</span><span class="p">\</span><span class="n">r</span><span class="p">\</span><span class="n">n</span><span class="p">\</span><span class="n">f</span><span class="o">]</span>            <span class="no">Whitespace</span> <span class="n">character</span>
-</span><span class='line'><span class="p">\</span><span class="n">S</span>      <span class="o">[^</span><span class="p">\</span><span class="n">s</span><span class="p">\</span><span class="n">t</span><span class="p">\</span><span class="n">r</span><span class="p">\</span><span class="n">n</span><span class="p">\</span><span class="n">f</span><span class="o">]</span>           <span class="no">Any</span> <span class="n">except</span> <span class="n">whitespace</span>
-</span><span class='line'><span class="p">\</span><span class="n">w</span>      <span class="o">[</span><span class="n">A</span><span class="o">-</span><span class="no">Za</span><span class="o">-</span><span class="n">z0</span><span class="o">-</span><span class="mi">9</span><span class="n">_</span><span class="o">]</span>            <span class="no">Word</span> <span class="n">character</span>
-</span><span class='line'><span class="p">\</span><span class="n">W</span>      <span class="o">[^</span><span class="n">A</span><span class="o">-</span><span class="no">Za</span><span class="o">-</span><span class="n">z0</span><span class="o">-</span><span class="mi">9</span><span class="n">_</span><span class="o">]</span>           <span class="no">Any</span> <span class="n">except</span> <span class="n">a</span> <span class="n">word</span> <span class="n">character</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>How to use?</p>
-
-<figure class='code'><figcaption><span>regexp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">re</span> <span class="o">=</span> <span class="sr">/(\d+):(\d+)/</span>                      <span class="c1"># match time hh:mm \d means any digit character. + means match one or more</span>
-</span><span class='line'><span class="n">time</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;Time is: 11:22am&quot;</span><span class="p">)</span>     <span class="c1"># time now is MatchData</span>
-</span><span class='line'><span class="n">time</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>                                 <span class="c1"># =&gt; &quot;11:22&quot;</span>
-</span><span class='line'><span class="n">time</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>                                 <span class="c1"># =&gt; &quot;11&quot;</span>
-</span><span class='line'><span class="n">time</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span>                                 <span class="c1"># =&gt; &quot;22&quot;</span>
-</span><span class='line'><span class="n">time</span><span class="o">.</span><span class="n">pre_match</span>                          <span class="c1"># =&gt; &quot;Time is: &quot;</span>
-</span><span class='line'><span class="n">time</span><span class="o">.</span><span class="n">post_match</span>                         <span class="c1"># =&gt; &quot;am&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>For example we have header like this</p>
-
-<p>HTTP/1.1 200 OK
-Content-Type: text/html;charset=utf-8
-Last-Modified: Fri, 27 Apr 2012 00:39:33 GMT
-Content-Length: 141332
-Server: WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)
-Date: Fri, 27 Apr 2012 00:41:48 GMT
-Connection: Keep-Alive</p>
-
-<p>and we need to get only name of the server. It&#8217;s easy <strong>header =~ /Server: ([<sup>\n$]*)$/**</sup> and </strong>$1<strong> will show </strong>&#8220;WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)&#8221;**. Version 1.0 here, just does 1 mln request to <a href="http://s3.amazonaws.com/alexa-static/top-1m.csv.zip">1 mln websites</a> and gets Server names, uhh:</p>
-
-<figure class='code'><figcaption><span>regexp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="s2">&quot;Apache/2.2.11 (Unix) DAV/2&quot;</span>
-</span><span class='line'><span class="s2">&quot;Apache&quot;</span>
-</span><span class='line'><span class="s2">&quot;nginx/1.0.2&quot;</span>
-</span><span class='line'><span class="s2">&quot;nginx/0.7.69&quot;</span>
-</span><span class='line'><span class="s2">&quot;Microsoft-IIS/6.0&quot;</span>
-</span><span class='line'><span class="s2">&quot;Microsoft-IIS/6.0&quot;</span>
-</span><span class='line'><span class="s2">&quot;current connection: 15, total: 1000, 968        successful, 31 failures, 161 domains/sec&quot;</span>
-</span><span class='line'><span class="s2">&quot;Total 1000, 968 successful, 32 failures in 7.456237s&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ruby code here (I&#8217;ve removed @@class instance, because EM::connection_count() is enough):</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">module</span> <span class="nn">EventMachine</span>
-</span><span class='line'>  <span class="k">module</span> <span class="nn">DNS</span>
-</span><span class='line'>    <span class="k">class</span> <span class="nc">Request</span>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
-</span><span class='line'>        <span class="vi">@socket</span> <span class="o">=</span> <span class="n">socket</span>
-</span><span class='line'>        <span class="vi">@hostname</span> <span class="o">=</span> <span class="n">hostname</span>
-</span><span class='line'>        <span class="vi">@tries</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>        <span class="vi">@last_send</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="vi">@retry_interval</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'>        <span class="vi">@max_tries</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span> <span class="o">=</span> <span class="no">Resolver</span><span class="o">.</span><span class="n">hosts</span><span class="o">[</span><span class="n">hostname</span><span class="o">]</span>
-</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span>
-</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>
-</span><span class='line'>        <span class="k">else</span>
-</span><span class='line'>          <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span> <span class="p">{</span> <span class="n">tick</span> <span class="p">}</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">receive_answer</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">addrs</span> <span class="o">=</span> <span class="o">[]</span>
-</span><span class='line'>        <span class="n">msg</span><span class="o">.</span><span class="n">each_answer</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="p">,</span><span class="n">ttl</span><span class="p">,</span><span class="n">data</span><span class="o">|</span>
-</span><span class='line'>          <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="n">A</span><span class="p">)</span> <span class="o">||</span>
-</span><span class='line'>              <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="no">AAAA</span><span class="p">)</span>
-</span><span class='line'>            <span class="n">addrs</span> <span class="o">&lt;&lt;</span> <span class="n">data</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">to_s</span>
-</span><span class='line'>          <span class="k">end</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span><span class="o">.</span><span class="n">empty?</span>
-</span><span class='line'>          <span class="nb">fail</span> <span class="s2">&quot;rcode=</span><span class="si">#{</span><span class="n">msg</span><span class="o">.</span><span class="n">rcode</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="vi">@hostname</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>        <span class="k">else</span>
-</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span>
-</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;100k.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
-</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">gets</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">strip</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">Client</span> <span class="o">&lt;</span> <span class="no">EM</span><span class="o">::</span><span class="no">Connection</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span> <span class="n">domain</span>
-</span><span class='line'>    <span class="vi">@domain</span> <span class="o">=</span> <span class="n">domain</span>
-</span><span class='line'>    <span class="n">comm_inactivity_timeout</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'>    <span class="n">pending_connect_timeout</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">post_init</span>
-</span><span class='line'>    <span class="n">send_data</span> <span class="s2">&quot;GET / HTTP/1.1</span><span class="se">\r\n</span><span class="s2">Host: </span><span class="si">#{</span><span class="vi">@domain</span><span class="si">}</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
-</span><span class='line'>    <span class="n">data</span> <span class="o">=~</span> <span class="sr">/Server: ([^\r\n]*)/</span>
-</span><span class='line'>    <span class="nb">p</span> <span class="vg">$1</span>
-</span><span class='line'>    <span class="n">close_connection</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">total_connection</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'><span class="n">urls_size</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">size</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">connect</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">300</span>
-</span><span class='line'>      <span class="n">url</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">pop</span>
-</span><span class='line'>      <span class="n">dns</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resolver</span><span class="o">.</span><span class="n">resolve</span> <span class="n">url</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span><span class="o">|</span><span class="n">data</span><span class="o">|</span>
-</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">connect</span> <span class="n">data</span><span class="o">[</span><span class="s2">&quot;ips&quot;</span><span class="o">][</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="no">Client</span><span class="p">,</span> <span class="n">data</span><span class="o">[</span><span class="s2">&quot;domain&quot;</span><span class="o">]</span> <span class="k">unless</span> <span class="n">data</span><span class="o">[</span><span class="s2">&quot;ips&quot;</span><span class="o">][</span><span class="mi">0</span><span class="o">].</span><span class="n">nil?</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">total_connection</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">total_connection</span> <span class="o">&lt;</span> <span class="n">urls_size</span>
-</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mo">002</span><span class="p">)</span> <span class="p">{</span> <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">else</span>
-</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span><span class="no">EM</span><span class="o">.</span><span class="n">stop</span><span class="p">}</span>   <span class="c1"># 5 seconds timer to lets finish slow connections</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># print stats with progress every 3 seconds</span>
-</span><span class='line'>  <span class="n">stats</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;current connection: </span><span class="si">#{</span><span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span><span class="si">}</span><span class="s2">, total: </span><span class="si">#{</span><span class="n">total_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2">\</span>
-</span><span class='line'><span class="s2">        successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures, </span><span class="si">#{</span> <span class="p">(</span><span class="n">successes</span> <span class="o">/</span> <span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span> <span class="o">-</span> <span class="n">t1</span><span class="p">))</span><span class="o">.</span><span class="n">to_i</span><span class="si">}</span><span class="s2"> domains/sec&quot;</span>
-</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">3</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">3</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'><span class="nb">p</span> <span class="s2">&quot;Total </span><span class="si">#{</span><span class="n">total_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures in </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>TODO: Redis, Rails, Websocket. Good night, was a wonderful week!</p>
 ]]></content>
   </entry>
   
