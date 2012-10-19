@@ -4,7 +4,7 @@
   <title><![CDATA[Category: posix | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/posix/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-10-18T22:27:54-07:00</updated>
+  <updated>2012-10-18T22:30:36-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -25,7 +25,7 @@
 
 <p>Lewis Carroll, Alice's Adventures in Wonderland</p>
 
-<p>This is post about threads and the reason why I'm writing this because I want to know more and more about thread, but before that I have to repeat and refresh everything about this huge topic. I saw funny qoute about the process of learning and doing concurrency code</p>
+<p>This post is about threads and the reason why I'm writing this because I want to know more and more about thread, but before that I have to repeat and refresh everything about this huge topic. I saw funny qoute about the process of learning and doing concurrency code</p>
 
 <p>"i don't know threads!," then "I got it! I know how it works!," then "I don't know threads!" and so on.</p>
 
