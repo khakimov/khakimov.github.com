@@ -4,7 +4,7 @@
   <title><![CDATA[Category: pthread | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/pthread/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-10-18T22:30:36-07:00</updated>
+  <updated>2012-10-19T17:39:09-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,205 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Pthreads and Shared Variables]]></title>
+    <link href="http://khakimov.github.com/blog/2012/10/19/pthreads-and-shared-variables/"/>
+    <updated>2012-10-19T16:17:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/10/19/pthreads-and-shared-variables</id>
+    <content type="html"><![CDATA[<p>I started yesterday with a ascii picture that shows how threads looks like. Now I want to add variable "<strong>a</strong>" into each thread:</p>
+
+<p>```
+  Master Thread</p>
+
+<pre><code>    |
+</code></pre>
+
+<p>unsigned int a = 0;</p>
+
+<pre><code>    |
+    |        create workers with pthread_create()
+    |
+  // \\      workers start up
+ / | | \
+ | | | |
+ a a a a     workers do a++ in loop jobs (thread routine)
+ | | | |
+ \ \ / /
+  \\ //      workers terminate
+    |
+    |        join workers with pthread_join()
+    |
+</code></pre>
+
+<p>  Master Thread
+```</p>
+
+<p>This picture shows the possibility of synchronization errors when every thread has same access to variable <strong>a</strong>. Let code some example of this problem:</p>
+
+<p>```c shared.c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<h1>include &lt;pthread.h></h1>
+
+<h1>include &lt;stdlib.h></h1>
+
+<h1>define N 100000</h1>
+
+<p>void <em>job(void </em>arg);</p>
+
+<p>unsigned int a = 0;</p>
+
+<p>int main()
+{
+   pthread_t tid1, tid2;
+   pthread_create(&amp;tid1, NULL, job, NULL);
+   pthread_create(&amp;tid2, NULL, job, NULL);</p>
+
+<p>   pthread_join(tid1, NULL);
+   pthread_join(tid2, NULL);</p>
+
+<p>   if(a != (N * 2))</p>
+
+<pre><code>  printf("Nope! a = %d\n", a);
+</code></pre>
+
+<p>   else</p>
+
+<pre><code>  printf("OK! a = %d\n", a);
+</code></pre>
+
+<p>   exit(0);
+}</p>
+
+<p>void <em>job(void </em>arg)
+{
+   int i;
+   for(i = 0; i &lt; N; i++)</p>
+
+<pre><code>  a++;
+</code></pre>
+
+<p>   return NULL;
+}
+```</p>
+
+<p><code>
+gcc shared.c -o shared &amp;&amp; ./shared
+Nope! a = 161406
+./shared
+Nope! a = 162099
+./shared
+Nope! a = 133299
+</code></p>
+
+<p>hmm, strange, isn't? It happens because of improperly synchronization.</p>
+
+<p><code>
+_job:
+0000000100000e80  pushq %rbp
+0000000100000e81  movq  %rsp,%rbp
+0000000100000e84  movq  %rdi,0xf8(%rbp)
+0000000100000e88  movl  $0x00000000,0xe4(%rbp) ; i = 0
+0000000100000e8f  jmp 0x100000ea9
+; loop
+0000000100000e91  movl  0x000001e1(%rip),%eax ; our global a
+0000000100000e97  addl  $0x01,%eax            ; a++
+0000000100000e9a  movl  %eax,0x000001d8(%rip) ; save
+0000000100000ea0  movl  0xe4(%rbp),%eax       
+0000000100000ea3  addl  $0x01,%eax            ; i++
+0000000100000ea6  movl  %eax,0xe4(%rbp)       
+0000000100000ea9  movl  0xe4(%rbp),%eax
+0000000100000eac  cmpl  $0x0001869f,%eax      ; i &lt; 100000
+0000000100000eb1  jle 0x100000e91             ; check and jump
+; jle - less or equal
+0000000100000eb3  movq  $0x00000000,0xe8(%rbp)
+0000000100000ebb  movq  0xe8(%rbp),%rax
+0000000100000ebf  movq  %rax,0xf0(%rbp)
+0000000100000ec3  movq  0xf0(%rbp),%rax
+0000000100000ec7  popq  %rbp
+0000000100000ec8  ret
+</code></p>
+
+<p>That is how our loop in function <strong>job</strong> looks in machine code (otool -Vt ./shared). And as you can also see, each thread load/save data from same memory address 0x000001e1(%rip), that's why we always get wrong answer, because thread compete with each other and improperly. How to fix it? We have to lock variable, change it and then unlock it to allow other threads to change it:</p>
+
+<p>```c shared2.c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<h1>include &lt;pthread.h></h1>
+
+<h1>include &lt;stdlib.h></h1>
+
+<h1>define N 100000</h1>
+
+<p>void <em>job(void </em>arg);</p>
+
+<p>unsigned int a = 0;
+pthread_mutex_t mutexA;</p>
+
+<p>int main()
+{
+   pthread_t tid1, tid2;</p>
+
+<p>   pthread_mutex_init(&amp;mutexA, NULL);</p>
+
+<p>   pthread_create(&amp;tid1, NULL, job, NULL);
+   pthread_create(&amp;tid2, NULL, job, NULL);</p>
+
+<p>   pthread_join(tid1, NULL);
+   pthread_join(tid2, NULL);</p>
+
+<p>   if(a != (N * 2))</p>
+
+<pre><code>  printf("Nope! a = %d\n", a);
+</code></pre>
+
+<p>   else</p>
+
+<pre><code>  printf("OK! a = %d\n", a);
+</code></pre>
+
+<p>   pthread_mutex_destroy(&amp;mutexA);
+   exit(0);
+}</p>
+
+<p>void *
+job(void *arg)
+{
+   int i;
+   for(i = 0; i &lt; N; i++) {</p>
+
+<pre><code>  /*
+  Lock mutex prior to updating the value in the shared
+  variable and unlock it upon updating. 
+  */
+
+  pthread_mutex_lock (&amp;mutexA);
+  a++;
+  pthread_mutex_unlock(&amp;mutexA);
+</code></pre>
+
+<p>   }
+   return NULL;
+}
+```</p>
+
+<p>Now it looks much better!</p>
+
+<p><code>
+gcc shared2.c -o shared2 &amp;&amp; ./shared2
+OK! a = 200000
+./shared2
+OK! a = 200000
+./shared2
+OK! a = 200000
+</code></p>
+
+<p>That is it! Now we can use shared variables in our threads and build something interesting. In next post I will write about <strong>thread-safety</strong> and how to write thread-safe function.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C Posix Threads boot camp]]></title>

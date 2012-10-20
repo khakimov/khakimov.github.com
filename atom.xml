@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-10-18T22:30:36-07:00</updated>
+  <updated>2012-10-19T17:39:09-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,314 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Pthreads and Shared Variables]]></title>
+    <link href="http://khakimov.github.com/blog/2012/10/19/pthreads-and-shared-variables/"/>
+    <updated>2012-10-19T16:17:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2012/10/19/pthreads-and-shared-variables</id>
+    <content type="html"><![CDATA[<p>I started yesterday with a ascii picture that shows how threads looks like. Now I want to add variable &#8221;<strong>a</strong>&#8221; into each thread:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  Master Thread
+</span><span class='line'>        |
+</span><span class='line'>unsigned int a = 0;
+</span><span class='line'>        |
+</span><span class='line'>        |        create workers with pthread_create()
+</span><span class='line'>        |
+</span><span class='line'>      // \\      workers start up
+</span><span class='line'>     / | | \
+</span><span class='line'>     | | | |
+</span><span class='line'>     a a a a     workers do a++ in loop jobs (thread routine)
+</span><span class='line'>     | | | |
+</span><span class='line'>     \ \ / /
+</span><span class='line'>      \\ //      workers terminate
+</span><span class='line'>        |
+</span><span class='line'>        |        join workers with pthread_join()
+</span><span class='line'>        |
+</span><span class='line'>  Master Thread</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This picture shows the possibility of synchronization errors when every thread has same access to variable <strong>a</strong>. Let code some example of this problem:</p>
+
+<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define N 100000</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
+</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">if</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Nope! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+</span><span class='line'>   <span class="k">else</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;OK! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">a</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">gcc</span> <span class="n">shared</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">shared</span> <span class="o">&amp;&amp;</span> <span class="p">.</span><span class="o">/</span><span class="n">shared</span>
+</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">161406</span>
+</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared</span>
+</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">162099</span>
+</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared</span>
+</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">133299</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>hmm, strange, isn&#8217;t? It happens because of improperly synchronization.</p>
+
+<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="nl">_job:</span>
+</span><span class='line'><span class="mf">0000000100000e80</span>  <span class="n">pushq</span> <span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'><span class="mf">0000000100000e81</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rsp</span><span class="p">,</span><span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'><span class="mf">0000000100000e84</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rdi</span><span class="p">,</span><span class="mh">0xf8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
+</span><span class='line'><span class="mf">0000000100000e88</span>  <span class="n">movl</span>  <span class="err">$</span><span class="mh">0x00000000</span><span class="p">,</span><span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span> <span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="mf">0000000100000e8</span><span class="n">f</span>  <span class="n">jmp</span> <span class="mh">0x100000ea9</span>
+</span><span class='line'><span class="p">;</span> <span class="n">loop</span>
+</span><span class='line'><span class="mf">0000000100000e91</span>  <span class="n">movl</span>  <span class="mh">0x000001e1</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span> <span class="p">;</span> <span class="n">our</span> <span class="n">global</span> <span class="n">a</span>
+</span><span class='line'><span class="mf">0000000100000e97</span>  <span class="n">addl</span>  <span class="err">$</span><span class="mh">0x01</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>            <span class="p">;</span> <span class="n">a</span><span class="o">++</span>
+</span><span class='line'><span class="mf">0000000100000e9</span><span class="n">a</span>  <span class="n">movl</span>  <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="mh">0x000001d8</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">)</span> <span class="p">;</span> <span class="n">save</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea0</span>  <span class="n">movl</span>  <span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea3</span>  <span class="n">addl</span>  <span class="err">$</span><span class="mh">0x01</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>            <span class="p">;</span> <span class="n">i</span><span class="o">++</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea6</span>  <span class="n">movl</span>  <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea9</span>  <span class="n">movl</span>  <span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">eac</span>  <span class="n">cmpl</span>  <span class="err">$</span><span class="mh">0x0001869f</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>      <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb1</span>  <span class="n">jle</span> <span class="mh">0x100000e91</span>             <span class="p">;</span> <span class="n">check</span> <span class="n">and</span> <span class="n">jump</span>
+</span><span class='line'><span class="p">;</span> <span class="n">jle</span> <span class="o">-</span> <span class="n">less</span> <span class="n">or</span> <span class="n">equal</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb3</span>  <span class="n">movq</span>  <span class="err">$</span><span class="mh">0x00000000</span><span class="p">,</span><span class="mh">0xe8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebb</span>  <span class="n">movq</span>  <span class="mh">0xe8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebf</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rax</span><span class="p">,</span><span class="mh">0xf0</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec3</span>  <span class="n">movq</span>  <span class="mh">0xf0</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec7</span>  <span class="n">popq</span>  <span class="o">%</span><span class="n">rbp</span>
+</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec8</span>  <span class="n">ret</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That is how our loop in function <strong>job</strong> looks in machine code (otool -Vt ./shared). And as you can also see, each thread load/save data from same memory address 0x000001e1(%rip), that&#8217;s why we always get wrong answer, because thread compete with each other and improperly. How to fix it? We have to lock variable, change it and then unlock it to allow other threads to change it:</p>
+
+<figure class='code'><figcaption><span>shared2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define N 100000</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="n">pthread_mutex_t</span> <span class="n">mutexA</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">if</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Nope! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+</span><span class='line'>   <span class="k">else</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;OK! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">pthread_mutex_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="o">*</span>
+</span><span class='line'><span class="nf">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="cm">/*</span>
+</span><span class='line'><span class="cm">      Lock mutex prior to updating the value in the shared</span>
+</span><span class='line'><span class="cm">      variable and unlock it upon updating. </span>
+</span><span class='line'><span class="cm">      */</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">pthread_mutex_lock</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">a</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now it looks much better!</p>
+
+<figure class='code'><figcaption><span>shared2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">gcc</span> <span class="n">shared2</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">shared2</span> <span class="o">&amp;&amp;</span> <span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
+</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
+</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
+</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
+</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
+</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That is it! Now we can use shared variables in our threads and build something interesting. In next post I will write about <strong>thread-safety</strong> and how to write thread-safe function.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C Posix Threads boot camp]]></title>
@@ -2270,31 +2578,6 @@ morning page has title, body, created and updated time.</p>
 <p>&#8230;few days of repairing after bike crash&#8230;</p>
 
 <p>Thats how simple using websockets is, and combined with eventmachine, they can be pretty awesome together. This is the end of my journey with EM for this time and I&#8217;m going to improve some skills with Rails. Let me know on email ruslan@&lt;%= current_domain_name %> if you have any question about eventmachine.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Data structure]]></title>
-    <link href="http://khakimov.github.com/blog/2012/04/27/data-structure/"/>
-    <updated>2012-04-27T23:20:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/04/27/data-structure</id>
-    <content type="html"><![CDATA[<p>Repeat/learn TODO. <a href="http://en.wikipedia.org/wiki/Data_structure">Data structure</a></p>
-
-<ul>
-<li><a href="http://en.wikipedia.org/wiki/Array_data_structure">Array</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Hash_table">Hash table</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Set_(abstract_data_type)">Set (abstract data type)</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Linked_list">Linked list</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Stack_(abstract_data_type)">Stack (abstract data type)</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Queue_(abstract_data_type)">Queue (abstract data type)</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Graph_(mathematics)">Graph (mathematics)</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Binary_search_tree">Binary search tree</a></li>
-<li><a href="http://en.wikipedia.org/wiki/AVL_tree">AVL tree</a></li>
-<li><a href="http://en.wikipedia.org/wiki/B-tree">B-tree</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Suffix_tree">Suffix tree</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Binary_search_algorithm">Binary search algorithm</a></li>
-</ul>
-
 ]]></content>
   </entry>
   
