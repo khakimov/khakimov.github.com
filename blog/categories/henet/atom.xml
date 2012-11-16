@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: henet | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/henet/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-11-15T17:14:49-08:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HE.net Colocation Facility]]></title>
+    <link href="http://khakimov.github.com/blog/2012/11/15/he-dot-net-colocation-facility/"/>
+    <updated>2012-11-15T16:46:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/11/15/he-dot-net-colocation-facility</id>
+    <content type="html"><![CDATA[<p>I've read post <a href="http://www.codinghorror.com/blog/2012/10/building-servers-for-fun-and-prof-ok-maybe-just-for-fun.html">"Building Servers for Fun and Prof... OK, Maybe Just for Fun"</a> and really like it what you can easily buy and build your own server and install it in the datacenter. Especially it was cool for me, because I'm living now in Bay Area and couple huge datacenters located here.</p>
+
+<p>I had couple servers in HE.net (dedicated server, rented from hosting company which managed them) and I always have a dream about visiting this place to see hundreds and hundreds computers in racks, routers with blinking lights and noise from cooling system. And couple weeks ago one of my friend asked me to help to manage couple his servers in Fremont, HE.net datacenter. He gave me permission and week ago, sunny Sunday I went to Fremont to check his cabinet (he rented full cabinet includes 42 Units, Power and 100 Mbps bandwidth for only $600 per month).</p>
+
+<p><img src="http://pix.am/oLeel.jpg" alt="" /></p>
+
+<p>They provide everything, even screwdrivers and drills if you need to maintain new server or change memory. So now I'm thinking about building new server and install it there. I also heard about datacenter in San Jose, but haven't checked it yet. I think, people will realise what building infrastructure much cheaper and more useful (you can customize every layer) than using solutions from the "box". Sure, I understand the difference, but many it isn't always crazy to build infrastructure and safe tons of money when you are doing lean startup.</p>
+
+<p>And I totally agree with Jeff, build servers it's a lot of fun! =)</p>
+]]></content>
+  </entry>
+  
+</feed>
