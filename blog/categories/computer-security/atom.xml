@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: computer security | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/computer-security/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-11-17T11:02:14-08:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Computer and Network Security specializations]]></title>
+    <link href="http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations/"/>
+    <updated>2012-11-17T10:41:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations</id>
+    <content type="html"><![CDATA[<p>a. Each of the following: CS 140, 144, 155, 244, 255</p>
+
+<ul>
+<li>CS 140: Operating Systems</li>
+<li>CS 144: Introduction to Computer Networking (*)</li>
+<li>CS 155: Computer and Network Security (*)</li>
+<li>CS 244: Advanced Topics in Networking</li>
+<li>CS 255: Introduction to Cryptography</li>
+</ul>
+
+
+<p>b. At least three of the following: CS 142, 240, 241, 244B, 244C, 259, 261, 340, 344, 355, 365</p>
+
+<ul>
+<li>CS 142: Web Applications (*)</li>
+<li>CS 240: Advanced Topics in Operating Systems</li>
+<li>CS 241: Secure Web Programming</li>
+<li>CS 244B: Distributed Systems</li>
+<li>CS 244C: Distributed System Projects</li>
+<li>CS 259: Security Modeling and Analysis</li>
+<li>CS 261: Optimization and Algorithmic Paradigms</li>
+<li>CS 340: Networked Systems for Virtual Worlds</li>
+<li>CS 344: Building an Internet Router</li>
+<li>CS 355: Topics in Cryptography</li>
+<li>CS 365: Randomized Algorithms</li>
+</ul>
+
+
+<p>c. Sufficient additional units selected from (b) and the following: CS 240E, 244E, 245, 294S<em>, 295, 341, 344B, 345, 347, 361A, 393</em>, 395<em>, 399</em>, EE 384A, 384B, 384C, 384M, 384S, 384X, 384Y</p>
+
+<ul>
+<li>CS 240E: Embedded Wireless Systems</li>
+<li>CS 244E: Wireless Networking</li>
+<li>CS 245: Database System Principles</li>
+<li>CS 294S: Paradigm Shifts in Mobile and Social Computing Systems</li>
+<li>CS 295: Software Engineering</li>
+<li>CS 341: Project in Mining Massive Data Sets</li>
+<li>CS 344B: Advanced Topics in Distributed Systems</li>
+<li>CS 345: Advanced Topics in Database Systems</li>
+<li>CS 347: Parallel and Distributed Data Management</li>
+<li>CS 361A: Advanced Algorithms</li>
+<li>CS 393: Computer Laboratory</li>
+<li>CS 395: Independent Database Project</li>
+<li>CS 399: Independent Project</li>
+<li>EE 384A: Internet Routing Protocols and Standards</li>
+<li>EE 384B: Mutimedia Communication over the Internet</li>
+<li>EE 384C: Wireless Local Area Networks</li>
+<li>EE 384M: Network Algorithms</li>
+<li>EE 384S: Network Architectures and Performance Engineering</li>
+<li>EE 384X: Packet Switch Architectures I</li>
+<li>EE 384Y: Packet Switch Architectures II</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
