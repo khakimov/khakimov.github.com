@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="What life lessons are counter-intuitive or go against common sense or wisdom? Focus on spending this money in ways that improve your happiness and &hellip;">
+	<meta name="description" content="Spent an hour to figure out how applescript works and wrote some epicly awesome tool what helps to kill anybody phone just doing crash pool calls &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,74 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/08/13/apple-script-and-skype/">Apple Script and Skype</a></h1>
+	<div class="entry-content">
+		<p>Spent an hour to figure out how applescript works and wrote some epicly awesome tool what helps to kill anybody phone just doing crash pool calls repeatedly every N sec.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='applescript'><span class='line'><span class="k">set</span> <span class="nv">numberOfAttempts</span> <span class="k">to</span> <span class="mi">100</span> <span class="c"># how many times?</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">callToAnumber</span> <span class="k">to</span> <span class="s2">&quot;echo123&quot;</span> <span class="c"># put his number here</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">attemptInterval</span> <span class="k">to</span> <span class="mi">90</span> <span class="c"># call each 90 sec</span>
+</span><span class='line'><span class="k">set</span> <span class="nv">callAttemptsCounter</span> <span class="k">to</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">repeat</span> <span class="nv">numberOfAttempts</span> <span class="k">times</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">tell</span> <span class="nb">application</span> <span class="s2">&quot;Skype&quot;</span>
+</span><span class='line'>      <span class="nv">send</span> <span class="nv">command</span> <span class="s2">&quot;CALL &quot;</span> <span class="o">&amp;</span> <span class="nv">callToAnumber</span> <span class="nv">script</span> <span class="na">name</span> <span class="s2">&quot;Call&quot;</span>
+</span><span class='line'>  <span class="k">end</span> <span class="k">tell</span>
+</span><span class='line'>  <span class="nb">delay</span> <span class="nv">attemptInterval</span>
+</span><span class='line'>  <span class="k">set</span> <span class="nv">callAttemptsCounter</span> <span class="k">to</span> <span class="nv">callAttemptsCounter</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span> <span class="k">repeat</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>in terminal then <strong>osascript scriptname</strong> and BOOM! 100 calls every 90 secs. Nothing interesting, but applescript has hidden value. Stay tuned!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-13T17:02:00-07:00" pubdate data-updated="true">Aug 13<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/applescript/'>applescript</a>, <a class='category' href='/blog/categories/programming/'>programming</a>, <a class='category' href='/blog/categories/skype-api/'>skype api</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -802,119 +870,6 @@ form that can help us improve the safety and reliability of your code.</li>
 
 
 	<a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/06/04/puzzle-node-number-1/">Puzzle Node #1</a></h1>
-	<div class="entry-content">
-		<p>First of all I&#8217;m not going to spoil here any solution, just my thoughts about solving this. In my case the main problem with puzzles is focus. You don&#8217;t need to be awesome programmer to solve it, just need to understand what to solve and then just write few lines of code.</p>
-
-<p><a href="http://puzzlenode.com/puzzles/1-international-trade">Puzzle</a> <strong>&#8220;International trade&#8221;</strong> has two files. The first is an XML file containing the conversion rates for exchanging one currency with another. The second is a CSV file containing sales data by transaction for an international business. Your goal is to parse all the transactions and return the grand total of all sales for a given item. Currently I stuck with <em>Some conversion rates are missing; you will need to derive them using the information provided.</em></p>
-
-<p>It means if we have pair EUR/USD and EUR/AUD we have to derive USD/AUD.</p>
-
-<p>EUR/USD 1.2494 -> USD/EUR 0.8003
-EUR/AUD 1.2846 -> AUD/EUR 0.7785
-USD/AUD 1.2846 / 1.2494 or 0.8003 * 1.2846 or 0.8003 / 0.7785 = 1.028</p>
-
-<p>Ok, SAMPLE_RATES.xml has this curr</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;rates&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;rate&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;from&gt;</span>AUD<span class="nt">&lt;/from&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;to&gt;</span>CAD<span class="nt">&lt;/to&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;conversion&gt;</span>1.0079<span class="nt">&lt;/conversion&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/rate&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;rate&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;from&gt;</span>CAD<span class="nt">&lt;/from&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;to&gt;</span>USD<span class="nt">&lt;/to&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;conversion&gt;</span>1.0090<span class="nt">&lt;/conversion&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/rate&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;rate&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;from&gt;</span>USD<span class="nt">&lt;/from&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;to&gt;</span>CAD<span class="nt">&lt;/to&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;conversion&gt;</span>0.9911<span class="nt">&lt;/conversion&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/rate&gt;</span>
-</span><span class='line'><span class="nt">&lt;/rates&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>our program should convert and find USD/AUD. Let&#8217;s do it on the papper and then code.</p>
-
-<p>AUD/CAD 1.0079
-CAD/USD 1.0090</p>
-
-<p>USD/CAD 0.9911</p>
-
-<p>USD/AUD ?      <br/>
-USD/CAD 0.9911 / AUD/CAD    1.0079 = 0.9833</p>
-
-<p>To find USD/AUD I should devided USD/CAD and AUD/CAD. So, in our case if we are looking for USD/AUD - USD/$CUR devided AUD/$CUR. If we don&#8217;t have USD/$CUR we can convert $CUR/USD to USD/$CUR just devided 1/rate.</p>
-
-<ol>
-<li>Build hash with current rates.</li>
-<li>Derive inverted pair. USD/CAD -> CAD/USD (deviding 1/currency)</li>
-<li>Find the pair that need to find.</li>
-</ol>
-
-
-<p>few days later I&#8217;ve decided that is not good solution. Here is new refactored version:</p>
-
-<ol>
-<li>Build hash with current rates.</li>
-<li>Derive with recursion. For example if we have AUD/CAD and CAD/USD we just derive AUD to CAD and then CAD to USD, so we will get AUD/USD.</li>
-</ol>
-
-
-<p>ps: yea, I&#8217;ve solved it. Going to try <a href="http://puzzlenode.com/puzzles/2-cheap-tourist-fast-tourist">next one</a>.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-04T13:21:00-07:00" pubdate data-updated="true">Jun 4<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/programing/'>programing</a>, <a class='category' href='/blog/categories/puzzle/'>puzzle</a>, <a class='category' href='/blog/categories/puzzlenode/'>puzzlenode</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
 
 
 </div>
