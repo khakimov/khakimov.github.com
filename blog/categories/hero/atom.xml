@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: hero | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/hero/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-11-24T00:02:02-08:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hero Lecture: Dr. Vint Cerf]]></title>
+    <link href="http://khakimov.github.com/blog/2012/11/24/hero-lecture-dr-vint-cerf/"/>
+    <updated>2012-11-24T00:01:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/11/24/hero-lecture-dr-vint-cerf</id>
+    <content type="html"><![CDATA[<iframe width="640" height="480" src="http://www.youtube.com/embed/v7Lai2lkKnM?rel=0" frameborder="0" allowfullscreen></iframe>
+
+]]></content>
+  </entry>
+  
+</feed>

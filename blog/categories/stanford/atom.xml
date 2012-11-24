@@ -4,7 +4,7 @@
   <title><![CDATA[Category: stanford | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/stanford/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-11-20T23:30:31-08:00</updated>
+  <updated>2012-11-24T00:02:02-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hero Lecture: Dr. Vint Cerf]]></title>
+    <link href="http://khakimov.github.com/blog/2012/11/24/hero-lecture-dr-vint-cerf/"/>
+    <updated>2012-11-24T00:01:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/11/24/hero-lecture-dr-vint-cerf</id>
+    <content type="html"><![CDATA[<iframe width="640" height="480" src="http://www.youtube.com/embed/v7Lai2lkKnM?rel=0" frameborder="0" allowfullscreen></iframe>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Computer and Network Security specializations]]></title>

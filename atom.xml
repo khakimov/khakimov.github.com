@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-11-20T23:30:31-08:00</updated>
+  <updated>2012-11-24T00:02:02-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hero Lecture: Dr. Vint Cerf]]></title>
+    <link href="http://khakimov.github.com/blog/2012/11/24/hero-lecture-dr-vint-cerf/"/>
+    <updated>2012-11-24T00:01:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/11/24/hero-lecture-dr-vint-cerf</id>
+    <content type="html"><![CDATA[<iframe width="640" height="480" src="http://www.youtube.com/embed/v7Lai2lkKnM?rel=0" frameborder="0" allowfullscreen></iframe>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Buffer Overflow]]></title>
@@ -1637,42 +1647,6 @@ form that can help us improve the safety and reliability of your code.</li>
 
 
 <p>So, my suggestion is read for sure K&amp;R about pointers then open your editor, compile some code and then play with gdb till you will clear understand how and why it works. Good luck!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[X-RateLimit-Limit API]]></title>
-    <link href="http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api/"/>
-    <updated>2012-06-18T14:38:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api</id>
-    <content type="html"><![CDATA[<p>some api have a limit requests, like to 5000 per hour as github has:
-○ curl -i https://api.github.com/users/whatever</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>HTTP/1.1 200 OK
-</span><span class='line'>Status: 200 OK
-</span><span class='line'>X-RateLimit-Limit: 5000
-</span><span class='line'>X-RateLimit-Remaining: 4966</span></code></pre></td></tr></table></div></figure>
-
-
-<p>or angel.co 1000 per hour requests:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>○ curl -i http://api.angel.co/
-</span><span class='line'>...
-</span><span class='line'>Server: nginx
-</span><span class='line'>X-RateLimit-Limit: 1000
-</span><span class='line'>X-RateLimit-Remaining: 978</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Never&#8217;ve seen this before :lame, but as tip - if you are building API and want to limit requests check this link <a href="http://www.ruby-forum.com/topic/201555">http://www.ruby-forum.com/topic/201555</a>, from flip side you can use it as a counter.</p>
 ]]></content>
   </entry>
   
