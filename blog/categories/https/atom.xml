@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: https | Doing things]]></title>
+  <link href="http://khakimov.github.com/blog/categories/https/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2012-11-25T20:32:05-08:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[What Is Wrong With HTTP Secure]]></title>
+    <link href="http://khakimov.github.com/blog/2012/11/24/what-is-wrong-with-http-secure/"/>
+    <updated>2012-11-24T12:33:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/11/24/what-is-wrong-with-http-secure</id>
+    <content type="html"><![CDATA[<p>That's not a secret that I love the security. I'm learning new things everyday about this topic, using some applications on a regular basis to protect my security such as vpn when using public wifi or https everythere where it is possible. HTTPS is not a holy Grail, often https is enough to secure facebook data or gmail connection. Of course I know about DNS changer/spoof or force HTTP session insted HTTPS which attackers use often and that's why I'm using also <strong><a href="https://chrome.google.com/webstore/detail/kb-ssl-enforcer/flcpelgcagfhfoegekianiofphddckof/details">KB SSL Enforcer</a></strong>.</p>
+
+<p>KB SSL Enforcer helps automatically detects if a site supports SSL and redirects you to it. Also it blocks insecure content when you load page over ssl and something on this page has insecure css/js/image.</p>
+
+<p>Security can be compromised completely by an active atacker exploiting a simple mistake such as loading css, image or Flash banner over an insecure connection. For instance,</p>
+
+<p><a href="https://nytimes.com">nytimes.com</a>
+<img src="http://pix.am/L0CO.png" alt="" /></p>
+
+<p><a href="https://woot.com">woot.com</a>:
+<img src="http://pix.am/GPYh.png" alt="" /></p>
+
+<p><a href="https://www.dailymotion.com/us">dailymotion.com</a>
+<img src="http://pix.am/kY88.png" alt="" /></p>
+
+<p><a href="https://www.ehow.com/">ehow.com</a>
+<img src="http://pix.am/bFrO.png" alt="" /></p>
+
+<p>so on and so on... Problem is very simple - <strong>hardcoded http://</strong> links.</p>
+
+<p><strong>Solution?</strong> Please, don't use hardcoded http:// if you have http and https! I hope having https version is going to be as a standard and this is really good news "<a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>". This RFC was approved couple days ago, read it and don't forget to check your website!</p>
+]]></content>
+  </entry>
+  
+</feed>

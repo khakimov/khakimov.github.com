@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-11-24T00:02:02-08:00</updated>
+  <updated>2012-11-25T20:32:05-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[What Is Wrong With HTTP Secure]]></title>
+    <link href="http://khakimov.github.com/blog/2012/11/24/what-is-wrong-with-http-secure/"/>
+    <updated>2012-11-24T12:33:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/11/24/what-is-wrong-with-http-secure</id>
+    <content type="html"><![CDATA[<p>That&#8217;s not a secret that I love the security. I&#8217;m learning new things everyday about this topic, using some applications on a regular basis to protect my security such as vpn when using public wifi or https everythere where it is possible. HTTPS is not a holy Grail, often https is enough to secure facebook data or gmail connection. Of course I know about DNS changer/spoof or force HTTP session insted HTTPS which attackers use often and that&#8217;s why I&#8217;m using also <strong><a href="https://chrome.google.com/webstore/detail/kb-ssl-enforcer/flcpelgcagfhfoegekianiofphddckof/details">KB SSL Enforcer</a></strong>.</p>
+
+<p>KB SSL Enforcer helps automatically detects if a site supports SSL and redirects you to it. Also it blocks insecure content when you load page over ssl and something on this page has insecure css/js/image.</p>
+
+<p>Security can be compromised completely by an active atacker exploiting a simple mistake such as loading css, image or Flash banner over an insecure connection. For instance,</p>
+
+<p><a href="https://nytimes.com">nytimes.com</a>
+<img src="http://pix.am/L0CO.png" alt="" /></p>
+
+<p><a href="https://woot.com">woot.com</a>:
+<img src="http://pix.am/GPYh.png" alt="" /></p>
+
+<p><a href="https://www.dailymotion.com/us">dailymotion.com</a>
+<img src="http://pix.am/kY88.png" alt="" /></p>
+
+<p><a href="https://www.ehow.com/">ehow.com</a>
+<img src="http://pix.am/bFrO.png" alt="" /></p>
+
+<p>so on and so on&#8230; Problem is very simple - <strong>hardcoded http://</strong> links.</p>
+
+<p><strong>Solution?</strong> Please, don&#8217;t use hardcoded http:// if you have http and https! I hope having https version is going to be as a standard and this is really good news &#8221;<a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>&#8221;. This RFC was approved couple days ago, read it and don&#8217;t forget to check your website!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Hero Lecture: Dr. Vint Cerf]]></title>
@@ -1547,106 +1576,6 @@ form that can help us improve the safety and reliability of your code.</li>
 
 <iframe width="560" height="315" src="http://www.youtube.com/embed/i2fhNVQPb5I?rel=0" frameborder="0" allowfullscreen></iframe>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[C Pointers The Hard Way]]></title>
-    <link href="http://khakimov.github.com/blog/2012/07/14/c-pointers-the-hard-way/"/>
-    <updated>2012-07-14T12:57:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/07/14/c-pointers-the-hard-way</id>
-    <content type="html"><![CDATA[<p>Couple weeks ago read on stackoverflow question &#8221;<a href="http://stackoverflow.com/questions/4025768/what-do-people-find-difficult-about-c-pointers">What do people find difficult about C pointers?</a>&#8221; and I found interesting answers here. One of them is:</p>
-
-<p>  <strong>Many programmers today don&#8217;t know how their machine works, just as most people who know how to drive a car don&#8217;t know anything about the engine.</strong></p>
-
-<p>I think main idea to understand how pointers work is doing some code and then debug it where you can see step by step operations with memory and can play with many variations. So, it&#8217;s easy to say like read this and this and then you will understand how pointers work. In my case AHA-moment with pointers was when I found in gdb commands <strong>print</strong> (Print value of expression EXP) and <strong>x</strong> (Examine memory: x/FMT ADDRESS).</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>gcc -g -Wall -Werror -O0 -std=c99 -o test test.o -lm</strong></p>
-
-<p>and then <strong>gdb ./test</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="k">break</span> <span class="n">main</span>
-</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span> <span class="n">at</span> <span class="mh">0x100000ee4</span><span class="o">:</span> <span class="n">file</span> <span class="n">test</span><span class="p">.</span><span class="n">c</span><span class="p">,</span> <span class="n">line</span> <span class="mf">5.</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">run</span>
-</span><span class='line'><span class="n">Starting</span> <span class="n">program</span><span class="o">:</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">khakimov</span><span class="o">/</span><span class="n">Projects</span><span class="o">/</span><span class="n">current</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">cs107</span><span class="o">/</span><span class="n">lec07</span><span class="o">/</span><span class="n">test</span>
-</span><span class='line'><span class="n">Reading</span> <span class="n">symbols</span> <span class="k">for</span> <span class="n">shared</span> <span class="n">libraries</span> <span class="o">+</span><span class="p">........................</span> <span class="n">done</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span><span class="p">,</span> <span class="n">main</span> <span class="p">()</span> <span class="n">at</span> <span class="n">test</span><span class="p">.</span><span class="n">c</span><span class="o">:</span><span class="mi">5</span>
-</span><span class='line'><span class="mi">5</span>         <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">step</span>
-</span><span class='line'><span class="mi">7</span>         <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">print</span> <span class="n">i</span>
-</span><span class='line'><span class="err">$</span><span class="mi">1</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">p</span> <span class="o">&amp;</span><span class="n">i</span>
-</span><span class='line'><span class="err">$</span><span class="mi">2</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="mh">0x7fff5fbfef94</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">print</span> <span class="n">p</span>
-</span><span class='line'><span class="err">$</span><span class="mi">4</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="mh">0x7fff5fbfef94</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">p</span> <span class="o">*</span><span class="n">p</span>
-</span><span class='line'><span class="err">$</span><span class="mi">5</span> <span class="o">=</span> <span class="mi">10</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>then try to use x to examine memory:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="n">p</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef94</span><span class="o">:</span> <span class="mo">00001010</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="o">&amp;</span><span class="n">i</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef94</span><span class="o">:</span> <span class="mo">00001010</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="o">*&amp;</span><span class="n">p</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef94</span><span class="o">:</span> <span class="mo">00001010</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">x</span><span class="o">/</span><span class="mi">1</span><span class="n">bt</span> <span class="o">&amp;</span><span class="n">p</span>
-</span><span class='line'><span class="mh">0x7fff5fbfef88</span><span class="o">:</span> <span class="mi">10010100</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So, my suggestion is read for sure K&amp;R about pointers then open your editor, compile some code and then play with gdb till you will clear understand how and why it works. Good luck!</p>
 ]]></content>
   </entry>
   
