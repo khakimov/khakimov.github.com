@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="I&#8217;m at MiniService for regular routine, drinking coffee and reading this article I have no idea what I&#8217;m doing and after I read it the &hellip;">
+	<meta name="description" content="Day 5 and I hope today I&#8217;m going solve this quest with EventMachine. The main idea I&#8217;ve got from this - never give up, don’t give up on &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,638 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/04/25/eventmachine-day-5/">EventMachine. Day 5</a></h1>
+	<div class="entry-content">
+		<p>Day 5 and I hope today I&#8217;m going solve this quest with EventMachine. The main idea I&#8217;ve got from this - never give up, don’t give up on becoming a programmer.</p>
+
+<p>Yesterday I had a conversation on IRC with <a href="http://github.com/raggi">raggi</a> (today I realized that he is a one of the main EventMachine contributor ;)</p>
+
+<figure class='code'><figcaption><span>&#8220;freenode.net irc #eventmachine channel&#8221;</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">58</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">you</span><span class="err">&#39;</span><span class="n">ll</span> <span class="n">get</span> <span class="o">**</span><span class="n">blocked</span> <span class="n">by</span> <span class="n">domain</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">which</span> <span class="n">will</span> <span class="n">slow</span> <span class="n">down</span> <span class="n">connect</span> <span class="n">rate</span><span class="o">**</span>
+</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">11</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="ow">and</span> <span class="n">many</span> <span class="n">servers</span> <span class="n">will</span> <span class="n">also</span> <span class="n">limit</span> <span class="n">a</span> <span class="n">single</span> <span class="n">ip</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">a</span> <span class="n">max</span> <span class="n">number</span> <span class="n">of</span> <span class="n">times</span>
+</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">21</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">so</span> <span class="n">there</span> <span class="n">are</span> <span class="n">a</span> <span class="n">bunch</span> <span class="n">of</span> <span class="n">potential</span> <span class="n">reasons</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">19</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">em</span><span class="o">-</span><span class="n">http</span><span class="o">-</span><span class="n">request</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">very</span> <span class="n">good</span> <span class="k">for</span> <span class="n">crawling</span>
+</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">32</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">i</span> <span class="n">wrote</span> <span class="n">a</span> <span class="n">commercial</span> <span class="n">crawler</span> <span class="n">on</span> <span class="n">top</span> <span class="n">of</span> <span class="n">it</span><span class="p">,</span> <span class="ow">and</span> <span class="n">had</span> <span class="n">to</span> <span class="n">hack</span> <span class="n">out</span> <span class="n">a</span> <span class="n">lot</span> <span class="n">of</span> <span class="n">shit</span> <span class="n">to</span> <span class="n">make</span> <span class="n">it</span> <span class="n">move</span>
+</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">41</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">it</span> <span class="n">will</span> <span class="n">now</span> <span class="n">fill</span> <span class="n">a</span> <span class="mi">100</span><span class="n">mb</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">though</span>
+</span><span class='line'><span class="o">[</span><span class="mi">23</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">17</span><span class="o">]</span> <span class="o">&lt;</span><span class="n">raggi</span><span class="o">&gt;</span> <span class="n">lots</span> <span class="n">of</span> <span class="n">other</span> <span class="n">standard</span> <span class="n">crawler</span> <span class="n">tricks</span> <span class="n">though</span><span class="p">,</span> <span class="n">dynamic</span> <span class="n">resource</span> <span class="n">reallocation</span><span class="p">,</span> <span class="n">dns</span> <span class="n">rotation</span> <span class="n">tracking</span><span class="p">,</span> <span class="n">etc</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>BOOM! Blocked by DNS! BOOM twice! That&#8217;s why I got a problem when using domains names and didn&#8217;t have any problems with direct ip request. I wrote this script and just tested with dns request:</p>
+
+<figure class='code'><figcaption><span>dns.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;100k.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">gets</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">strip</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">count_connection</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'><span class="n">urls_size</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">size</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">connect</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">current_connection</span> <span class="o">&lt;</span> <span class="mi">200</span>
+</span><span class='line'>      <span class="n">domain</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">pop</span>
+</span><span class='line'>      <span class="n">dns</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resolver</span><span class="o">.</span><span class="n">resolve</span> <span class="n">domain</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">current_connection</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">current_connection</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">count_connection</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="n">current_connection</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">count_connection</span> <span class="o">&gt;</span> <span class="n">urls_size</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">count_connection</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="n">stats</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;total: </span><span class="si">#{</span><span class="n">count_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures&quot;</span>
+</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">5</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">5</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
+</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="s2">&quot;Total </span><span class="si">#{</span><span class="n">count_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures in </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<figure class='code'><figcaption><span>puts every 5 seconds with stats</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="err">○</span> <span class="n">ruby</span> <span class="n">client3</span><span class="o">.</span><span class="n">rb</span>
+</span><span class='line'><span class="s2">&quot;total: 2062, 1768 successful, 93 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;total: 3193, 2835 successful, 157 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;total: 4040, 3621 successful, 218 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;total: 5165, 4698 successful, 266 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;total: 6010, 5502 successful, 307 failures&quot;</span>
+</span><span class='line'><span class="s2">&quot;total: 7123, 6557 successful, 365 failures&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&#8220;Total 100001, 94569 successful, 5231 failures in 494.766191s&#8221; if I just use EM::Interator.new it will be faster, but much more failures, because probably dns servers reject many connection from the same IP address, I&#8217;m not sure, but it sounds logical (otherwise we can run this script from 100 boxes with 10k connection in the same time and dns should be response to 1mln request, it&#8217;s kind of ddos, isn&#8217;t). Btw about ddos, yesterday when I tested server/client I didn&#8217;t use any limitation and today got this <em>the node PM14 is being rebooted just now. A ddos attack caused a kernel panic on the network stack.</em> =)</p>
+
+<p>/sleep/</p>
+
+<p>Good morning, yesterday I went to sleep with a smile on my face. Yes, I did it, I got shit out of my connection, but after workout didn&#8217;t have strength to finish this post. This morning I started with <a href="http://en.wikipedia.org/wiki/Monkey_patch">monkey patching</a> because EventMachine Resolver returns only addrs (ips), but I also needed hostnames. This is my first monkey patch I&#8217;ve done. Original  <a href="https://github.com/eventmachine/eventmachine/blob/master/lib/em/resolver.rb">code</a>:</p>
+
+<figure class='code'><figcaption><span>monkey patch</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">EventMachine</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">DNS</span>
+</span><span class='line'>    <span class="k">class</span> <span class="nc">Request</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
+</span><span class='line'>        <span class="vi">@socket</span> <span class="o">=</span> <span class="n">socket</span>
+</span><span class='line'>        <span class="vi">@hostname</span> <span class="o">=</span> <span class="n">hostname</span>
+</span><span class='line'>        <span class="vi">@tries</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="vi">@last_send</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="vi">@retry_interval</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>        <span class="vi">@max_tries</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span> <span class="o">=</span> <span class="no">Resolver</span><span class="o">.</span><span class="n">hosts</span><span class="o">[</span><span class="n">hostname</span><span class="o">]</span>
+</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span> <span class="c1"># just added this string</span>
+</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>                                  <span class="c1"># to return hash</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>          <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span> <span class="p">{</span> <span class="n">tick</span> <span class="p">}</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">receive_answer</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">addrs</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>        <span class="n">msg</span><span class="o">.</span><span class="n">each_answer</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="p">,</span><span class="n">ttl</span><span class="p">,</span><span class="n">data</span><span class="o">|</span>
+</span><span class='line'>          <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="n">A</span><span class="p">)</span> <span class="o">||</span>
+</span><span class='line'>              <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="no">AAAA</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">addrs</span> <span class="o">&lt;&lt;</span> <span class="n">data</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>          <span class="nb">fail</span> <span class="s2">&quot;rcode=</span><span class="si">#{</span><span class="n">msg</span><span class="o">.</span><span class="n">rcode</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span> <span class="c1"># same thing</span>
+</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Btw, two things I&#8217;ve realized. I have to repeat fundamental about <a href="http://www.ruby-doc.org/core-1.9.3/Hash.html">Hash</a> and <a href="http://www.ruby-doc.org/core-1.9.3/Regexp.html">Regexp</a>.</p>
+
+<p>I got this result and you probably think I&#8217;m happy now. No, not at all. Now count_connection based on DNS requests, when I need count_connection for HTTP connection. To solve it I have to communicate with class Client and count connection there.</p>
+
+<p><img src="http://pix.am/PfIT.png" alt="eventmachine in action" /></p>
+
+<p>As we know class variables is shared among all objects of a class, if you forget - class variables start with two &#8220;at&#8221; signs, such as @@connections. So if we want to count how many current connection, we have to use class variables, something like this:</p>
+
+<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Client</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="vc">@@connections</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">add</span>
+</span><span class='line'>    <span class="vc">@@connections</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">connections</span>
+</span><span class='line'>    <span class="vc">@@connections</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">10</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">add</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="no">Client</span><span class="o">.</span><span class="n">connections</span> <span class="c1"># =&gt; 10</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The next thing we have to parse the answers from the website. I&#8217;m looking for header and information about Server. Regular expressions always were pain in ass for me that&#8217;s why I&#8217;m sitting right now with a book &#8220;Progmatic Programmer&#8217;s Guide&#8221; on the page number 76 and reading about Object-Oriented Regular Expressions.</p>
+
+<p>In out class Client we receive and process data in method <strong>receive_data</strong>, here we can write our regexp which will find information that we are looking for:</p>
+
+<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=~</span> <span class="sr">/Server: ([^\n$]*)$/</span>
+</span><span class='line'>  <span class="n">server_name</span> <span class="o">=</span> <span class="vg">$1</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">close_connection_after_writing</span>
+</span><span class='line'>  <span class="vc">@@connections</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As I read today this <a href="http://japhr.blogspot.com/2012/04/366-or-how-i-tricked-myself-into-being.html">post</a> the author says</p>
+
+<blockquote><p>I knew nothing about them before I started writing them.</p></blockquote>
+
+<p>Let&#8217;s just write a little bit about regexp by my words and hope it will help me and you to undersand better how it works. This is all my thoughts and I maybe wrong, let me know if I&#8217;m wrong with any definition. Regular expression (regexp) are used to find patterns in a string. Few ways to create regexp:</p>
+
+<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">test_regexp</span> <span class="o">=</span> <span class="no">Regexp</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;^\w+&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="sr">/^\w+/</span>
+</span><span class='line'><span class="n">test_regexp2</span> <span class="o">=</span> <span class="sr">/^w+/</span>             <span class="o">-&gt;</span> <span class="sr">/^\w+/</span>
+</span><span class='line'><span class="n">test_regexp3</span> <span class="o">=</span> <span class="sr">%r{^\w+}</span>          <span class="o">-&gt;</span> <span class="sr">/^\w+/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Probably that was not a good idea to explaine how regexp works, but in few words you have to remember this table:</p>
+
+<figure class='code'><figcaption><span>class variables</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">\</span><span class="n">d</span>      <span class="o">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="o">]</span>                   <span class="no">Digit</span> <span class="n">character</span>
+</span><span class='line'><span class="p">\</span><span class="n">D</span>      <span class="o">[^</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="o">]</span>                  <span class="no">Any</span> <span class="n">character</span> <span class="n">except</span> <span class="n">a</span> <span class="n">digit</span>
+</span><span class='line'><span class="p">\</span><span class="n">s</span>      <span class="o">[</span><span class="p">\</span><span class="n">s</span><span class="p">\</span><span class="n">t</span><span class="p">\</span><span class="n">r</span><span class="p">\</span><span class="n">n</span><span class="p">\</span><span class="n">f</span><span class="o">]</span>            <span class="no">Whitespace</span> <span class="n">character</span>
+</span><span class='line'><span class="p">\</span><span class="n">S</span>      <span class="o">[^</span><span class="p">\</span><span class="n">s</span><span class="p">\</span><span class="n">t</span><span class="p">\</span><span class="n">r</span><span class="p">\</span><span class="n">n</span><span class="p">\</span><span class="n">f</span><span class="o">]</span>           <span class="no">Any</span> <span class="n">except</span> <span class="n">whitespace</span>
+</span><span class='line'><span class="p">\</span><span class="n">w</span>      <span class="o">[</span><span class="n">A</span><span class="o">-</span><span class="no">Za</span><span class="o">-</span><span class="n">z0</span><span class="o">-</span><span class="mi">9</span><span class="n">_</span><span class="o">]</span>            <span class="no">Word</span> <span class="n">character</span>
+</span><span class='line'><span class="p">\</span><span class="n">W</span>      <span class="o">[^</span><span class="n">A</span><span class="o">-</span><span class="no">Za</span><span class="o">-</span><span class="n">z0</span><span class="o">-</span><span class="mi">9</span><span class="n">_</span><span class="o">]</span>           <span class="no">Any</span> <span class="n">except</span> <span class="n">a</span> <span class="n">word</span> <span class="n">character</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>How to use?</p>
+
+<figure class='code'><figcaption><span>regexp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">re</span> <span class="o">=</span> <span class="sr">/(\d+):(\d+)/</span>                      <span class="c1"># match time hh:mm \d means any digit character. + means match one or more</span>
+</span><span class='line'><span class="n">time</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;Time is: 11:22am&quot;</span><span class="p">)</span>     <span class="c1"># time now is MatchData</span>
+</span><span class='line'><span class="n">time</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>                                 <span class="c1"># =&gt; &quot;11:22&quot;</span>
+</span><span class='line'><span class="n">time</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>                                 <span class="c1"># =&gt; &quot;11&quot;</span>
+</span><span class='line'><span class="n">time</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span>                                 <span class="c1"># =&gt; &quot;22&quot;</span>
+</span><span class='line'><span class="n">time</span><span class="o">.</span><span class="n">pre_match</span>                          <span class="c1"># =&gt; &quot;Time is: &quot;</span>
+</span><span class='line'><span class="n">time</span><span class="o">.</span><span class="n">post_match</span>                         <span class="c1"># =&gt; &quot;am&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For example we have header like this</p>
+
+<p>HTTP/1.1 200 OK
+Content-Type: text/html;charset=utf-8
+Last-Modified: Fri, 27 Apr 2012 00:39:33 GMT
+Content-Length: 141332
+Server: WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)
+Date: Fri, 27 Apr 2012 00:41:48 GMT
+Connection: Keep-Alive</p>
+
+<p>and we need to get only name of the server. It&#8217;s easy <strong>header =~ /Server: ([<sup>\n$]*)$/**</sup> and </strong>$1<strong> will show </strong>&#8220;WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)&#8221;**. Version 1.0 here, just does 1 mln request to <a href="http://s3.amazonaws.com/alexa-static/top-1m.csv.zip">1 mln websites</a> and gets Server names, uhh:</p>
+
+<figure class='code'><figcaption><span>regexp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="s2">&quot;Apache/2.2.11 (Unix) DAV/2&quot;</span>
+</span><span class='line'><span class="s2">&quot;Apache&quot;</span>
+</span><span class='line'><span class="s2">&quot;nginx/1.0.2&quot;</span>
+</span><span class='line'><span class="s2">&quot;nginx/0.7.69&quot;</span>
+</span><span class='line'><span class="s2">&quot;Microsoft-IIS/6.0&quot;</span>
+</span><span class='line'><span class="s2">&quot;Microsoft-IIS/6.0&quot;</span>
+</span><span class='line'><span class="s2">&quot;current connection: 15, total: 1000, 968        successful, 31 failures, 161 domains/sec&quot;</span>
+</span><span class='line'><span class="s2">&quot;Total 1000, 968 successful, 32 failures in 7.456237s&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ruby code here (I&#8217;ve removed @@class instance, because EM::connection_count() is enough):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">EventMachine</span>
+</span><span class='line'>  <span class="k">module</span> <span class="nn">DNS</span>
+</span><span class='line'>    <span class="k">class</span> <span class="nc">Request</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
+</span><span class='line'>        <span class="vi">@socket</span> <span class="o">=</span> <span class="n">socket</span>
+</span><span class='line'>        <span class="vi">@hostname</span> <span class="o">=</span> <span class="n">hostname</span>
+</span><span class='line'>        <span class="vi">@tries</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="vi">@last_send</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="vi">@retry_interval</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>        <span class="vi">@max_tries</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span> <span class="o">=</span> <span class="no">Resolver</span><span class="o">.</span><span class="n">hosts</span><span class="o">[</span><span class="n">hostname</span><span class="o">]</span>
+</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span>
+</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>          <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span> <span class="p">{</span> <span class="n">tick</span> <span class="p">}</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">receive_answer</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">addrs</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>        <span class="n">msg</span><span class="o">.</span><span class="n">each_answer</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="p">,</span><span class="n">ttl</span><span class="p">,</span><span class="n">data</span><span class="o">|</span>
+</span><span class='line'>          <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="n">A</span><span class="p">)</span> <span class="o">||</span>
+</span><span class='line'>              <span class="n">data</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Resolv</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">IN</span><span class="o">::</span><span class="no">AAAA</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">addrs</span> <span class="o">&lt;&lt;</span> <span class="n">data</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>          <span class="k">end</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">addrs</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>          <span class="nb">fail</span> <span class="s2">&quot;rcode=</span><span class="si">#{</span><span class="n">msg</span><span class="o">.</span><span class="n">rcode</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="vi">@hostname</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>          <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;domain&quot;</span><span class="o">=&gt;</span> <span class="vi">@hostname</span><span class="p">,</span> <span class="s2">&quot;ips&quot;</span> <span class="o">=&gt;</span> <span class="n">addrs</span><span class="p">}</span>
+</span><span class='line'>          <span class="n">succeed</span> <span class="n">info</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;100k.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">gets</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">strip</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Client</span> <span class="o">&lt;</span> <span class="no">EM</span><span class="o">::</span><span class="no">Connection</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span> <span class="n">domain</span>
+</span><span class='line'>    <span class="vi">@domain</span> <span class="o">=</span> <span class="n">domain</span>
+</span><span class='line'>    <span class="n">comm_inactivity_timeout</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'>    <span class="n">pending_connect_timeout</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">post_init</span>
+</span><span class='line'>    <span class="n">send_data</span> <span class="s2">&quot;GET / HTTP/1.1</span><span class="se">\r\n</span><span class="s2">Host: </span><span class="si">#{</span><span class="vi">@domain</span><span class="si">}</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
+</span><span class='line'>    <span class="n">data</span> <span class="o">=~</span> <span class="sr">/Server: ([^\r\n]*)/</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="vg">$1</span>
+</span><span class='line'>    <span class="n">close_connection</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">total_connection</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'><span class="n">urls_size</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">size</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">connect</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">300</span>
+</span><span class='line'>      <span class="n">url</span> <span class="o">=</span> <span class="n">urls</span><span class="o">.</span><span class="n">pop</span>
+</span><span class='line'>      <span class="n">dns</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">DNS</span><span class="o">::</span><span class="no">Resolver</span><span class="o">.</span><span class="n">resolve</span> <span class="n">url</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span><span class="o">|</span><span class="n">data</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">connect</span> <span class="n">data</span><span class="o">[</span><span class="s2">&quot;ips&quot;</span><span class="o">][</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="no">Client</span><span class="p">,</span> <span class="n">data</span><span class="o">[</span><span class="s2">&quot;domain&quot;</span><span class="o">]</span> <span class="k">unless</span> <span class="n">data</span><span class="o">[</span><span class="s2">&quot;ips&quot;</span><span class="o">][</span><span class="mi">0</span><span class="o">].</span><span class="n">nil?</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">dns</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">total_connection</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">total_connection</span> <span class="o">&lt;</span> <span class="n">urls_size</span>
+</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mo">002</span><span class="p">)</span> <span class="p">{</span> <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span><span class="no">EM</span><span class="o">.</span><span class="n">stop</span><span class="p">}</span>   <span class="c1"># 5 seconds timer to lets finish slow connections</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span><span class="p">(</span><span class="o">&amp;</span><span class="n">connect</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># print stats with progress every 3 seconds</span>
+</span><span class='line'>  <span class="n">stats</span> <span class="o">=</span> <span class="nb">proc</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nb">p</span> <span class="s2">&quot;current connection: </span><span class="si">#{</span><span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span><span class="si">}</span><span class="s2">, total: </span><span class="si">#{</span><span class="n">total_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2">\</span>
+</span><span class='line'><span class="s2">        successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures, </span><span class="si">#{</span> <span class="p">(</span><span class="n">successes</span> <span class="o">/</span> <span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span> <span class="o">-</span> <span class="n">t1</span><span class="p">))</span><span class="o">.</span><span class="n">to_i</span><span class="si">}</span><span class="s2"> domains/sec&quot;</span>
+</span><span class='line'>      <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">3</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">add_timer</span> <span class="mi">3</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stats</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'><span class="nb">p</span> <span class="s2">&quot;Total </span><span class="si">#{</span><span class="n">total_connection</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures in </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>TODO: Redis, Rails, Websocket. Good night, was a wonderful week!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-25T13:59:00-07:00" pubdate data-updated="true">Apr 25<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -1522,251 +2154,6 @@ with new.</p>
 
 
 	<a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/09/how-to-make-new-instagrams-friends-with-ruby/">How to Make New Instagram&#8217;s Friends With Ruby</a></h1>
-	<div class="entry-content">
-		<p>I moved to Palo Alto few month ago from LA and realized that I didn&#8217;t know anybody in Bay Area. I was looking for a new friends ;) I had one and his name is Ruby, so we decided to write some code which will help me to make new friends in instagram. First of all it was a good practice and also interesting task where you can easily get feedback from action (code and you get friends).</p>
-
-<h2>Instagram</h2>
-
-<p>It’s a fast, beautiful and fun way to share your life with friends through a series of pictures.</p>
-
-<p>Snap a photo with your iPhone, choose a filter to transform the look and feel, send to Facebook, Twitter or Flickr – it’s all as easy as pie. It’s photo sharing, reinvented.</p>
-
-<p>Instagram has <a href="http://instagram.com/developer/">API</a> which allows you to do anything you want - search users, their likes, relationships, comments, tags, locations and geo.</p>
-
-<h2>Idea</h2>
-
-<p>The idea was simple - to find by tags people who posted their photos from San Francisco and Bay Area (#sanfrancisco, #bayarea, #paloalto, #mountainview and so on). What will I get? I will get the users who probably living there and then I will just follow them and probably they will follow me back. So I will get followers from Bay Area and will able to talk through my pics with people who are living in Bay Area. As example, I can ask about some nice event or party and maybe somebody will share some or invite ;) Stupid isn&#8217;t? But it works!</p>
-
-<h2>Code</h2>
-
-<figure class='code'><figcaption><span>Let me introduce myself ;)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;open-uri&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;net/http&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;net/https&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">ACCESS_TOKEN</span> <span class="o">=</span> <span class="s2">&quot;put_yours_access_token_there&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">begin</span>
-</span><span class='line'>    <span class="nb">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">each_line</span> <span class="p">{</span><span class="o">|</span><span class="n">line</span><span class="o">|</span> <span class="n">response</span> <span class="o">+=</span> <span class="n">line</span> <span class="p">}</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">rescue</span> <span class="no">OpenURI</span><span class="o">::</span><span class="no">HTTPError</span>
-</span><span class='line'>    <span class="kp">nil</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_followers</span>
-</span><span class='line'>  <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.instagram.com/v1/users/self/followed-by?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="n">next_url</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">followers</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="n">next_url</span>
-</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">next_url</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">next_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">result</span><span class="o">[</span><span class="s1">&#39;data&#39;</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="n">followers</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;username&#39;</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="n">data</span><span class="o">[</span><span class="s1">&#39;id&#39;</span><span class="o">]</span><span class="p">)}</span>
-</span><span class='line'>    <span class="nb">p</span> <span class="n">followers</span><span class="o">.</span><span class="n">count</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">followers</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">unfollow_mutual_friends</span><span class="p">(</span><span class="n">followers</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.instagram.com/v1/users/self/follows?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="n">next_url</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="n">next_url</span>
-</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">next_url</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">next_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">result</span><span class="o">[</span><span class="s1">&#39;data&#39;</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span>
-</span><span class='line'>      <span class="k">unless</span> <span class="n">followers</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;username&#39;</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;https://api.instagram.com/v1/users/</span><span class="si">#{</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;id&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/relationship?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">http</span><span class="o">.</span><span class="n">use_ssl</span> <span class="o">=</span> <span class="kp">true</span>
-</span><span class='line'>        <span class="n">http</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">SSL</span><span class="o">::</span><span class="no">VERIFY_NONE</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">request</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">request</span><span class="o">.</span><span class="n">set_form_data</span><span class="p">(</span><span class="s2">&quot;action&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;unfollow&quot;</span><span class="p">,</span> <span class="s2">&quot;access_token&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'>        <span class="nb">p</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;username&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> code </span><span class="si">#{</span><span class="n">response</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">find_users_by_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.instagram.com/v1/tags/</span><span class="si">#{</span><span class="n">tag</span><span class="si">}</span><span class="s2">/media/recent?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="n">next_url</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">users</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="n">next_url</span>
-</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">next_url</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">next_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">result</span><span class="o">[</span><span class="s1">&#39;data&#39;</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="n">users</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;user&#39;</span><span class="o">][</span><span class="s1">&#39;username&#39;</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="n">data</span><span class="o">[</span><span class="s1">&#39;user&#39;</span><span class="o">][</span><span class="s1">&#39;id&#39;</span><span class="o">]</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>    <span class="c1"># people who likes pics with this tag</span>
-</span><span class='line'>    <span class="c1">#data[&#39;likes&#39;][&#39;data&#39;].each { |likes| @users.merge!(likes[&#39;username&#39;] =&gt; likes[&#39;id&#39;]) } </span>
-</span><span class='line'>    <span class="nb">p</span> <span class="n">users</span><span class="o">.</span><span class="n">count</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">follow_users</span><span class="p">(</span><span class="n">potential_friends</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">potential_friends</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">username</span><span class="p">,</span> <span class="nb">id</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;https://api.instagram.com/v1/users/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">/relationship?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">http</span><span class="o">.</span><span class="n">use_ssl</span> <span class="o">=</span> <span class="kp">true</span>
-</span><span class='line'>    <span class="n">http</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">SSL</span><span class="o">::</span><span class="no">VERIFY_NONE</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">request</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">request</span><span class="o">.</span><span class="n">set_form_data</span><span class="p">(</span><span class="s2">&quot;action&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;follow&quot;</span><span class="p">,</span> <span class="s2">&quot;access_token&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2"> added&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;200&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So, if we want to find and follow people who tagged their pics with tag #paloalto:</p>
-
-<figure class='code'><figcaption><span>find users by tag #paloalto and follow them</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">potential_friends</span> <span class="o">=</span> <span class="n">find_users_by_tag</span><span class="p">(</span><span class="s2">&quot;paloalto&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="n">follow_user</span><span class="p">(</span><span class="n">potential_friends</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To unfollow people we have to know who is following us and then unfollow who is not.</p>
-
-<figure class='code'><figcaption><span>unfollow !mutual people</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">followers</span> <span class="o">=</span> <span class="n">get_followers</span>
-</span><span class='line'><span class="n">unfollow_mutual_friends</span><span class="p">(</span><span class="n">followers</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>so, that&#8217;s it. Of course this is my ugly code has to be improved and will be better to add some features like save followers list, save position of finding user by tag (disconnect or something - save the last url and next run will be continue parsing from this position). Anyway, this is just simple ruby script (heh, I&#8217;ve rewritten few time, it was good practice but still code look ugly I know).</p>
-
-<p>ps: proof
-<img src="http://pix.am/HIiH.png" alt="proof" /></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-09T11:09:00-08:00" pubdate data-updated="true">Mar 9<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/instagram/'>instagram</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
 
 
 </div>

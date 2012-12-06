@@ -4,7 +4,7 @@
   <title><![CDATA[Category: great papers | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/great-papers/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-12-02T15:37:20-08:00</updated>
+  <updated>2012-12-05T16:46:13-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -18,11 +18,11 @@
     <link href="http://khakimov.github.com/blog/2012/12/02/return-into-libc-without-function-calls/"/>
     <updated>2012-12-02T14:12:00-08:00</updated>
     <id>http://khakimov.github.com/blog/2012/12/02/return-into-libc-without-function-calls</id>
-    <content type="html"><![CDATA[<p>Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel recently added to their processors a per-page execute disable bit to ease WOX implementation and even Microsoft implement WOX (no location in memory into which the attacker can inject code to execute, or just imagine no memory location in a process image is marked both writable - W and executable - X) all it means you can not write into stack and execute your shellcode.</p>
+    <content type="html"><![CDATA[<p>Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel recently added to their processors a per-page execute disable bit to ease WOX implementation and even Microsoft implement WOX (no location in memory into which the attacker can inject code to execute, or just imagine no memory location in a process image is marked both writable - W and executable - X) all it means you can not execute your shellcode on the stack.</p>
 
 <p>Today I read about technique is known as <strong>return into libc</strong> by <a href="http://cseweb.ucsd.edu/~hovav/">Hovav Shacham</a> (btw, his Ph.D. advisor was professor of Computer Science and Electrial Engineering at Stanford <a href="http://crypto.stanford.edu/~dabo/">Dan Boneh</a>. I took his CS155 class, he is really good in his field).</p>
 
-<p>What is this about? If we can't write in stack what should we do? We can't inject code, so, we will use coe that already exists in the proccess image we are attacking. It is <strong>libc</strong> is the usual target that contains various basic functions, such as printf() and exit(). These functions are share, so any program that uses the printf() function directs execution into the appropriate location in libc. And attacker with his explout can do the same thing and direct a program's execution into a certain function in libc. But in principle any available code, either from the program's text segment of from a library it links to, could be used instead libc.</p>
+<p>What is this about? If we can't write in stack what should we do? We can't inject code, so, we will use code that already exists in the proccess image we are attacking. <strong>Libc</strong> is the usual target that contains various basic functions, such as printf() and exit(). These functions are share, so any program that uses the printf() function directs execution into the appropriate location in libc. And attacker with his explout can do the same thing and direct a program's execution into a certain function in libc. But in principle any available code, either from the program's text segment of from a library it links to, could be used instead libc.</p>
 
 <p>Enjoy!</p>
 
