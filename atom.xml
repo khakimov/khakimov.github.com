@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-12-05T16:46:13-08:00</updated>
+  <updated>2012-12-09T23:13:58-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Bypassing DEP/ASLR protections]]></title>
+    <link href="http://khakimov.github.com/blog/2012/12/09/bypassing-dep-slash-aslr-protections/"/>
+    <updated>2012-12-09T21:13:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/12/09/bypassing-dep-slash-aslr-protections</id>
+    <content type="html"><![CDATA[<p>Today we are going to learn about data execution prevention (DEP) and address space layout randomization (ASLR). Last Sunday I read about <a href="http://khakimov.com/blog/2012/12/02/return-into-libc-without-function-calls/">return-into-libc</a> and one week before was post about <a href="http://khakimov.com/blog/2012/11/20/buffer-overflow/">buffer overflow</a> as-is. Both methods reqired to know the address of attacker shellcode and/or standard kernel library (we found out the address of system() function in the memory to use it in <strong>return-into-libc</strong> with this code int main() { system();}). Modern systems decided to implement something what will make stack addresses and addressess of library routines unpredictable and different from machine to machine (no more universal exploits =) kidding).</p>
+
+<p>Author <a href="https://twitter.com/justdionysus">Dionysus Blazakis</a> holds BS from University of Maryland and doing interesting things, I saw his presentation &#8220;The Apple Sandbox&#8221; and then found this paper, great job Dionysus. I inspired by his example and it motivates me to keep digging in research field. Dion, if you&#8217;ll ever read this I just want to say thank you! Lets get back to his paper and read what this smart fellow prepared for us.</p>
+
+<p><a title="View Blazakis on Scribd" href="http://www.scribd.com/doc/116197211/Blazakis" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Blazakis</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/116197211/content?start_page=1&view_mode=scroll&access_key=key-1dr5xy06ojvmp97eq1hg" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_39852" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>DEP and ASLR are very real problem in the side of an exploit developer. DEP makes locating shellcode difficult, ASLR further complicates an attack by obfuscating the base address of the loaded data. Adobe Flash Player is used as an example, Dion also referenced to JIT spraying (Just-In-Time).</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>A Just-in-time compiler (JIT), by definition, produces machine code as its output. Since it produces executable data, a JIT compiler is one of the few types of programs that **cannot** be run in a **no-executable-data environment**. Therefore, JIT compilers are normally exempt from data execution prevention. A JIT spray compiles code that then proceeds to spray the memory with enough instances of exploit code to overwhelm the address space randomization and execute the exploit itself.</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>JIT spraying is very simular to heap spraying, in simple terms attacker stuff heap with multiple copies of attack code (payload) and that increases the chances of successful exploitation.</p>
+
+<p>JIT Spray Exploit Demo</p>
+
+<iframe width="640" height="480" src="http://www.youtube.com/embed/HJuBpciJ3Ao?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p>So, why do you need this? If you found the overflow in the modern browsers you will not able to use it easily, because of randomization, the address space is randomized and you don&#8217;t know where to point EIP and even if you have data in the heap DEP wont allow you to execute it. But you can use Just-In-Time compiler which will allocate writable memory for you and write executable code into it. For more detail please read the paper above. Enjoy!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[You and Your Research]]></title>
@@ -1416,29 +1446,6 @@ Hello world!</p>
 <li><p><a href="http://racket-lang.org/">Racket programming language</a> Never heard about this programming language has a dialect of Lisp and a descendant of Scheme.</p></li>
 <li><p><a href="http://raganwald.posterous.com/what-ive-learned-about-learning">What I have Learned About Learning</a> My weakness is thinking that when I first grasp an idea, I think I&#8217;m done. I&#8217;ve gotten better over time. I have learned to exercise ideas, to write and use little libraries, even to write essays like this to help me think the little implications through.</p></li>
 <li><p><a href="http://news.ycombinator.com/item?id=4350827">Job market for a 30+ person learning to code?</a> Too old to fail? 37-year old person going to learn to code and asking about being to old to be employable.</p></li>
-</ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Curiosity landed on Mars]]></title>
-    <link href="http://khakimov.github.com/blog/2012/08/06/curiosity-landed-on-Mars/"/>
-    <updated>2012-08-06T18:47:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/08/06/curiosity-landed-on-Mars</id>
-    <content type="html"><![CDATA[<h2>Curiosity&#8217;s Descent</h2>
-
-<iframe width="560" height="315" src="http://www.youtube.com/embed/UcGMDXy-Y1I?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-<p><strong>“Touchdown confirmed,” Allen Chen, an engineer in the control room here, said at 10:32 p.m. Sunday. <strong>“We’re safe on Mars.”</strong> The room erupted with cheers, hugs, handshakes and high-fives.</strong></p>
-
-<p>What interesting for me is only one other country, the Soviet Union, has successfully landed anything on Mars, and that spacecraft, Mars 3 in 1971, fell silent shortly after landing. So far, this rover appears to be healthy.</p>
-
-<ol>
-<li><p><a href="http://www.ft.com/cms/s/2/93a47a62-daf0-11e1-8074-00144feab49a.html#axzz22p2ab3qx">A man walks into a bank</a>. Guy deposits a junk-mail cheque for $95,000 – for a joke. The bank cashes it.</p></li>
-<li><p><a href="http://viniciusvacanti.com/2012/08/06/advice-i-wish-i-could-have-given-myself-5-years-ago/">Advice I Wish I Could Have Given Myself 5 Years Ago</a>. Guy (co-founder Yipit well funded startup with 25 employes) fantasize about going back in time and giving himself advice based on what he’s learned over the last 5 years.</p></li>
-<li><p><a href="http://www.wired.com/gadgetlab/2012/08/apple-amazon-mat-honan-hacking/">How Apple and Amazon Security Flaws Led to My Epic Hacking</a>. In the space of one hour, my entire digital life was destroyed&#8230; Not bad for begining</p></li>
 </ol>
 
 ]]></content>

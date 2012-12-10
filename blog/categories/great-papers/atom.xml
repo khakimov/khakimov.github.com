@@ -4,7 +4,7 @@
   <title><![CDATA[Category: great papers | Doing things]]></title>
   <link href="http://khakimov.github.com/blog/categories/great-papers/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-12-05T16:46:13-08:00</updated>
+  <updated>2012-12-09T23:13:58-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,34 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Bypassing DEP/ASLR protections]]></title>
+    <link href="http://khakimov.github.com/blog/2012/12/09/bypassing-dep-slash-aslr-protections/"/>
+    <updated>2012-12-09T21:13:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/12/09/bypassing-dep-slash-aslr-protections</id>
+    <content type="html"><![CDATA[<p>Today we are going to learn about data execution prevention (DEP) and address space layout randomization (ASLR). Last Sunday I read about <a href="http://khakimov.com/blog/2012/12/02/return-into-libc-without-function-calls/">return-into-libc</a> and one week before was post about <a href="http://khakimov.com/blog/2012/11/20/buffer-overflow/">buffer overflow</a> as-is. Both methods reqired to know the address of attacker shellcode and/or standard kernel library (we found out the address of system() function in the memory to use it in <strong>return-into-libc</strong> with this code int main() { system();}). Modern systems decided to implement something what will make stack addresses and addressess of library routines unpredictable and different from machine to machine (no more universal exploits =) kidding).</p>
+
+<p>Author <a href="https://twitter.com/justdionysus">Dionysus Blazakis</a> holds BS from University of Maryland and doing interesting things, I saw his presentation "The Apple Sandbox" and then found this paper, great job Dionysus. I inspired by his example and it motivates me to keep digging in research field. Dion, if you'll ever read this I just want to say thank you! Lets get back to his paper and read what this smart fellow prepared for us.</p>
+
+<p><a title="View Blazakis on Scribd" href="http://www.scribd.com/doc/116197211/Blazakis" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Blazakis</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/116197211/content?start_page=1&view_mode=scroll&access_key=key-1dr5xy06ojvmp97eq1hg" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_39852" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>DEP and ASLR are very real problem in the side of an exploit developer. DEP makes locating shellcode difficult, ASLR further complicates an attack by obfuscating the base address of the loaded data. Adobe Flash Player is used as an example, Dion also referenced to JIT spraying (Just-In-Time).</p>
+
+<p><code>
+A Just-in-time compiler (JIT), by definition, produces machine code as its output. Since it produces executable data, a JIT compiler is one of the few types of programs that **cannot** be run in a **no-executable-data environment**. Therefore, JIT compilers are normally exempt from data execution prevention. A JIT spray compiles code that then proceeds to spray the memory with enough instances of exploit code to overwhelm the address space randomization and execute the exploit itself.
+</code></p>
+
+<p>JIT spraying is very simular to heap spraying, in simple terms attacker stuff heap with multiple copies of attack code (payload) and that increases the chances of successful exploitation.</p>
+
+<p>JIT Spray Exploit Demo</p>
+
+<iframe width="640" height="480" src="http://www.youtube.com/embed/HJuBpciJ3Ao?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p>So, why do you need this? If you found the overflow in the modern browsers you will not able to use it easily, because of randomization, the address space is randomized and you don't know where to point EIP and even if you have data in the heap DEP wont allow you to execute it. But you can use Just-In-Time compiler which will allocate writable memory for you and write executable code into it. For more detail please read the paper above. Enjoy!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Return-into-libc without Function Calls]]></title>
