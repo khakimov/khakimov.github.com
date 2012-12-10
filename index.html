@@ -84,7 +84,21 @@
 <p>DEP and ASLR are very real problem in the side of an exploit developer. DEP makes locating shellcode difficult, ASLR further complicates an attack by obfuscating the base address of the loaded data. Adobe Flash Player is used as an example, Dion also referenced to JIT spraying (Just-In-Time).</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>A Just-in-time compiler (JIT), by definition, produces machine code as its output. Since it produces executable data, a JIT compiler is one of the few types of programs that **cannot** be run in a **no-executable-data environment**. Therefore, JIT compilers are normally exempt from data execution prevention. A JIT spray compiles code that then proceeds to spray the memory with enough instances of exploit code to overwhelm the address space randomization and execute the exploit itself.</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>A Just-in-time compiler (JIT), by definition, produces machine 
+</span><span class='line'>code as its output. Since it produces executable data, a JIT 
+</span><span class='line'>compiler is one of the few types of programs that **cannot** be 
+</span><span class='line'>run in a **no-executable-data environment**. Therefore, JIT 
+</span><span class='line'>compilers are normally exempt from data execution prevention. A 
+</span><span class='line'>JIT spray compiles code that then proceeds to spray the memory 
+</span><span class='line'>with enough instances of exploit code to overwhelm the address 
+</span><span class='line'>space randomization and execute the exploit itself.</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
