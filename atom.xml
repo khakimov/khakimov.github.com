@@ -4,7 +4,7 @@
   <title><![CDATA[Doing things]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-12-09T23:18:29-08:00</updated>
+  <updated>2012-12-13T09:54:48-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,19 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[English Shellcode]]></title>
+    <link href="http://khakimov.github.com/blog/2012/12/10/english-shellcode/"/>
+    <updated>2012-12-10T21:56:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2012/12/10/english-shellcode</id>
+    <content type="html"><![CDATA[<p>This paper demonstrate a technique for automatically producing English Shellcode — that is, transforming arbitrary shellcode into a representation that is statistically similar to English prose.</p>
+
+<p><img src="http://pix.am/kWJT.png" alt="" /></p>
+
+<p><a title="View Ccs243 Mason on Scribd" href="http://www.scribd.com/doc/116712351/Ccs243-Mason" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Ccs243 Mason</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/116712351/content?start_page=1&view_mode=scroll&access_key=key-kfmhab4cfcscgy1dh9i" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_18420" width="100%" height="600" frameborder="0"></iframe></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Bypassing DEP/ASLR protections]]></title>
@@ -53,7 +66,7 @@
 <iframe width="640" height="480" src="http://www.youtube.com/embed/HJuBpciJ3Ao?rel=0" frameborder="0" allowfullscreen></iframe>
 
 
-<p>So, why do you need this? If you found the overflow in the modern browsers you will not able to use it easily, because of randomization, the address space is randomized and you don&#8217;t know where to point EIP and even if you have data in the heap DEP wont allow you to execute it. But you can use Just-In-Time compiler which will allocate writable memory for you and write executable code into it. For more detail please read the paper above. Enjoy!</p>
+<p>So, why do you need this? If you found the overflow in the modern browsers you will not able to use it easily, because of randomization, the address space is randomized and you don&#8217;t know where to point EIP and even if you have data in the heap DEP wont allow you to execute it. But you can use Just-In-Time compiler which will allocate writable memory for you and write executable code into it. For more details please read the paper above. Enjoy!</p>
 ]]></content>
   </entry>
   
@@ -1445,22 +1458,6 @@ Hello world!</p>
     <content type="html"><![CDATA[<p>On Saturday morning decided to mass unfollow all of user from my list, because folowed ~800 and even with list it&#8217;s a lot. So, ruby and couple lines of code solved this problem.</p>
 
 <script src="https://gist.github.com/3307549.js?file=gistfile1.rb"></script>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Immigration will solve the talent war in the valley]]></title>
-    <link href="http://khakimov.github.com/blog/2012/08/07/immigration-will-solve-the-talent-war-in-the-valley/"/>
-    <updated>2012-08-07T11:38:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/08/07/immigration-will-solve-the-talent-war-in-the-valley</id>
-    <content type="html"><![CDATA[<ol>
-<li><p><a href="http://rvivek.com/immigration/">Immigration</a> Immigration will solve the talent war in the valley.</p></li>
-<li><p><a href="http://blog.filepicker.io/post/28881520162/what-hackers-dont-know-about-business">What hackers do not know about business</a> Very interesting if you don&#8217;t understand the differences between Marketing, Distribution, Sales, or Business Development or special terms like LTV, COCA.</p></li>
-<li><p><a href="http://racket-lang.org/">Racket programming language</a> Never heard about this programming language has a dialect of Lisp and a descendant of Scheme.</p></li>
-<li><p><a href="http://raganwald.posterous.com/what-ive-learned-about-learning">What I have Learned About Learning</a> My weakness is thinking that when I first grasp an idea, I think I&#8217;m done. I&#8217;ve gotten better over time. I have learned to exercise ideas, to write and use little libraries, even to write essays like this to help me think the little implications through.</p></li>
-<li><p><a href="http://news.ycombinator.com/item?id=4350827">Job market for a 30+ person learning to code?</a> Too old to fail? 37-year old person going to learn to code and asking about being to old to be employable.</p></li>
-</ol>
 
 ]]></content>
   </entry>
