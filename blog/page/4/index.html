@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="Few days couldn&#8217;t use mt keyboard because fell of my bike and hurt my arms. Still using only one hand and that&#8217;s enough to start doing &hellip;">
+	<meta name="description" content="Only with Rails I&#8217;ve realized meaning of the word REST and how RESTful Controller works. When you will understand CRUD and Scaffolding, you &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,384 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/05/07/playing-with-rails/">Playing With Rails</a></h1>
+	<div class="entry-content">
+		<p>Only with Rails I&#8217;ve realized meaning of the word REST and how RESTful Controller works. When you will understand CRUD and Scaffolding, you will easily create simple application, like one more blog or twitter clone ;)</p>
+
+<p>CRUD = CREATE, SELECT, UPDATE, DELETE in database and create, show, update and destroy in Rails.</p>
+
+<p>When we are using create HTTP sends POST request. For destroy - DELETE request. update - PUT and show simple GET. This is very useful, because you don&#8217;t need to create different paths for object you going to work with. For example,</p>
+
+<ul>
+<li>create - will send POST /users</li>
+<li>update - will send PUT /users/1</li>
+<li>destroy - will send DELETE /users/1</li>
+<li>show - will send /users/1</li>
+</ul>
+
+
+<p>I haven&#8217;t seen this in Django, only with Rails realized this simplicity of REST.</p>
+
+<p>I know, I know what already exists a tons of tutorials with Rails, but because it&#8217;s good to repeat some fundomental stuff I&#8217;m also going to create one more. I&#8217;m going to build simple application called <strong>Morning Pages</strong>. I read the book <em>Pragmatic Thinking and Learning</em> and author describes one technic with same name &#8220;Morning Pages&#8221; when you wake up and start writing just random things from your head.</p>
+
+<p><img src="http://pix.am/CuqHl.png" alt="" /></p>
+
+<p>Specs:
+morning page has title, body, created and updated time.</p>
+
+<p>We want to be able:</p>
+
+<ul>
+<li>add new morning page</li>
+<li>edit morning page</li>
+<li>delete morning page</li>
+<li>show morning page</li>
+</ul>
+
+
+<p>Let&#8217;s start:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails new morning_page
+</span><span class='line'>
+</span><span class='line'># here is trick with [plural and singular](http://stackoverflow.com/questions/646951/singular-or-plural-controller-and-helper-names-in-rails).
+</span><span class='line'>rails generate controller MorningPages 
+</span><span class='line'>rails generate model MorningPage title:string body:text
+</span><span class='line'>
+</span><span class='line'>rake db:migrate</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;m not using scaffold here, because I think will be better to go throught step-by-step will be better to understand how it works. Scanffolding allows you create</p>
+
+<ul>
+<li>4 views (index, show, new and edit)</li>
+<li>a layout file for all of those views</li>
+<li>a stylesheet for all of those views</li>
+<li>a model</li>
+<li>a data migration to establish the tables needed for the model</li>
+<li>a controller to send data</li>
+<li>an empty file for helper methods</li>
+<li>a new route that will map user requests to the controller</li>
+</ul>
+
+
+<p>a lot isnt&#8217;s? but we are not looking for easy way ;) of course when you will understand how each part works, you can use scaffold. In our case we already created controller MorningPage and model with same name. Now I&#8217;m going insert some test data in a database. Open db/seed.db and add few records:</p>
+
+<figure class='code'><figcaption><span>seed.db</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">puts</span> <span class="s2">&quot;Create few records&quot;</span>
+</span><span class='line'><span class="no">MorningPage</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="s1">&#39;Day 1&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="s1">&#39;Good morning! Sunny day!&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="no">MorningPage</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="s1">&#39;Day 2&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="s1">&#39;Hello! Such a wonderful day.&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>seed.db</strong> is just a ruby script, so you can write here anything you want in ruby like cycles, parsing method or whatever. Then you should run <strong>rake db:seed</strong> to execute your&#8217;s seed.db. Ok, nice, now we have two records in our database and we can also check this with rails console</p>
+
+<figure class='code'><figcaption><span>seed.db</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">khakimov</span> <span class="k">in</span> <span class="o">~</span><span class="sr">/Projects/</span><span class="n">current</span><span class="o">/</span><span class="n">ruby</span><span class="o">/</span><span class="n">rails</span><span class="o">/</span><span class="n">rails_app</span><span class="o">/</span><span class="n">morning</span> <span class="n">on</span> <span class="n">master</span>
+</span><span class='line'><span class="err">±</span> <span class="n">rails</span> <span class="n">console</span>
+</span><span class='line'><span class="no">Loading</span> <span class="n">development</span> <span class="n">environment</span> <span class="p">(</span><span class="no">Rails</span> <span class="mi">3</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">3</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;</span> <span class="no">MorningPage</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</span><span class='line'><span class="o">=&gt;</span> <span class="o">[</span><span class="c1">#&lt;MorningPage id: 1, title: &quot;Day 1&quot;, body: &quot;Good morning! Sunny day!&quot;, created_at: &quot;2012-05-08 23:29:58&quot;, updated_at: &quot;2012-05-09 20:50:56&quot;&gt;, ...]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>so far, so good with model. move on to controller. We don&#8217;t have any action methods yet, like index, show, edit&#8230; Open app/controllers/morning_pages_controller.rb and add index, show, new, edit, create, update and destroy:</p>
+
+<figure class='code'><figcaption><span>morining_page_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">MorningPagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>      <span class="vi">@messages</span> <span class="o">=</span> <span class="no">MorningPage</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>      <span class="vi">@message</span> <span class="o">=</span> <span class="no">MorningPage</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">new</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">edit</span>
+</span><span class='line'>      <span class="vi">@morning_page</span> <span class="o">=</span> <span class="no">MorningPage</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>      <span class="c1">#logger.debug(params)</span>
+</span><span class='line'>      <span class="vi">@morning_page</span> <span class="o">=</span> <span class="no">MorningPage</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:morning_page</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="vi">@morning_page</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>          <span class="n">redirect_to</span> <span class="vi">@morning_page</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>          <span class="n">render</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s2">&quot;new&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>      <span class="vi">@morning_page</span> <span class="o">=</span> <span class="no">MorningPage</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="vi">@morning_page</span><span class="o">.</span><span class="n">update_attributes</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:morning_page</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>          <span class="n">redirect_to</span> <span class="vi">@morning_page</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>          <span class="n">render</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="ss">:edit</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">destroy</span>
+</span><span class='line'>      <span class="vi">@morning_page</span> <span class="o">=</span> <span class="no">MorningPage</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="vi">@morning_page</span><span class="o">.</span><span class="n">destroy</span>
+</span><span class='line'>          <span class="n">redirect_to</span> <span class="n">morning_page_index_path</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>          <span class="n">render</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="ss">:index</span><span class="p">,</span> <span class="ss">:notice</span> <span class="o">=&gt;</span> <span class="s2">&quot;fail&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>in our config/routes.rb file don&#8217;t forget to add which will allow route request to the methods</p>
+
+<figure class='code'><figcaption><span>morining_page_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">root</span> <span class="ss">:to</span> <span class="o">=&gt;</span> <span class="s1">&#39;morning_pages#index&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">resources</span> <span class="ss">:morning_pages</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ok, now our application can route request, but we can&#8217;t check it without layouts. So, create views/morning_pages/ with files:</p>
+
+<figure class='code'><figcaption><span>edit.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="err">&lt;</span>%= form_for(@morning_page, :url =&gt; {:action =&gt; :update}) do |f| %&gt;
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;text_field&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>%= f.label :title %&gt;
+</span><span class='line'>      <span class="err">&lt;</span>%= f.text_field :title, :placeholder =&gt; &#39;Title&#39;, :size =&gt; &#39;auto&#39; %&gt;
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;text_field&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>%= f.label :body %&gt;<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>%= f.text_area :body, :placeholder =&gt; &#39;Body&#39; %&gt;<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= f.submit &quot;Modify Page&quot;, :class =&gt; &quot;buttonize submit_form&quot;, :id =&gt; &#39;form_submitter&#39; %&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span>% end %&gt;
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>index.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;content home clearfix users&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span>% if !@messages.blank? %&gt;
+</span><span class='line'>  <span class="err">&lt;</span>% for item in @messages %&gt;
+</span><span class='line'>    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;post clearfix &lt;%= cycle(&#39;jared&#39;,&#39;daslee&#39;)%&gt;&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;title&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="err">&lt;</span>%= item.updated_at.to_formatted_s(:long) %&gt;
+</span><span class='line'>          <span class="err">&lt;</span>%= link_to(item.title, morning_page_path(item), :class =&gt; &#39;clearfix&#39;) %&gt;
+</span><span class='line'>          <span class="err">&lt;</span>%= link_to(&quot;edit&quot;, edit_morning_page_path(item)) %&gt; |
+</span><span class='line'>          <span class="err">&lt;</span>%= link_to(&quot;delete&quot;, morning_page_path(item),
+</span><span class='line'>              :confirm =&gt; &#39;Are you sure?&#39;, :method =&gt; :delete) %&gt;
+</span><span class='line'>      <span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>% end %&gt;
+</span><span class='line'><span class="err">&lt;</span>% else %&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span>% end %&gt;
+</span><span class='line'>      <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;post clearfix&quot;</span><span class="nt">&gt;&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>new.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="err">&lt;</span>%= form_for(:morning_page, :url =&gt; {:action =&gt; :create}) do |f| %&gt;
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;text_field&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>%= f.label :title %&gt;
+</span><span class='line'>      <span class="err">&lt;</span>%= f.text_field :title, :placeholder =&gt; &#39;Title&#39;, :size =&gt; &#39;auto&#39; %&gt;
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;text_field&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>%= f.label :body %&gt;<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>%= f.text_area :body, :placeholder =&gt; &#39;Body&#39; %&gt;<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= f.submit &quot;Save Page&quot;, :class =&gt; &quot;buttonize submit_form&quot;, :id =&gt; &#39;form_submitter&#39; %&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span>% end %&gt;
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>show.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;text_field&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;morning_page_title&quot;</span><span class="nt">&gt;</span>Title<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;p&gt;</span><span class="err">&lt;</span>%= @message.title%&gt;<span class="nt">&lt;br/&gt;&lt;/p&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;text_field&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;morning_page_title&quot;</span><span class="nt">&gt;</span>Body<span class="nt">&lt;/label&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;p&gt;</span><span class="err">&lt;</span>%= @message.body %&gt;<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/li&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It&#8217;s very hard to describe how to do something, how to build, that&#8217;s why probably will be better just to check source code or build by you own without copy/paste tutorials. I&#8217;m sure that many beginers and not only beginners stuck with ideas, they don&#8217;t want to build one more blog and this is idea not motivate to code and practice. When you really want to build something, that is the best period to practice and learn stuff, especially if you are doing this with somebody together. A lot of people looking for &#8220;weekend&#8221; project or to build something and hack with other, but the only place where they can find it is github. Github is good, but how to find in thousands project something simple and interesting for beginers? Will think about this, looks like an interesting idea.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-07T23:55:00-07:00" pubdate data-updated="true">May 7<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/bootstrap/'>bootstrap</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/tutorial/'>tutorial</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -2556,120 +2934,6 @@ Connection: Keep-Alive</p>
 
 
 	<a class='category' href='/blog/categories/practice/'>practice</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/20/playing-with-hackernews/">Playing With HackerNews</a></h1>
-	<div class="entry-content">
-		<p>Since monday I started playing with RubyOnRails and very happy that I
-didn&#8217;t skip Ruby part as many beginers mistakenly do. I&#8217;m reading <a href="http://pragprog.com/book/rails4/agile-web-development-with-rails">Agile Web Development with Rails</a> (big thanks to <a href="http://ap.thinkeffect.com">Andrija</a>) now and still have a lot of questions, but
-today want to talk about other things.</p>
-
-<p>As you know many books and tutorials show boring examples like &#8220;Hello Word&#8221; and my inflamed brain alwayls is looking for opportunity. To build, to parse or hack something. Today when I was waiting my turkey sandwitch in Palo Alto Cafe I read comment where is an author is talking about hackernews karma, like how is awesome to have large karma. I also checked his submissions and realised he just posted random stuff from techcrunch/gizmodo/mashable/etc. So, why not to try post new on HN with ruby?</p>
-
-<p>I certainly do not intend to increase my karma with spam HN, but I was
-interested to do it and going to share just few things about the
-process.</p>
-
-<h2>How to get fnid? </h2>
-
-<p>To post something on HN you have to know fnid which generate everytime
-when you GET <a href="http://news.ycombinator.com/submit">http://news.ycombinator.com/submit</a>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;nokogiri&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;open-uri&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">fetch</span>
-</span><span class='line'>  <span class="n">submit_html</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;http://news.ycombinator.com/submit&#39;</span><span class="p">,</span> <span class="s2">&quot;Cookie&quot;</span> <span class="o">=&gt;</span>
-</span><span class='line'><span class="s1">&#39;user=check_yours_cookie_and_put_here&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
-</span><span class='line'>  <span class="n">doc</span> <span class="o">=</span> <span class="no">Nokogiri</span><span class="o">::</span><span class="no">HTML</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">submit_html</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//form/input&#39;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">][</span><span class="s1">&#39;value&#39;</span><span class="o">]</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Posting</h2>
-
-<p>Method fetch returns fnid. Ok, now we are going to submit our news with
-method post:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;net/http&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">fnid</span> <span class="o">=</span> <span class="n">fetch</span> <span class="c1">#our fetch method</span>
-</span><span class='line'>  <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fnid&#39;</span> <span class="o">=&gt;</span> <span class="n">fnid</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span> <span class="o">=&gt;</span> <span class="n">url</span> <span class="p">}</span>
-</span><span class='line'>  <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;http://news.ycombinator.com/r&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># the most interesting part. make headers with</span>
-</span><span class='line'>  <span class="c1"># Cookie and Referer, also you can add User-Agent</span>
-</span><span class='line'>  <span class="n">request</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">request</span><span class="o">.</span><span class="n">set_form_data</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">request</span><span class="o">[</span><span class="s2">&quot;Cookie&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;user=check_yours_cookie_and_put_here&#39;</span>
-</span><span class='line'>  <span class="n">request</span><span class="o">[</span><span class="s2">&quot;Referer&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;http://news.ycombinator.com/submit&#39;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Nice and simple, that&#8217;s why I fall in love with Ruby. Here is my
-sandwich arrived ;)</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-20T21:56:00-07:00" pubdate data-updated="true">Mar 20<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hackernews/'>hackernews</a>, <a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/http/'>http</a>, <a class='category' href='/blog/categories/nokogiri/'>nokogiri</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
 
 
 </div>
