@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: startups | Doing things]]></title>
+  <title><![CDATA[Category: startups | curious and driven]]></title>
   <link href="http://khakimov.github.com/blog/categories/startups/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-12-23T11:32:09-08:00</updated>
+  <updated>2012-12-29T14:34:48-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -20,11 +20,29 @@
     <id>http://khakimov.github.com/blog/2012/10/25/behind-the-hacks</id>
     <content type="html"><![CDATA[<p>I've realized what I have bunch of emails where I've send people "bugs" on their websites (I'll share here only that already fixed "bugs"). As example, once I've read about startup http://1.ai on HN. I thought such a nice domain name and interesting .ai zone =) Couple checks and pretty annoy xss:</p>
 
-<p><blockquote><p>Hey guys,</p></p><p><p>Read about you on HN, first of all thanks for the great job and don't<br/>forget to close xss here<br/>http://1.ai/%3Cimg%20src=%22http://i.imgur.com/aAJSR.jpg%22%3E</p></p><p><p>thanks</p></p><p><p>-rus</p></blockquote></p>
+<p>{% blockquote %}
+Hey guys,</p>
+
+<p>Read about you on HN, first of all thanks for the great job and don't
+forget to close xss here
+http://1.ai/%3Cimg%20src=%22http://i.imgur.com/aAJSR.jpg%22%3E</p>
+
+<p>thanks</p>
+
+<p>-rus
+{% endblockquote %}</p>
 
 <p>just after that i've got email:</p>
 
-<p><blockquote><p>Hello Ruslan,<br/>thank you for your help - will notify the sysadmin asap :)<br/>Enjoy the account and feel free to let me know if you do have suggestions/security ideas.<br/>At the moment beside relatively small things the permissions and security should guarantee that<br/>everything runs smoothly but we will certainly do more fixes (like this one) over time !<br/>best Regards<br/>David</p></blockquote></p>
+<p>{% blockquote %}
+Hello Ruslan,
+thank you for your help - will notify the sysadmin asap :)
+Enjoy the account and feel free to let me know if you do have suggestions/security ideas.
+At the moment beside relatively small things the permissions and security should guarantee that
+everything runs smoothly but we will certainly do more fixes (like this one) over time !
+best Regards
+David
+{% endblockquote %}</p>
 
 <p>That's cool when people response very fast and with positive feedback, usually people just ignore emails like this, I have no idea why. Maybe because it seems strange, maybe they don't care about that till time when somebody use it.</p>
 ]]></content>
