@@ -4,7 +4,7 @@
   <title><![CDATA[curious and driven]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-12-29T14:34:28-08:00</updated>
+  <updated>2013-01-06T15:40:14-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Offensive Security Certified Professional]]></title>
+    <link href="http://khakimov.github.com/blog/2013/01/06/offensive-security-certified-professional/"/>
+    <updated>2013-01-06T15:34:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2013/01/06/offensive-security-certified-professional</id>
+    <content type="html"><![CDATA[<p> I actively hacking away in a lab environment, preparing for the Offensive Security Certified Professional (OSCP) exam.</p>
+
+<p> <img src="http://i.imgur.com/obg2H.gif" alt="" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Automatically Rewrite HTTP to HTTPS with JS]]></title>
@@ -1460,77 +1471,6 @@ Hello world!</p>
 
 
 <blockquote><p>It is not the critic who counts; not the man who points out how the strong man stumbles, or where the doer of deeds could have done them better. The credit belongs to the man who is actually in the arena, whose face is marred by dust and sweat and blood; who strives valiantly; who errs, who comes short again and again, because there is no effort without error and shortcoming; but who does actually strive to do the deeds; who knows great enthusiasms, the great devotions; who spends himself in a worthy cause; who at the best knows in the end the triumph of high achievement, and who at the worst, if he fails, at least fails while daring greatly, so that his place shall never be with those cold and timid souls who neither know victory nor defeat.</p></blockquote>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rebrand blog and some new feature]]></title>
-    <link href="http://khakimov.github.com/blog/2012/08/12/rebrand-blog-and-some-new-feature/"/>
-    <updated>2012-08-12T19:09:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/08/12/rebrand-blog-and-some-new-feature</id>
-    <content type="html"><![CDATA[<p>Today is Sunday and as usually I spent this day reading and hacking. K&amp;R for sure is a best book ever if you want to understand C and the most important part is exercises. Very interesting and useful. But today I will not talk about programming, I want to introduce new version of this blog with new design and one feature which, I hope, will provide more interactive.</p>
-
-<p>I&#8217;m not crazy and understand nobody read this and this lines I wrote only for myself, but anyway it sounds interesting, why not to try?</p>
-
-<p>I added function to be able to comment any part of post, even just one word. I think this is going to be very useful to comment some code. Double click on any text and will see [comment] button, like this:</p>
-
-<p><img src="http://pix.am/yM4z.png" alt="Example screenshot with comment button" /></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
-</span><span class='line'>
-</span><span class='line'> <span class="k">module</span> <span class="nn">EchoServer</span>
-</span><span class='line'>   <span class="k">def</span> <span class="nf">post_init</span>
-</span><span class='line'>     <span class="nb">puts</span> <span class="s2">&quot;-- someone connected to the echo server!&quot;</span>
-</span><span class='line'>   <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
-</span><span class='line'>     <span class="n">send_data</span> <span class="s2">&quot;&gt;&gt;&gt;you sent: </span><span class="si">#{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>     <span class="n">close_connection</span> <span class="k">if</span> <span class="n">data</span> <span class="o">=~</span> <span class="sr">/quit/i</span>
-</span><span class='line'>   <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">def</span> <span class="nf">unbind</span>
-</span><span class='line'>     <span class="nb">puts</span> <span class="s2">&quot;-- someone disconnected from the echo server!&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1"># Note that this will block current thread.</span>
-</span><span class='line'><span class="no">EventMachine</span><span class="o">.</span><span class="n">run</span> <span class="p">{</span>
-</span><span class='line'>  <span class="no">EventMachine</span><span class="o">.</span><span class="n">start_server</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">8081</span><span class="p">,</span> <span class="no">EchoServer</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I&#8217;m also want to share interesting posts I reading during the day with my thoughts and comments. Mostly from <a href="http://news.ycombinator.com/">HN</a> and <a href="http://quora.com">Quora</a>. Will see how it will work, some examples what I&#8217;m reading on <strong>quora</strong>:</p>
-
-<ol>
-<li><p><a href="http://www.quora.com/Sleep/What-is-the-ideal-time-to-go-to-bed">What is the ideal time to go to bed?</a>.</p></li>
-<li><p><a href="http://www.quora.com/What-important-things-do-people-learn-in-university-that-would-be-hard-to-learn-on-their-own">What important things do people learn in university that would be hard to learn on their own?</a>.</p></li>
-<li><p><a href="http://www.quora.com/How-much-money-does-a-successful-high-end-restaurant-make">How much money does a successful, high-end restaurant make?</a>.</p></li>
-</ol>
-
-
-<p>Any ideas/thought/sugestions?</p>
 ]]></content>
   </entry>
   

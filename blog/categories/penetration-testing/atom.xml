@@ -4,7 +4,7 @@
   <title><![CDATA[Category: penetration testing | curious and driven]]></title>
   <link href="http://khakimov.github.com/blog/categories/penetration-testing/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2012-12-29T14:34:48-08:00</updated>
+  <updated>2013-01-06T15:40:14-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -26,26 +26,11 @@
 
 <p><img src="http://9.mshcdn.com/wp-content/uploads/2012/10/Podium.jpg" alt="" /></p>
 
-<p>{% blockquote %}
-In 2010, Washington, D.C. developed an Internet voting pilot project that was intended to allow overseas absentee voters to cast their ballots using a website. This paper describes our experience participating in this trial. Within 48 hours of the system going live, we had gained nearcomplete control of the election server. We successfully changed every vote and revealed almost every secret ballot. Election oﬃcials did not detect our intrusion for nearly two business days and might have remained unaware for far longer had we not deliberately left a prominent clue.
-{% endblockquote %}</p>
+<p><blockquote><p>In 2010, Washington, D.C. developed an Internet voting pilot project that was intended to allow overseas absentee voters to cast their ballots using a website. This paper describes our experience participating in this trial. Within 48 hours of the system going live, we had gained nearcomplete control of the election server. We successfully changed every vote and revealed almost every secret ballot. Election oﬃcials did not detect our intrusion for nearly two business days and might have remained unaware for far longer had we not deliberately left a prominent clue.</p></blockquote></p>
 
 <p>Highly recommend to read even you don't know/care about internet security, authors describe every steps and it looks like cyber-thriller. Spoil!</p>
 
-<p>{% blockquote %}
-After a few hours of examination, we found a shell injection vulnerability that eventually allowed us to compromise the web application server.
-...
-We also gained access to the database by ﬁnding credentials in the bash history ﬁle (mysql -h 10.1.143.75 -udvbm -pP@ssw0rd).
-...
-After about 3.5 hours using the cracker’s default settings, we recovered the secondary administrator password cisco123 from a salted MD5 hash.
-...
-We realized that one of the default logins to the terminal server (user: admin, password: admin)
-...
-The terminal server provided built-in support for keystroke logging of serial console sessions and forwarding of logged keystrokes to a remote syslog server, which we enabled and conﬁgured to forward to one of our machines. This allowed us to observe in real time as system administrators logged in and conﬁgured the switches, and to capture the switches’ administrative password, !@#123abc.
-...
-We found a pair of webcams on the DVBM network both publicly accessible without any password that showed views of the server room that housed the pilot.
-...
-{% endblockquote %}</p>
+<p><blockquote><p>After a few hours of examination, we found a shell injection vulnerability that eventually allowed us to compromise the web application server.<br/>...<br/>We also gained access to the database by ﬁnding credentials in the bash history ﬁle (mysql -h 10.1.143.75 -udvbm -pP@ssw0rd).<br/>...<br/>After about 3.5 hours using the cracker’s default settings, we recovered the secondary administrator password cisco123 from a salted MD5 hash.<br/>...<br/>We realized that one of the default logins to the terminal server (user: admin, password: admin)<br/>...<br/>The terminal server provided built-in support for keystroke logging of serial console sessions and forwarding of logged keystrokes to a remote syslog server, which we enabled and conﬁgured to forward to one of our machines. This allowed us to observe in real time as system administrators logged in and conﬁgured the switches, and to capture the switches’ administrative password, !@#123abc.<br/>...<br/>We found a pair of webcams on the DVBM network both publicly accessible without any password that showed views of the server room that housed the pilot.<br/>...</p></blockquote></p>
 
 <p>Enjoy!</p>
 ]]></content>

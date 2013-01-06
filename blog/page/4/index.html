@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="Only with Rails I&#8217;ve realized meaning of the word REST and how RESTful Controller works. When you will understand CRUD and Scaffolding, you &hellip;">
+	<meta name="description" content="CS106B is awesome! Today was a lecture about Linked List as I&#8217;ve already mention about this Data structures. Linked lists are among the &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,196 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/05/11/back-to-school-linked-list-with-ruby/">Back to School: Linked List With Ruby</a></h1>
+	<div class="entry-content">
+		<p>CS106B is awesome! Today was a lecture about <a href="/blog/2012/04/27/data-structure/">Linked List</a> as I&#8217;ve already mention about this Data structures.</p>
+
+<p>Linked lists are among the simplest and most common data structures. They can be used to implement several other common abstract data types, including stacks, queues, associative arrays, and symbolic expressions, though it is not uncommon to implement the other data structures directly without using a list as the basis of implementation. <a href="http://en.wikipedia.org/wiki/Linked_list">wikipedia</a></p>
+
+<p>With C++ we can represent a cell in the linked list as a structure, like</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">struct</span> <span class="n">Cell</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">string</span> <span class="n">value</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">Cell</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>in Ruby we can also use <a href="http://www.ruby-doc.org/core-1.9.3/Struct.html">Struct</a> and code our LinkedList will be like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># create a struct with :value and :next</span>
+</span><span class='line'><span class="no">Cell</span> <span class="o">=</span> <span class="no">Struct</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:value</span><span class="p">,</span> <span class="ss">:next</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># create a head of our list</span>
+</span><span class='line'><span class="n">list</span> <span class="o">=</span> <span class="no">Cell</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;head. hi&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># method which create one more cell and return the struct</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">linked_list</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">return</span> <span class="no">Cell</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># method which recursively print value until the asteroid...</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">recursive_print</span><span class="p">(</span><span class="n">list</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">p</span> <span class="n">list</span><span class="o">.</span><span class="n">value</span>
+</span><span class='line'>  <span class="n">recursive_print</span><span class="p">(</span><span class="n">list</span><span class="o">.</span><span class="n">next</span><span class="p">)</span> <span class="k">unless</span> <span class="n">list</span><span class="o">.</span><span class="n">next</span> <span class="o">==</span> <span class="kp">nil</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># create Linked List</span>
+</span><span class='line'><span class="c1"># #&lt;struct Cell value=10, ... next=#&lt;struct Cell value=1, next=#&lt;struct Cell value=&quot;head. hi&quot;, next=nil&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="mi">10</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="n">list</span> <span class="o">=</span> <span class="n">linked_list</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">list</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">recursive_print</span><span class="p">(</span><span class="n">list</span><span class="p">)</span> <span class="c1"># print out recursively our list</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&#8217;s test Linked List and Arrays to insert value in the top.</p>
+
+<figure class='code'><figcaption><span>simple_bench.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># create a struct with :value and :next</span>
+</span><span class='line'><span class="no">Cell</span> <span class="o">=</span> <span class="no">Struct</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:value</span><span class="p">,</span> <span class="ss">:next</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># create a head of our list</span>
+</span><span class='line'><span class="n">list</span> <span class="o">=</span> <span class="no">Cell</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;head. hi&quot;</span><span class="p">,</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># array</span>
+</span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># method which create one more cell and return the struct</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">linked_list</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">return</span> <span class="no">Cell</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># simple benchmark timer. t1 - t2 = waiting time ;)</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">bench</span> <span class="n">type</span>
+</span><span class='line'>  <span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'>  <span class="k">yield</span>
+</span><span class='line'>  <span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'>  <span class="nb">p</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">type</span><span class="si">}</span><span class="s2">&#39;s took </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">bench</span> <span class="p">(</span><span class="s2">&quot;array&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="mi">100000</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="n">a</span><span class="o">.</span><span class="n">insert</span> <span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">}</span> <span class="c1"># O(n)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">bench</span> <span class="p">(</span><span class="s2">&quot;linked list&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="mi">100000</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="n">list</span> <span class="o">=</span> <span class="n">linked_list</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">list</span><span class="p">)</span> <span class="p">}</span> <span class="c1"># O(1)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># results</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># &quot;array&#39;s took 2.661794s&quot;</span>
+</span><span class='line'><span class="c1"># &quot;linked list&#39;s took 0.050272s&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&#8217;m not sure this is good example of benchmarking, will check it later. What doest it all mean? If you want insert value in the head of array, array gets a new array and move everything over every time when you insert something.</p>
+
+<p><strong>[1, 2, 3, 4, 5, 6]</strong> -> inserting <strong>10071983</strong> value -> <strong>[10071983, 1, 2, 3, 4, 5, 6]</strong>, so now inserting an element into a top of array can be very costly - O(n) because everytime move everything over.</p>
+
+<p>with linked list you just create cell with element and pointer on next cell. <strong>[1, pointer->nil]</strong> and if we want to add new element, we just set pointer like <strong>[10071983, pointer->next]</strong> where pointer->next is reference to <strong>[1, nil]</strong>. Of course Arrays are cool, because you can do many other things faster than linked list (trade offs), but don&#8217;t forget about Algorithmic Analysis where you can find what will be faster to use in your case.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-11T13:27:00-07:00" pubdate data-updated="true">May 11<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/cs/'>cs</a>, <a class='category' href='/blog/categories/data-sctructure/'>data sctructure</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -2872,74 +3062,6 @@ Connection: Keep-Alive</p>
 	
 </div></article>
 
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/04/14/first-rails-project-thoughts/">First Rails Project: Thoughts</a></h1>
-	<div class="entry-content">
-		<p>Huh, long time no post there. I&#8217;ve been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants, drank some wine, beer, white russian and even sake. Whole week was disconnected and didn&#8217;t touch laptop (confess, only hackernews), so now I&#8217;m really ready back to the big fight. So, I came back from airport and in few hours finished my first small project on Rails.</p>
-
-<p><img src="http://distilleryimage6.s3.amazonaws.com/72f5c216810511e1a39b1231381b7ba1_7.jpg" alt="Santa Monica beach" /></p>
-
-<h2>idea</h2>
-
-<p>I just built the place where I can put my thoughts with timeline. Possibly I&#8217;ll add questions about any sphere of our lives, like <em>&#8220;What do you think about love?&#8221;</em> or <em>&#8220;What do you think about your age?&#8221;</em> and look at the progress with my thoughts through time. Everything changing in our world and my thoughts are not exception, so I want to look at the progress and how it is changing. Anyway, first version is <a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">here</a>:</p>
-
-<p><img src="http://pix.am/bJ5h.png" alt="" /></p>
-
-<h2>technology</h2>
-
-<p>I&#8217;ve used js library <a href="http://timeline.verite.co/">timeline</a> as a core and implement it to work with rails.</p>
-
-<blockquote><ul>
-<li>Full stack:
-
-<ul>
-<li>ruby on rails</li>
-<li><a href="https://github.com/plataformatec/devise">devise - Flexible authentication solution for Rails</a></li>
-<li><a href="http://timeline.verite.co/">timeline js library</a></li>
-<li>jquery</li>
-<li><a href="http://twitter.github.com/bootstrap/">twitter bootstrap</a></li>
-<li>heroku</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-
-<h2>bugs</h2>
-
-<p>Yea, a lot of bugs and roughness with ui, html, css and js. Currently my priority are just code the ruby code and practice with rails and not stuck with js/html/css/design. I&#8217;m always thinking about perfection and that was a reason heretofore why I gave up with many ideas and hobbies, I didn&#8217;t realize one small but very valuable thing - as a beginner you can&#8217;t do everything perfect. I always compared my code with some opensource project and it was always reason for melancholy, because I though that my code worst ever and I will never able to build something by myself. But the path of trial and error showed me the truth - just practice and focus on one thing.</p>
-
-<h2><a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">My thoughts timeline</a></h2>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-14T22:06:00-07:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/practice/'>practice</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-</div></article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/3/" class="prev">Prev</a>
@@ -2949,7 +3071,7 @@ Connection: Keep-Alive</p>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2012
+	<footer id="footer" class="inner">Copyright &copy; 2013
 
     khakimov
 
