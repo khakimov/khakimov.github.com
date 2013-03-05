@@ -428,7 +428,7 @@ Server: WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)
 Date: Fri, 27 Apr 2012 00:41:48 GMT
 Connection: Keep-Alive</p>
 
-<p>and we need to get only name of the server. It&#8217;s easy <strong>header =~ /Server: ([<sup>\n$]*)$/**</sup> and </strong>$1<strong> will show </strong>&#8220;WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)&#8221;**. Version 1.0 here, just does 1 mln request to <a href="http://s3.amazonaws.com/alexa-static/top-1m.csv.zip">1 mln websites</a> and gets Server names, uhh:</p>
+<p>and we need to get only name of the server. It&#8217;s easy <strong>header =~ /Server: ([^\n$]*)$/</strong> and <strong>$1</strong> will show <strong>&#8220;WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)&#8221;</strong>. Version 1.0 here, just does 1 mln request to <a href="http://s3.amazonaws.com/alexa-static/top-1m.csv.zip">1 mln websites</a> and gets Server names, uhh:</p>
 
 <figure class='code'><figcaption><span>regexp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

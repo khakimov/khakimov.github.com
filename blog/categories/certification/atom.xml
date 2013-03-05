@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: certification | curious and driven]]></title>
+  <link href="http://khakimov.github.com/blog/categories/certification/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2013-03-05T13:35:37-08:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The Offensive Security Certified Professional]]></title>
+    <link href="http://khakimov.github.com/blog/2013/03/05/the-offensive-security-certified-professional/"/>
+    <updated>2013-03-05T13:29:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2013/03/05/the-offensive-security-certified-professional</id>
+    <content type="html"><![CDATA[<p>We are happy to inform you that you have successfully completed your Certification Challenge and obtained your OSCP certification.</p>
+
+<p><img src="http://medias.gifboom.com/medias/ca2d92bac98d430c8c46f676acfffa6d@2x.gif" alt="" /></p>
+
+<p>ps: That was interesting, hard and I've learned a lot.</p>
+]]></content>
+  </entry>
+  
+</feed>

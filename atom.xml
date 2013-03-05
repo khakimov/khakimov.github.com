@@ -4,7 +4,7 @@
   <title><![CDATA[curious and driven]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2013-01-06T15:42:09-08:00</updated>
+  <updated>2013-03-05T13:35:37-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,19 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Offensive Security Certified Professional]]></title>
+    <link href="http://khakimov.github.com/blog/2013/03/05/the-offensive-security-certified-professional/"/>
+    <updated>2013-03-05T13:29:00-08:00</updated>
+    <id>http://khakimov.github.com/blog/2013/03/05/the-offensive-security-certified-professional</id>
+    <content type="html"><![CDATA[<p>We are happy to inform you that you have successfully completed your Certification Challenge and obtained your OSCP certification.</p>
+
+<p><img src="http://medias.gifboom.com/medias/ca2d92bac98d430c8c46f676acfffa6d@2x.gif" alt="" /></p>
+
+<p>ps: That was interesting, hard and I&#8217;ve learned a lot.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Offensive Security Certified Professional]]></title>
@@ -494,21 +507,15 @@
     <link href="http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations/"/>
     <updated>2012-11-17T10:41:00-08:00</updated>
     <id>http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations</id>
-    <content type="html"><![CDATA[<p>a. Each of the following: CS 140, 144, 155, 244, 255</p>
-
-<ul>
-<li>CS 140: Operating Systems</li>
+    <content type="html"><![CDATA[<ol type="a">
+<li><p>Each of the following: CS 140, 144, 155, 244, 255</p></li>
+<li><p>CS 140: Operating Systems</p></li>
 <li>CS 144: Introduction to Computer Networking (*)</li>
 <li>CS 155: Computer and Network Security (*)</li>
 <li>CS 244: Advanced Topics in Networking</li>
-<li>CS 255: Introduction to Cryptography</li>
-</ul>
-
-
-<p>b. At least three of the following: CS 142, 240, 241, 244B, 244C, 259, 261, 340, 344, 355, 365</p>
-
-<ul>
-<li>CS 142: Web Applications (*)</li>
+<li><p>CS 255: Introduction to Cryptography</p></li>
+<li><p>At least three of the following: CS 142, 240, 241, 244B, 244C, 259, 261, 340, 344, 355, 365</p></li>
+<li><p>CS 142: Web Applications (*)</p></li>
 <li>CS 240: Advanced Topics in Operating Systems</li>
 <li>CS 241: Secure Web Programming</li>
 <li>CS 244B: Distributed Systems</li>
@@ -518,14 +525,9 @@
 <li>CS 340: Networked Systems for Virtual Worlds</li>
 <li>CS 344: Building an Internet Router</li>
 <li>CS 355: Topics in Cryptography</li>
-<li>CS 365: Randomized Algorithms</li>
-</ul>
-
-
-<p>c. Sufficient additional units selected from (b) and the following: CS 240E, 244E, 245, 294S<em>, 295, 341, 344B, 345, 347, 361A, 393</em>, 395<em>, 399</em>, EE 384A, 384B, 384C, 384M, 384S, 384X, 384Y</p>
-
-<ul>
-<li>CS 240E: Embedded Wireless Systems</li>
+<li><p>CS 365: Randomized Algorithms</p></li>
+<li><p>Sufficient additional units selected from (b) and the following: CS 240E, 244E, 245, 294S<em>, 295, 341, 344B, 345, 347, 361A, 393</em>, 395<em>, 399</em>, EE 384A, 384B, 384C, 384M, 384S, 384X, 384Y</p></li>
+<li><p>CS 240E: Embedded Wireless Systems</p></li>
 <li>CS 244E: Wireless Networking</li>
 <li>CS 245: Database System Principles</li>
 <li>CS 294S: Paradigm Shifts in Mobile and Social Computing Systems</li>
@@ -545,7 +547,7 @@
 <li>EE 384S: Network Architectures and Performance Engineering</li>
 <li>EE 384X: Packet Switch Architectures I</li>
 <li>EE 384Y: Packet Switch Architectures II</li>
-</ul>
+</ol>
 
 ]]></content>
   </entry>
@@ -1454,23 +1456,6 @@ Hello world!</p>
 
 
 <p>in terminal then <strong>osascript scriptname</strong> and BOOM! 100 calls every 90 secs. Nothing interesting, but applescript has hidden value. Stay tuned!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Money CAN buy happiness]]></title>
-    <link href="http://khakimov.github.com/blog/2012/08/13/money-can-buy-happiness/"/>
-    <updated>2012-08-13T16:05:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/08/13/money-can-buy-happiness</id>
-    <content type="html"><![CDATA[<ol>
-<li><p><a href="http://www.quora.com/Life-Lessons/What-life-lessons-are-counter-intuitive-or-go-against-common-sense-or-wisdom">What life lessons are counter-intuitive or go against common sense or wisdom?</a> Focus on spending this money in ways that improve your happiness and reduce your stress levels, and be cautious about using it to buy things that other people say you &#8220;should&#8221; buy.</p></li>
-<li><p><a href="http://www.quora.com/Life-Advice/How-do-I-stop-myself-feeling-low-when-I-think-of-people-who-have-achieved-so-much-in-life">How do I stop myself feeling low when I think of people who have achieved so much in life?</a> You stop feeling low, by stop waiting. History is full of people who did remarkable things at every age. Become yourself.</p></li>
-<li><p><a href="http://www.quora.com/What-was-the-turning-point-in-the-lives-of-various-Quora-users-and-how-has-it-turned-them-into-the-person-they-are-today">What was the turning point in the lives of various Quora users, and how has it turned them into the person they are today?</a> Brian Fey and his story is amazing, read it!</p></li>
-<li><p><a href="http://www.quora.com/What-are-some-of-the-best-quotes-about-how-to-live-your-life">What are some of the best quotes about how to live your life?</a></p></li>
-</ol>
-
-
-<blockquote><p>It is not the critic who counts; not the man who points out how the strong man stumbles, or where the doer of deeds could have done them better. The credit belongs to the man who is actually in the arena, whose face is marred by dust and sweat and blood; who strives valiantly; who errs, who comes short again and again, because there is no effort without error and shortcoming; but who does actually strive to do the deeds; who knows great enthusiasms, the great devotions; who spends himself in a worthy cause; who at the best knows in the end the triumph of high achievement, and who at the worst, if he fails, at least fails while daring greatly, so that his place shall never be with those cold and timid souls who neither know victory nor defeat.</p></blockquote>
 ]]></content>
   </entry>
   

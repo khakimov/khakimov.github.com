@@ -4,7 +4,7 @@
   <title><![CDATA[Category: stanford | curious and driven]]></title>
   <link href="http://khakimov.github.com/blog/categories/stanford/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2013-01-06T15:42:09-08:00</updated>
+  <updated>2013-03-05T13:35:37-08:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -28,21 +28,15 @@
     <link href="http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations/"/>
     <updated>2012-11-17T10:41:00-08:00</updated>
     <id>http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations</id>
-    <content type="html"><![CDATA[<p>a. Each of the following: CS 140, 144, 155, 244, 255</p>
-
-<ul>
-<li>CS 140: Operating Systems</li>
+    <content type="html"><![CDATA[<ol type="a">
+<li><p>Each of the following: CS 140, 144, 155, 244, 255</p></li>
+<li><p>CS 140: Operating Systems</p></li>
 <li>CS 144: Introduction to Computer Networking (*)</li>
 <li>CS 155: Computer and Network Security (*)</li>
 <li>CS 244: Advanced Topics in Networking</li>
-<li>CS 255: Introduction to Cryptography</li>
-</ul>
-
-
-<p>b. At least three of the following: CS 142, 240, 241, 244B, 244C, 259, 261, 340, 344, 355, 365</p>
-
-<ul>
-<li>CS 142: Web Applications (*)</li>
+<li><p>CS 255: Introduction to Cryptography</p></li>
+<li><p>At least three of the following: CS 142, 240, 241, 244B, 244C, 259, 261, 340, 344, 355, 365</p></li>
+<li><p>CS 142: Web Applications (*)</p></li>
 <li>CS 240: Advanced Topics in Operating Systems</li>
 <li>CS 241: Secure Web Programming</li>
 <li>CS 244B: Distributed Systems</li>
@@ -52,14 +46,9 @@
 <li>CS 340: Networked Systems for Virtual Worlds</li>
 <li>CS 344: Building an Internet Router</li>
 <li>CS 355: Topics in Cryptography</li>
-<li>CS 365: Randomized Algorithms</li>
-</ul>
-
-
-<p>c. Sufficient additional units selected from (b) and the following: CS 240E, 244E, 245, 294S<em>, 295, 341, 344B, 345, 347, 361A, 393</em>, 395<em>, 399</em>, EE 384A, 384B, 384C, 384M, 384S, 384X, 384Y</p>
-
-<ul>
-<li>CS 240E: Embedded Wireless Systems</li>
+<li><p>CS 365: Randomized Algorithms</p></li>
+<li><p>Sufficient additional units selected from (b) and the following: CS 240E, 244E, 245, 294S<em>, 295, 341, 344B, 345, 347, 361A, 393</em>, 395<em>, 399</em>, EE 384A, 384B, 384C, 384M, 384S, 384X, 384Y</p></li>
+<li><p>CS 240E: Embedded Wireless Systems</p></li>
 <li>CS 244E: Wireless Networking</li>
 <li>CS 245: Database System Principles</li>
 <li>CS 294S: Paradigm Shifts in Mobile and Social Computing Systems</li>
@@ -79,7 +68,7 @@
 <li>EE 384S: Network Architectures and Performance Engineering</li>
 <li>EE 384X: Packet Switch Architectures I</li>
 <li>EE 384Y: Packet Switch Architectures II</li>
-</ul>
+</ol>
 
 ]]></content>
   </entry>
