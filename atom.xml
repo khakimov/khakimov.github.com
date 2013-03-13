@@ -4,7 +4,7 @@
   <title><![CDATA[curious and driven]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2013-03-05T13:35:37-08:00</updated>
+  <updated>2013-03-12T22:52:03-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,172 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Vine's undocumented API]]></title>
+    <link href="http://khakimov.github.com/blog/2013/03/12/vines-undocumented-api/"/>
+    <updated>2013-03-12T22:03:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2013/03/12/vines-undocumented-api</id>
+    <content type="html"><![CDATA[<p><img src="https://si0.twimg.com/help/1362431499_1831" alt="" /></p>
+
+<p>Last Sunday I played with <a href="http://vine.co">vine.co</a> iPhone application. Vine is a mobile service that lets you create, share short videos and sure enoght is a cool app, but has a small problem - sometimes I just want to share the video link with my friends without sharing it on facebook/twitter (yes, I didn&#8217;t find how to get direct link to specific vine and the only way was to share it on twitter and then copy the link). So, Sunday, night, iPhone, mitmproxy, ruby and curiosity how to get direct link to my vine.</p>
+
+<p>First of all you need to setting up SSL interception. Follow this <a href="http://mitmproxy.org/doc/certinstall/ios.html">instruction</a>, mitmproxy-ca.pem you can find in the config directory (~/.mitmproxy by default). Then run mitmproxy, setup http proxy on iphone and run the app, you will see requests in mimtproxy</p>
+
+<p><img src="http://i.imgur.com/qWJdmQE.png" alt="" /></p>
+
+<p>Here I&#8217;ll post undocumented API links I&#8217;ve found and examples which you can use to authorize, request yours posts, timeline, search users, explore by using tags and so on. To get authorization key you can use this example</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;httparty&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">VINE</span> <span class="o">=</span> <span class="s2">&quot;com.vine.iphone/1.0.5 (unknown, iPhone OS 5.1.1, iPhone, Scale/2.000000)&quot;</span>
+</span><span class='line'>  <span class="n">login</span> <span class="o">=</span> <span class="s2">&quot;login&quot;</span>
+</span><span class='line'>  <span class="n">pass</span> <span class="o">=</span> <span class="s2">&quot;pass&quot;</span>
+</span><span class='line'>  <span class="n">auth_url</span> <span class="o">=</span> <span class="s2">&quot;https://api.vineapp.com/users/authenticate&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">response</span> <span class="o">=</span> <span class="no">HTTParty</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">auth_url</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:body</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">login</span><span class="p">,</span>
+</span><span class='line'>      <span class="ss">:deviceToken</span> <span class="o">=&gt;</span> <span class="s2">&quot;1111111111111111111111111111111111111111111111111111111111111111&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">pass</span><span class="p">},</span>
+</span><span class='line'>    <span class="ss">:headers</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;User-Agent&quot;</span> <span class="o">=&gt;</span> <span class="no">VINE</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;*/*&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Language&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;en, fr, de, ja, nl, it, es, pt, pt-PT, da, fi, nb, sv, ko, zh-Hans, zh-Hant, ru, pl, tr, uk, ar, hr, cs, el, he, ro, sk, th, id, ms, en-GB, ca, hu, vi, en-us;q=0.8&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Encoding&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;gzip&quot;</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="n">response</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you will get something like</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">parsed_response</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="o">=&gt;</span><span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Username&quot;</span><span class="p">,</span> <span class="s2">&quot;userId&quot;</span><span class="o">=&gt;</span><span class="no">XXX</span><span class="p">,</span> <span class="s2">&quot;key&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;XXX&quot;</span><span class="p">},</span> <span class="s2">&quot;success&quot;</span><span class="o">=&gt;</span><span class="kp">true</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>where <strong>key</strong> is a session id which we will use to get timelines from the account</p>
+
+<p>Here is example how you can get timeline from our account by using the key from auth request</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;httparty&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">VINE</span> <span class="o">=</span> <span class="s2">&quot;com.vine.iphone/1.0.5 (unknown, iPhone OS 5.1.1, iPhone, Scale/2.000000)&quot;</span>
+</span><span class='line'>  <span class="n">login</span> <span class="o">=</span> <span class="s2">&quot;login&quot;</span>
+</span><span class='line'>  <span class="n">pass</span> <span class="o">=</span> <span class="s2">&quot;pass&quot;</span>
+</span><span class='line'>  <span class="n">timeline_url</span> <span class="o">=</span> <span class="s2">&quot;https://api.vineapp.com/timelines/graph&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">response</span> <span class="o">=</span> <span class="no">HTTParty</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeline_url</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:headers</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;User-Agent&quot;</span> <span class="o">=&gt;</span> <span class="no">VINE</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;vine-session-id&quot;</span> <span class="o">=&gt;</span> <span class="o">**</span><span class="n">key</span><span class="o">**</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;*/*&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Language&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;en, fr, de, ja, nl, it, es, pt, pt-PT, da, fi, nb, sv, ko, zh-Hans, zh-Hant, ru, pl, tr, uk, ar, hr, cs, el, he, ro, sk, th, id, ms, en-GB, ca, hu, vi, en-us;q=0.8&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Encoding&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;gzip&quot;</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>  <span class="nb">p</span> <span class="n">response</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Timeline:</p>
+
+<ul>
+<li>https://api.vineapp.com/timelines/graph</li>
+</ul>
+
+
+<p>Notifications:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/#{userId}/notifications</li>
+</ul>
+
+
+<p>Explore:</p>
+
+<ul>
+<li>http://vine.co/explore?v=1.0.5</li>
+<li>https://api.vineapp.com/timelines/popular</li>
+<li>https://api.vineapp.com/timelines/promoted</li>
+<li>https://api.vineapp.com/timelines/tags/magic</li>
+<li>https://api.vineapp.com/timelines/tags/howto</li>
+<li>https://api.vineapp.com/timelines/tags/soon</li>
+</ul>
+
+
+<p>Profile:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/profiles/#{userId}</li>
+<li>https://api.vineapp.com/timelines/users/#{userId}</li>
+</ul>
+
+
+<p>Search users:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/search/test</li>
+</ul>
+
+
+<p>Twitter users:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/#{userId}/following/suggested/twitter</li>
+</ul>
+
+
+<p>Settings:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/me</li>
+</ul>
+
+
+<p>Likes:</p>
+
+<ul>
+<li>https://api.vineapp.com/timelines/users/#{userId}/likes</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Offensive Security Certified Professional]]></title>
@@ -1414,48 +1580,6 @@ Hello world!</p>
 <li><a href="http://www.quora.com/Lifestyle/What-are-some-ways-to-live-a-simple-lifestyle">What are some ways to live a simple lifestyle?</a> All this being said, enjoy yourself. Live simply to allow yourself more time and energy to actually go out and do things, to read things, to learn things, to make things, to spend time with people, to exercise, to travel.</li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Apple script and Skype]]></title>
-    <link href="http://khakimov.github.com/blog/2012/08/13/apple-script-and-skype/"/>
-    <updated>2012-08-13T17:02:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2012/08/13/apple-script-and-skype</id>
-    <content type="html"><![CDATA[<p>Spent an hour to figure out how applescript works and wrote some epicly awesome tool what helps to kill anybody phone just doing crash pool calls repeatedly every N sec.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='applescript'><span class='line'><span class="k">set</span> <span class="nv">numberOfAttempts</span> <span class="k">to</span> <span class="mi">100</span> <span class="c"># how many times?</span>
-</span><span class='line'><span class="k">set</span> <span class="nv">callToAnumber</span> <span class="k">to</span> <span class="s2">&quot;echo123&quot;</span> <span class="c"># put his number here</span>
-</span><span class='line'><span class="k">set</span> <span class="nv">attemptInterval</span> <span class="k">to</span> <span class="mi">90</span> <span class="c"># call each 90 sec</span>
-</span><span class='line'><span class="k">set</span> <span class="nv">callAttemptsCounter</span> <span class="k">to</span> <span class="mi">1</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">repeat</span> <span class="nv">numberOfAttempts</span> <span class="k">times</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">tell</span> <span class="nb">application</span> <span class="s2">&quot;Skype&quot;</span>
-</span><span class='line'>      <span class="nv">send</span> <span class="nv">command</span> <span class="s2">&quot;CALL &quot;</span> <span class="o">&amp;</span> <span class="nv">callToAnumber</span> <span class="nv">script</span> <span class="na">name</span> <span class="s2">&quot;Call&quot;</span>
-</span><span class='line'>  <span class="k">end</span> <span class="k">tell</span>
-</span><span class='line'>  <span class="nb">delay</span> <span class="nv">attemptInterval</span>
-</span><span class='line'>  <span class="k">set</span> <span class="nv">callAttemptsCounter</span> <span class="k">to</span> <span class="nv">callAttemptsCounter</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span> <span class="k">repeat</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>in terminal then <strong>osascript scriptname</strong> and BOOM! 100 calls every 90 secs. Nothing interesting, but applescript has hidden value. Stay tuned!</p>
 ]]></content>
   </entry>
   

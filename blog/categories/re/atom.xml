@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: re | curious and driven]]></title>
+  <link href="http://khakimov.github.com/blog/categories/re/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2013-03-12T22:52:03-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Vine's undocumented API]]></title>
+    <link href="http://khakimov.github.com/blog/2013/03/12/vines-undocumented-api/"/>
+    <updated>2013-03-12T22:03:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2013/03/12/vines-undocumented-api</id>
+    <content type="html"><![CDATA[<p><img src="https://si0.twimg.com/help/1362431499_1831" alt="" /></p>
+
+<p>Last Sunday I played with <a href="http://vine.co">vine.co</a> iPhone application. Vine is a mobile service that lets you create, share short videos and sure enoght is a cool app, but has a small problem - sometimes I just want to share the video link with my friends without sharing it on facebook/twitter (yes, I didn't find how to get direct link to specific vine and the only way was to share it on twitter and then copy the link). So, Sunday, night, iPhone, mitmproxy, ruby and curiosity how to get direct link to my vine.</p>
+
+<p>First of all you need to setting up SSL interception. Follow this <a href="http://mitmproxy.org/doc/certinstall/ios.html">instruction</a>, mitmproxy-ca.pem you can find in the config directory (~/.mitmproxy by default). Then run mitmproxy, setup http proxy on iphone and run the app, you will see requests in mimtproxy</p>
+
+<p><img src="http://i.imgur.com/qWJdmQE.png" alt="" /></p>
+
+<p>Here I'll post undocumented API links I've found and examples which you can use to authorize, request yours posts, timeline, search users, explore by using tags and so on. To get authorization key you can use this example</p>
+
+<p>```ruby
+  require 'httparty'</p>
+
+<p>  VINE = "com.vine.iphone/1.0.5 (unknown, iPhone OS 5.1.1, iPhone, Scale/2.000000)"
+  login = "login"
+  pass = "pass"
+  auth_url = "https://api.vineapp.com/users/authenticate"</p>
+
+<p>  response = HTTParty.post(auth_url,</p>
+
+<pre><code>:body =&gt; {
+  :username =&gt; login, 
+  :deviceToken =&gt; "1111111111111111111111111111111111111111111111111111111111111111", 
+  :password =&gt; pass},
+:headers =&gt; {
+  "User-Agent" =&gt; VINE,
+  "Accept" =&gt; "*/*",
+  "Accept-Language" =&gt; "en, fr, de, ja, nl, it, es, pt, pt-PT, da, fi, nb, sv, ko, zh-Hans, zh-Hant, ru, pl, tr, uk, ar, hr, cs, el, he, ro, sk, th, id, ms, en-GB, ca, hu, vi, en-us;q=0.8",
+  "Accept-Encoding" =&gt; "gzip"
+})
+p response
+</code></pre>
+
+<p>```</p>
+
+<p>you will get something like</p>
+
+<p><code>
+parsed_response={"code"=&gt;"", "data"=&gt;{"username"=&gt;"Username", "userId"=&gt;XXX, "key"=&gt;"XXX"}, "success"=&gt;true, "error"=&gt;""}
+</code></p>
+
+<p>where <strong>key</strong> is a session id which we will use to get timelines from the account</p>
+
+<p>Here is example how you can get timeline from our account by using the key from auth request</p>
+
+<p>```ruby
+  require 'httparty'</p>
+
+<p>  VINE = "com.vine.iphone/1.0.5 (unknown, iPhone OS 5.1.1, iPhone, Scale/2.000000)"
+  login = "login"
+  pass = "pass"
+  timeline_url = "https://api.vineapp.com/timelines/graph"</p>
+
+<p>  response = HTTParty.get(timeline_url,</p>
+
+<pre><code>:headers =&gt; {
+  "User-Agent" =&gt; VINE,
+  "vine-session-id" =&gt; **key**,
+  "Accept" =&gt; "*/*",
+  "Accept-Language" =&gt; "en, fr, de, ja, nl, it, es, pt, pt-PT, da, fi, nb, sv, ko, zh-Hans, zh-Hant, ru, pl, tr, uk, ar, hr, cs, el, he, ro, sk, th, id, ms, en-GB, ca, hu, vi, en-us;q=0.8",
+  "Accept-Encoding" =&gt; "gzip"
+})
+</code></pre>
+
+<p>  p response
+```</p>
+
+<p>Timeline:</p>
+
+<ul>
+<li>https://api.vineapp.com/timelines/graph</li>
+</ul>
+
+
+<p>Notifications:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/#{userId}/notifications</li>
+</ul>
+
+
+<p>Explore:</p>
+
+<ul>
+<li>http://vine.co/explore?v=1.0.5</li>
+<li>https://api.vineapp.com/timelines/popular</li>
+<li>https://api.vineapp.com/timelines/promoted</li>
+<li>https://api.vineapp.com/timelines/tags/magic</li>
+<li>https://api.vineapp.com/timelines/tags/howto</li>
+<li>https://api.vineapp.com/timelines/tags/soon</li>
+</ul>
+
+
+<p>Profile:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/profiles/#{userId}</li>
+<li>https://api.vineapp.com/timelines/users/#{userId}</li>
+</ul>
+
+
+<p>Search users:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/search/test</li>
+</ul>
+
+
+<p>Twitter users:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/#{userId}/following/suggested/twitter</li>
+</ul>
+
+
+<p>Settings:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/me</li>
+</ul>
+
+
+<p>Likes:</p>
+
+<ul>
+<li>https://api.vineapp.com/timelines/users/#{userId}/likes</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,322 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Vine's undocumented API - curious and driven</title>
+	<meta name="author" content="khakimov">
+
+	
+	<meta name="description" content="Last Sunday I played with vine.co iPhone application. Vine is a mobile service that lets you create, share short videos and sure enoght is a cool &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="curious and driven" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">curious and driven</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:khakimov.github.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:khakimov.github.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Vine's Undocumented API</h1>
+	<div class="entry-content"><p><img src="https://si0.twimg.com/help/1362431499_1831" alt="" /></p>
+
+<p>Last Sunday I played with <a href="http://vine.co">vine.co</a> iPhone application. Vine is a mobile service that lets you create, share short videos and sure enoght is a cool app, but has a small problem - sometimes I just want to share the video link with my friends without sharing it on facebook/twitter (yes, I didn&#8217;t find how to get direct link to specific vine and the only way was to share it on twitter and then copy the link). So, Sunday, night, iPhone, mitmproxy, ruby and curiosity how to get direct link to my vine.</p>
+
+<p>First of all you need to setting up SSL interception. Follow this <a href="http://mitmproxy.org/doc/certinstall/ios.html">instruction</a>, mitmproxy-ca.pem you can find in the config directory (~/.mitmproxy by default). Then run mitmproxy, setup http proxy on iphone and run the app, you will see requests in mimtproxy</p>
+
+<p><img src="http://i.imgur.com/qWJdmQE.png" alt="" /></p>
+
+<p>Here I&#8217;ll post undocumented API links I&#8217;ve found and examples which you can use to authorize, request yours posts, timeline, search users, explore by using tags and so on. To get authorization key you can use this example</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;httparty&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">VINE</span> <span class="o">=</span> <span class="s2">&quot;com.vine.iphone/1.0.5 (unknown, iPhone OS 5.1.1, iPhone, Scale/2.000000)&quot;</span>
+</span><span class='line'>  <span class="n">login</span> <span class="o">=</span> <span class="s2">&quot;login&quot;</span>
+</span><span class='line'>  <span class="n">pass</span> <span class="o">=</span> <span class="s2">&quot;pass&quot;</span>
+</span><span class='line'>  <span class="n">auth_url</span> <span class="o">=</span> <span class="s2">&quot;https://api.vineapp.com/users/authenticate&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">response</span> <span class="o">=</span> <span class="no">HTTParty</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">auth_url</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:body</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">login</span><span class="p">,</span>
+</span><span class='line'>      <span class="ss">:deviceToken</span> <span class="o">=&gt;</span> <span class="s2">&quot;1111111111111111111111111111111111111111111111111111111111111111&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">pass</span><span class="p">},</span>
+</span><span class='line'>    <span class="ss">:headers</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;User-Agent&quot;</span> <span class="o">=&gt;</span> <span class="no">VINE</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;*/*&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Language&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;en, fr, de, ja, nl, it, es, pt, pt-PT, da, fi, nb, sv, ko, zh-Hans, zh-Hant, ru, pl, tr, uk, ar, hr, cs, el, he, ro, sk, th, id, ms, en-GB, ca, hu, vi, en-us;q=0.8&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Encoding&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;gzip&quot;</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="n">response</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you will get something like</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">parsed_response</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="o">=&gt;</span><span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Username&quot;</span><span class="p">,</span> <span class="s2">&quot;userId&quot;</span><span class="o">=&gt;</span><span class="no">XXX</span><span class="p">,</span> <span class="s2">&quot;key&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;XXX&quot;</span><span class="p">},</span> <span class="s2">&quot;success&quot;</span><span class="o">=&gt;</span><span class="kp">true</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>where <strong>key</strong> is a session id which we will use to get timelines from the account</p>
+
+<p>Here is example how you can get timeline from our account by using the key from auth request</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;httparty&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">VINE</span> <span class="o">=</span> <span class="s2">&quot;com.vine.iphone/1.0.5 (unknown, iPhone OS 5.1.1, iPhone, Scale/2.000000)&quot;</span>
+</span><span class='line'>  <span class="n">login</span> <span class="o">=</span> <span class="s2">&quot;login&quot;</span>
+</span><span class='line'>  <span class="n">pass</span> <span class="o">=</span> <span class="s2">&quot;pass&quot;</span>
+</span><span class='line'>  <span class="n">timeline_url</span> <span class="o">=</span> <span class="s2">&quot;https://api.vineapp.com/timelines/graph&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">response</span> <span class="o">=</span> <span class="no">HTTParty</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeline_url</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">:headers</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;User-Agent&quot;</span> <span class="o">=&gt;</span> <span class="no">VINE</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;vine-session-id&quot;</span> <span class="o">=&gt;</span> <span class="o">**</span><span class="n">key</span><span class="o">**</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;*/*&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Language&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;en, fr, de, ja, nl, it, es, pt, pt-PT, da, fi, nb, sv, ko, zh-Hans, zh-Hant, ru, pl, tr, uk, ar, hr, cs, el, he, ro, sk, th, id, ms, en-GB, ca, hu, vi, en-us;q=0.8&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;Accept-Encoding&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;gzip&quot;</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>  <span class="nb">p</span> <span class="n">response</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Timeline:</p>
+
+<ul>
+<li>https://api.vineapp.com/timelines/graph</li>
+</ul>
+
+
+<p>Notifications:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/#{userId}/notifications</li>
+</ul>
+
+
+<p>Explore:</p>
+
+<ul>
+<li>http://vine.co/explore?v=1.0.5</li>
+<li>https://api.vineapp.com/timelines/popular</li>
+<li>https://api.vineapp.com/timelines/promoted</li>
+<li>https://api.vineapp.com/timelines/tags/magic</li>
+<li>https://api.vineapp.com/timelines/tags/howto</li>
+<li>https://api.vineapp.com/timelines/tags/soon</li>
+</ul>
+
+
+<p>Profile:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/profiles/#{userId}</li>
+<li>https://api.vineapp.com/timelines/users/#{userId}</li>
+</ul>
+
+
+<p>Search users:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/search/test</li>
+</ul>
+
+
+<p>Twitter users:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/#{userId}/following/suggested/twitter</li>
+</ul>
+
+
+<p>Settings:</p>
+
+<ul>
+<li>https://api.vineapp.com/users/me</li>
+</ul>
+
+
+<p>Likes:</p>
+
+<ul>
+<li>https://api.vineapp.com/timelines/users/#{userId}/likes</li>
+</ul>
+
+
+
+  	<div class="addthis_toolbox addthis_default_style ">
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+
+	<a class="addthis_button_tweet"></a>
+	
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+
+
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-12T22:03:00-07:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/re/'>re</a>, <a class='category' href='/blog/categories/vine/'>vine</a>
+
+
+</div>
+	
+</div></article>
+<div class="share">
+<div id="hypercomments_widget"></div><script type="text/javascript">
+var _hcp = _hcp || {};
+_hcp.widget_id = 2313;
+_hcp.widget = "Stream";
+(function() { 
+var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://widget.hypercomments.com/apps/js/hc.js";
+var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hcc, s.nextSibling); 
+})();</script>
+</div>
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2013
+
+    khakimov
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script type="text/javascript">
+var _hcp = _hcp || {};
+_hcp.widget_id = 2313;
+_hcp.widget = "Stream";
+(function() { 
+var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://widget.hypercomments.com/apps/js/hc.js";
+var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hcc, s.nextSibling); 
+})();</script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-31552911-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
