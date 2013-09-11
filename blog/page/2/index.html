@@ -7,7 +7,9 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="I&#8217;m very interesting in research paper and want to know better what computer security research is like. I found Vitaly Shmatikov and his &hellip;">
+	<meta name="description" content="The three main events in the course of history: The cognitive revolution - 70 000 years ago
+The agricultural revolution - 12 000 years ago
+The &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -73,307 +75,18 @@
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/11/20/buffer-overflow/">Buffer Overflow</a></h1>
+	<h1 class="title"><a href="/blog/2013/08/21/august-21-wednesday/">[Humankind] the Human Family (1)</a></h1>
 	<div class="entry-content">
-		<p>I&#8217;m very interesting in research paper and want to know better what computer security research is like. I found Vitaly Shmatikov and his course about great papers in Computer Security and decided to try each weekend read and write about one paper.</p>
+		<p>The three main events in the course of history:</p>
 
-<p>Vitaly Shmatikov is one of most interesting person for me in computer security and privacy. He got his PhD at Stanford and his thesis was &#8221;<a href="https://www.cs.utexas.edu/~shmat/shmat_tcs.pdf">Finite-State Analysis of Security Protocols</a>&#8221;, also his prof at Stanford was John C. Mitchell.</p>
-
-<p>So, today I want to start with Buffer Overflow and here is paper 1999 by Crispin Cowan, Perry Wagle, Calton Pu,Steve Beattie, and Jonathan Walpole.</p>
-
-<p><a title="View Overflow on Scribd" href="http://www.scribd.com/doc/113583111/Overflow" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Overflow</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/113583111/content?start_page=1&view_mode=scroll&access_key=key-39aierbs22vhrn0azpl" data-auto-height="true" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_1657" width="100%" height="600" frameborder="0"></iframe></p>
-
-<p>Btw, in this paper they metioned about Morris Worm and early versions of using buffer overflow and I found the peace of Morris Worm&#8217;s overflow:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>; VAX binary code fragment from the Morris Internet Worm.
-</span><span class='line'>; Downloaded to the fingerd serving process via the gets() hole.
-</span><span class='line'>; Performs execve(“/bin/sh”,0,0)
-</span><span class='line'>pushl $0068732f   ; last half of name: "/sh\0"
-</span><span class='line'>pushl $6e69622f   ; first half of name: "/bin"
-</span><span class='line'>mov   sp,r10            ; pointer to the string
-</span><span class='line'>pushl $0          ; 3rd parameter: environment = null
-</span><span class='line'>pushl $0          ; 2nd parameter: args = null
-</span><span class='line'>pushl r10         ; 1st parameter: pointer to the executable name
-</span><span class='line'>pushl $3          ; 3 parameters on the stack
-</span><span class='line'>movl  sp,ap       ; ArgumentPointer points to arguments
-</span><span class='line'>chmk  $3b         ; SoftwareException 0x3B = EXECVE call</span></code></pre></td></tr></table></div></figure>
-
-
-<p>It used a buffer overflow against the fingerd daemon. Other worms also often use buffer overflow to compromise the machine. CodeRed used overflow in MS-IIS server, SQL Slammer - overflow in MSSQL server, Sasser overflow in Windows LSASS, Conficker used overflow in Windows RPC and famous Stuxnet used several 0day overflows and same Windows RPC as Conficker. Looks like Buffer Overflow is the basis of many software vulnerabilities and can be maliciously exploited.</p>
-
-<p>In computer security and programming, a buffer overflow, or buffer overrun, is an anomaly where a program, while writing data to a buffer, overruns the buffer&#8217;s boundary and overwrites adjacent memory. <strong>Buffer</strong> is a data storage area inside computer memory (stack or heap).</p>
-
-<p>Suppose we have Webserver contain this function</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    <span class="c1">// allocate 100 bytes on stack </span>
-</span><span class='line'>      <span class="n">strcpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>   <span class="c1">// copy argument into local buffer</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>strcpy</strong> does not check whether the string at *s contains fewer than 126 characters and if a string longer than 126 bytes is copied into buffer, it will overwrite adjacent stack locations.</p>
-
-<p><img src="http://pix.am/ou9H.png" alt="" />
-<img src="http://pix.am/HSH8.png" alt="" /></p>
-
-<p>We overflow the return address and set address of attack code (the value in the RET position must point to the beginning of attack assembly code in the buffer, otherwise application will crash with segmentation violation).</p>
-
-<p>Other exampe from <strong>Hacking</strong> book</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-</span><span class='line'>   <span class="kt">char</span> <span class="n">buffer_one</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">buffer_two</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer_one</span><span class="p">,</span> <span class="s">&quot;one&quot;</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer_two</span><span class="p">,</span> <span class="s">&quot;two&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[BEFORE] buffer_two is at %p contain </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[BEFORE] buffer_one is at %p contain </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[BEFORE] value is at %p and is %d (0x%08x)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">[STRCPY] copying %d bytes into buffer_two</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span>
-</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer_two</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[AFTER] buffer_two is at %p and contains </span><span class="se">\&#39;</span><span class="s">%s</span><span class="se">\&#39;\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[AFTER] buffer_one is at %p and contains </span><span class="se">\&#39;</span><span class="s">%s</span><span class="se">\&#39;\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[AFTER] value is at %p and is %d (0x%08x)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">overflow</span><span class="err">@</span><span class="n">hacking</span><span class="o">:~/</span><span class="n">booksrc</span> <span class="err">$</span> <span class="n">gcc</span> <span class="o">-</span><span class="n">o</span> <span class="n">overflow_example</span> <span class="n">overflow_example</span><span class="p">.</span><span class="n">c</span>
-</span><span class='line'><span class="n">overflow</span><span class="err">@</span><span class="n">hacking</span><span class="o">:~/</span><span class="n">booksrc</span> <span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">overflow_example</span> <span class="mi">1234567890</span>
-</span><span class='line'><span class="p">[</span><span class="n">BEFORE</span><span class="p">]</span> <span class="n">buffer_two</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f0</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="n">two</span><span class="err">&#39;</span>
-</span><span class='line'><span class="p">[</span><span class="n">BEFORE</span><span class="p">]</span> <span class="n">buffer_one</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f8</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="n">one</span><span class="err">&#39;</span>
-</span><span class='line'><span class="p">[</span><span class="n">BEFORE</span><span class="p">]</span> <span class="n">value</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff804</span> <span class="n">and</span> <span class="n">is</span> <span class="mi">5</span> <span class="p">(</span><span class="mh">0x00000005</span><span class="p">)</span>
-</span><span class='line'><span class="p">[</span><span class="n">STRCPY</span><span class="p">]</span> <span class="n">copying</span> <span class="mi">10</span> <span class="n">bytes</span> <span class="n">into</span> <span class="n">buffer_two</span>
-</span><span class='line'><span class="p">[</span><span class="n">AFTER</span><span class="p">]</span> <span class="n">buffer_two</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f0</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="mi">1234567890</span><span class="err">&#39;</span>
-</span><span class='line'><span class="p">[</span><span class="n">AFTER</span><span class="p">]</span> <span class="n">buffer_one</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f8</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="mi">90</span><span class="err">&#39;</span>
-</span><span class='line'><span class="p">[</span><span class="n">AFTER</span><span class="p">]</span> <span class="n">value</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff804</span> <span class="n">and</span> <span class="n">is</span> <span class="mi">5</span> <span class="p">(</span><span class="mh">0x00000005</span><span class="p">)</span>
-</span><span class='line'><span class="n">overflow</span><span class="err">@</span><span class="n">hacking</span><span class="o">:~/</span><span class="n">booksrc</span> <span class="err">$</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Probably you will try to check this code on your computer (macos in my case), but <a href="https://en.wikipedia.org/wiki/Buffer_overflow_protection">buffer overflow protection</a> was included in release GCC 4.1 and you have to use <strong>-fno-stack-protector</strong> to compile your code. (hmm, i&#8217;m still getting error Program received signal SIGABRT, Aborted. which kills the proccess, couple clicks with google told me to recompile gcc. Seems now it&#8217;s not easy to write bogus code =)). In this case I have virtual machine with 32-bit pretty old Ubuntu.</p>
-
-<figure class='code'><figcaption><span>t.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt; </span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="nf">Q</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">char</span> <span class="n">c</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">strcpy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">arg</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="n">Q</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The return address in a stack frame can be located by undestanding how the stack frame is created. This process begins in the main() function even before the function call.</p>
-
-<p>Couple things you have to know about the stack. The stack is used to pass prcedure arguments, <strong>to store return information</strong>, to save registers for later restoration and for local storage. The portion of the stack allocated for a single procedure call is called a <strong>stack frame</strong>. $EBP register serving as the <strong>frame pointer</strong> and register $ESP serving as the <strong>stack pointer</strong>.</p>
-
-<p>The main idea is when main() calls Q() the <strong>return</strong> address within main() where the program should resume execution when it returns from Q. If somebody can overwrite return address it can jump or/and execute other code.</p>
-
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Stack_Overflow_2.png" alt="" /></p>
-
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Stack_Overflow_3.png" alt="" /></p>
-
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Stack_Overflow_4.png" alt="" /></p>
-
-<p>More details you can find in the paper above. If you are interesting in roots of the problem and how actually stack/heap works, I highly recommend to read the book <a href="http://www.amazon.com/Computer-Systems-A-Programmers-Perspective/dp/013034074X">Computer System: A Programmer&#8217;s Perspective by Bryant and O&#8217;Hallaron</a>.</p>
-
-<p>The first step is always the hardest. Will see how long I hold out.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-20T23:17:00-08:00" pubdate data-updated="true">Nov 20<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/great-papers/'>great papers</a>, <a class='category' href='/blog/categories/research/'>research</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/11/17/computer-and-network-security-specializations/">Computer and Network Security Specializations</a></h1>
-	<div class="entry-content">
-		<ol type="a">
-<li><p>Each of the following: CS 140, 144, 155, 244, 255</p></li>
-<li><p>CS 140: Operating Systems</p></li>
-<li>CS 144: Introduction to Computer Networking (*)</li>
-<li>CS 155: Computer and Network Security (*)</li>
-<li>CS 244: Advanced Topics in Networking</li>
-<li><p>CS 255: Introduction to Cryptography</p></li>
-<li><p>At least three of the following: CS 142, 240, 241, 244B, 244C, 259, 261, 340, 344, 355, 365</p></li>
-<li><p>CS 142: Web Applications (*)</p></li>
-<li>CS 240: Advanced Topics in Operating Systems</li>
-<li>CS 241: Secure Web Programming</li>
-<li>CS 244B: Distributed Systems</li>
-<li>CS 244C: Distributed System Projects</li>
-<li>CS 259: Security Modeling and Analysis</li>
-<li>CS 261: Optimization and Algorithmic Paradigms</li>
-<li>CS 340: Networked Systems for Virtual Worlds</li>
-<li>CS 344: Building an Internet Router</li>
-<li>CS 355: Topics in Cryptography</li>
-<li><p>CS 365: Randomized Algorithms</p></li>
-<li><p>Sufficient additional units selected from (b) and the following: CS 240E, 244E, 245, 294S<em>, 295, 341, 344B, 345, 347, 361A, 393</em>, 395<em>, 399</em>, EE 384A, 384B, 384C, 384M, 384S, 384X, 384Y</p></li>
-<li><p>CS 240E: Embedded Wireless Systems</p></li>
-<li>CS 244E: Wireless Networking</li>
-<li>CS 245: Database System Principles</li>
-<li>CS 294S: Paradigm Shifts in Mobile and Social Computing Systems</li>
-<li>CS 295: Software Engineering</li>
-<li>CS 341: Project in Mining Massive Data Sets</li>
-<li>CS 344B: Advanced Topics in Distributed Systems</li>
-<li>CS 345: Advanced Topics in Database Systems</li>
-<li>CS 347: Parallel and Distributed Data Management</li>
-<li>CS 361A: Advanced Algorithms</li>
-<li>CS 393: Computer Laboratory</li>
-<li>CS 395: Independent Database Project</li>
-<li>CS 399: Independent Project</li>
-<li>EE 384A: Internet Routing Protocols and Standards</li>
-<li>EE 384B: Mutimedia Communication over the Internet</li>
-<li>EE 384C: Wireless Local Area Networks</li>
-<li>EE 384M: Network Algorithms</li>
-<li>EE 384S: Network Architectures and Performance Engineering</li>
-<li>EE 384X: Packet Switch Architectures I</li>
-<li>EE 384Y: Packet Switch Architectures II</li>
+<ol>
+<li>The <strong>cognitive</strong> revolution - 70 000 years ago</li>
+<li>The <strong>agricultural</strong> revolution - 12 000 years ago</li>
+<li>The <strong>scientific</strong> revolution - 500 years ago</li>
 </ol>
 
 
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-17T10:41:00-08:00" pubdate data-updated="true">Nov 17<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/stanford/'>stanford</a>, <a class='category' href='/blog/categories/study/'>study</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/11/15/he-dot-net-colocation-facility/">HE.net Colocation Facility</a></h1>
-	<div class="entry-content">
-		<p>I&#8217;ve read post <a href="http://www.codinghorror.com/blog/2012/10/building-servers-for-fun-and-prof-ok-maybe-just-for-fun.html">&#8220;Building Servers for Fun and Prof&#8230; OK, Maybe Just for Fun&#8221;</a> and really like it what you can easily buy and build your own server and install it in the datacenter. Especially it was cool for me, because I&#8217;m living now in Bay Area and couple huge datacenters located here.</p>
-
-<p>I had couple servers in HE.net (dedicated server, rented from hosting company which managed them) and I always have a dream about visiting this place to see hundreds and hundreds computers in racks, routers with blinking lights and noise from cooling system. And couple weeks ago one of my friend asked me to help to manage couple his servers in Fremont, HE.net datacenter. He gave me permission and week ago, sunny Sunday I went to Fremont to check his cabinet (he rented full cabinet includes 42 Units, Power and 100 Mbps bandwidth for only $600 per month).</p>
-
-<p><img src="http://pix.am/oLeel.jpg" alt="" /></p>
-
-<p>They provide everything, even screwdrivers and drills if you need to maintain new server or change memory. So now I&#8217;m thinking about building new server and install it there. I also heard about datacenter in San Jose, but haven&#8217;t checked it yet. I think, people will realise what building infrastructure much cheaper and more useful (you can customize every layer) than using solutions from the &#8220;box&#8221;. Sure, I understand the difference, but it&#8217;s not always crazy to build infrastructure and save tons of money when you are doing (lean) startup.</p>
-
-<p>And I totally agree with Jeff, build servers it&#8217;s a lot of fun! =)</p>
+<p>Homo (men) - genus, Sapiens (wise) - species. Somewhere from East Africa.</p>
 
 		
 		
@@ -393,12 +106,8 @@
   
 
 
-<time datetime="2012-11-15T16:46:00-08:00" pubdate data-updated="true">Nov 15<span>th</span>, 2012</time></div>
+<time datetime="2013-08-21T00:00:00-07:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time></div>
 	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/colocation/'>colocation</a>, <a class='category' href='/blog/categories/he-net/'>he.net</a>, <a class='category' href='/blog/categories/henet/'>henet</a>
-
 
 </div>
 	
@@ -406,25 +115,31 @@
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/28/attacking-the-internet-voting-system/">Attacking the Internet Voting System</a></h1>
+	<h1 class="title"><a href="/blog/2013/08/20/august-20-tuesday/">[Modern Art] 4. Modernism and Art for Art&#8217;s Sake. Part 2. [Death] Other Bad Aspects of Death</a></h1>
 	<div class="entry-content">
-		<p>Today is Sunday, just finished my third week of Networking class, learned a lot about ip, tcp, udp, how tcp makes reliable data transer, whats congestion avoidance, how packets and windows works, queuing on the routers, TCP Tahoe, TCP Reno and many other interesting things.</p>
+		<p>When people think they are going beyond the common place, that&#8217;s the time to really be suspicious. Romantism rejected mechanistic approach to happines or to pleasure. <strong>The Romantics</strong> value emotions, they value conflict, interested in nature as a scene of turbulence, they value authenticity, a kind of deep honesty and an expression of the soul and the arts, very importantly. Flaubert understands romanticism inside out, but he rejects it. He thinks it leads to <strong>stupidity and cliche</strong></p>
 
-<p>It&#8217;s interesting how many things behind so &#8220;obvious&#8221; TCP/IP for example. &#8220;Where Wizards Stay Up Late: The Origins Of The Internet&#8221; book makes my discovery much more interesting, you can see &#8220;real&#8221; life of invetors, how they tried and fell and eventually built the Internet. I bet they didn&#8217;t think what it would be so popular as it is, but even so, they didn&#8217;t think for sure what it would be used as voting platform.</p>
+<blockquote><p>Those who were beginning to age had a youthful look, while a touch of maturity overlay the faces of the younger. In their indiferent gazes floated the tranquility of passions daily gratified, and beneath their gentle manners was visible that particular brutality imparted by domination in rather easy things, in which one&#8217;s strength is exerted and one&#8217;s vanity tickled - the handling of thoroughbred hourses and the company of fallen women.</p></blockquote>
 
-<p>Couple days ago I read <a href="https://jhalderm.com/pub/papers/dcvoting-fc12.pdf">this paper</a> and found it very interesting.</p>
+<hr />
 
-<p><img src="http://9.mshcdn.com/wp-content/uploads/2012/10/Podium.jpg" alt="" /></p>
+<p>How good is your life? Add up your experiences and your accomplishments and the particular details of your life as what the story is about. Being alive per se it has no value. Life itself is a container which we fill with various goods or bads. And deciding how valuable it is, how good it is for me to be alive is a matter of adding up the value of the contents of the life. <strong>But the container itself is a mere container. It has no value in and of itself.</strong></p>
 
-<blockquote><p>In 2010, Washington, D.C. developed an Internet voting pilot project that was intended to allow overseas absentee voters to cast their ballots using a website. This paper describes our experience participating in this trial. Within 48 hours of the system going live, we had gained nearcomplete control of the election server. We successfully changed every vote and revealed almost every secret ballot. Election oﬃcials did not detect our intrusion for nearly two business days and might have remained unaware for far longer had we not deliberately left a prominent clue.</p></blockquote>
+<p><strong>Neutrual container theory</strong> - only about pain and pleasure, mere container is a neutral.</p>
 
+<p><strong>Valuable container theory</strong> - Life itself is worth having. There&#8217;s benefit to me above and beyond the question of what&#8217;s going on within my life (am I loved, am I accomplishing things, am I having nice experiences or not) but we need to remember mere fact that I&#8217;m alive gives my life some value.</p>
 
-<p>Highly recommend to read even you don&#8217;t know/care about internet security, authors describe every steps and it looks like cyber-thriller. Spoil!</p>
+<p>How much extra add valueble container? Modest versions of the valuable container theory say, although being alive per se is good, if the contents of your life get bad enought, that <strong>can outweigh the value of being alive</strong> so that the grand total is negative.</p>
 
-<blockquote><p>After a few hours of examination, we found a shell injection vulnerability that eventually allowed us to compromise the web application server.<br/>&#8230;<br/>We also gained access to the database by ﬁnding credentials in the bash history ﬁle (mysql -h 10.1.143.75 -udvbm -pP@ssw0rd).<br/>&#8230;<br/>After about 3.5 hours using the cracker’s default settings, we recovered the secondary administrator password cisco123 from a salted MD5 hash.<br/>&#8230;<br/>We realized that one of the default logins to the terminal server (user: admin, password: admin)<br/>&#8230;<br/>The terminal server provided built-in support for keystroke logging of serial console sessions and forwarding of logged keystrokes to a remote syslog server, which we enabled and conﬁgured to forward to one of our machines. This allowed us to observe in real time as system administrators logged in and conﬁgured the switches, and to capture the switches’ administrative password, !@#123abc.<br/>&#8230;<br/>We found a pair of webcams on the DVBM network both publicly accessible without any password that showed views of the server room that housed the pilot. <br/>&#8230;</p></blockquote>
+<p>Against it thinks being alive per se is so incredibly valuable that no matter how horrible the contents are, the <strong>grand total will always be positive</strong>. (fantastic valuable container theory)</p>
 
+<p>The centrual bad thing about to die is the fact that because I&#8217;ll be dead I&#8217;ll be deprived of the good things in life. This is not the only bad thing, there are other features of death, as we experience it, that are separable from the deprivation account.</p>
 
-<p>Enjoy!</p>
+<p>If we see it can not go any other way we don&#8217;t have to feel bad about it. 2 + 2 always equal 4. Spinoza.</p>
+
+<p>would it be better to know when you were going to die? Because of unpredictability it&#8217;s difficult to make right kinds of plans. And in particular, it&#8217;s hard to know how to pace youself. It can work the other way as well, you make a life plan and then you don&#8217;t die yet, you continue to stick around and then your life has this feeling anticlimitic.</p>
+
+<p>The overall shape of you life matters (the narrative arc of your life)</p>
 
 		
 		
@@ -444,12 +159,8 @@
   
 
 
-<time datetime="2012-10-28T14:08:00-07:00" pubdate data-updated="true">Oct 28<span>th</span>, 2012</time></div>
+<time datetime="2013-08-20T00:00:00-07:00" pubdate data-updated="true">Aug 20<span>th</span>, 2013</time></div>
 	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/paper/'>paper</a>, <a class='category' href='/blog/categories/penetration-testing/'>penetration testing</a>
-
 
 </div>
 	
@@ -457,19 +168,45 @@
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/25/behind-the-hacks/">Behind the Hacks</a></h1>
+	<h1 class="title"><a href="/blog/2013/08/19/august-19-monday/">[Modern Art] 4. Modernism and Art for Art&#8217;s Sake. [Death] the Value of Life</a></h1>
 	<div class="entry-content">
-		<p>I&#8217;ve realized what I have bunch of emails where I&#8217;ve send people &#8220;bugs&#8221; on their websites (I&#8217;ll share here only that already fixed &#8220;bugs&#8221;). As example, once I&#8217;ve read about startup http://1.ai on HN. I thought such a nice domain name and interesting .ai zone =) Couple checks and pretty annoy xss:</p>
+		<blockquote><p>Although she was ugly, thin as a lathe, as thick with pimples as the spring it with buds, Madame Dubuc cerainly had no lack of suitors to choose from. To achieve her ends Mere Bovary was obliged to sipplant them all, and she very skillfully foiled even the intrigues of a pork-butcher favored by the clergy.</p></blockquote>
 
-<blockquote><p>Hey guys,</p><p>Read about you on HN, first of all thanks for the great job and don&#8217;t<br/>forget to close xss here<br/>http://1.ai/%3Cimg%20src=%22http://i.imgur.com/aAJSR.jpg%22%3E</p><p>thanks</p><p>-rus</p></blockquote>
+<hr />
 
+<h1>The Value of Life</h1>
 
-<p>just after that i&#8217;ve got email:</p>
+<p>Example with rat and orgasmic impulse, when they stop eat and having sex except but clicking button with this impulses. Why we could not imagine doing same thing with us? <strong>There&#8217;s something that distinguishes humans from rats.</strong> No doubt you would enjoy it for a very long time. But I imagine that after a period, part of you is going to start asking, &#8220;Huh, say, it feels the same as it was yesterday and the day before that and the day before that.&#8221; I imagine this is how it&#8217;s going to feel tomorrow, and the day after that and the day after that. And eventually this question would start, <strong>&#8220;is this really all there is to life, just simple pleasure like this?&#8221;</strong> You are not just going to stay caught in the moment. You&#8217;re going to take this meta-level or higher level standpoint, look down at the pleasure and wonder, &#8220;Is this all that there is to life?&#8221; and this question will override the pleasure, <strong>eventually, you&#8217;d become hirrified that you were, in effect, stuck in this rat-like existence.</strong></p>
 
-<blockquote><p>Hello Ruslan,<br/>thank you for your help - will notify the sysadmin asap :)<br/>Enjoy the account and feel free to let me know if you do have suggestions/security ideas. <br/>At the moment beside relatively small things the permissions and security should guarantee that <br/>everything runs smoothly but we will certainly do more fixes (like this one) over time !<br/>best Regards<br/>David</p></blockquote>
+<p>Immortality can&#8217;t be something desirable, it would be a nightmare, something you would long to free yourself from.</p>
 
+<p>So parhaps the best form of life would be not immortality; and not what we&#8217;ve got now, where you live after a mere drop of 50 or 80 or 100 years. But rather the best thing I suppose would be to be able to live as long as you wanted.</p>
 
-<p>That&#8217;s cool when people response very fast and with positive feedback, usually people just ignore emails like this, I have no idea why. Maybe because it seems strange, maybe they don&#8217;t care about that till time when somebody use it.</p>
+<p><strong>Is it worth continuing to live or is it not wort continuing to live?</strong></p>
+
+<p>good life vs bad life?</p>
+
+<p>The things that are worth having for their own sake, philosophers call <strong>intrinsically valuable</strong>. Instrumentally good or bad things in the list about good vs bad life.</p>
+
+<p><strong>What&#8217;s worth having for its own sake?</strong> Well, one natural suggestion is that pleasure (intrinsically good) is worth having for its own sake and pain (intrinsically bad) is probably worth avoiding for its own sake.</p>
+
+<p>Hedonism is a view that many people are attracted to, it&#8217;s got a very simple theory of the nature of wellbeing. Being well of is a matter of experiencing pleasure and avoiding or minimizing the expirience of pain.</p>
+
+<p>In deciding whether what life holds for you is worth having, better than nothing, you, roughly speaking, add up all the good times and substract all the bad times and see whether the net balance is positive or negative.</p>
+
+<p><strong>Add up all the pleasures, subtract all the pains.</strong></p>
+
+<p>If only I had chosen to become a doctor, instead of having chosen to become a lawyer. How much better off or worse off would I have been? Or if I decide to become an artice or a scholar or a beach bum or a farmer, how much better off or worse off would I have been? You&#8217;re trying to project your future and asking the question &#8220;Where do I think I&#8217;d be better off?&#8221;, which of these branches that are available to me, the branches of my life story which is the one in which the future from here on our holds more pleasure and holds less pain. That&#8217;s how hedonist will think about choises.</p>
+
+<p>We can evaluate this year, or 6 month, or just this evening. I can talk about, well, what should I do tonight? Shoild I stay home and work on my paper? Should I go to the party? Where will I be better off tonight?</p>
+
+<p>We do our evaluation not for the entire lives, but of chunk of lives. That what we can do if we&#8217;re accept hedonism. <strong>Should we accept hedonism?</strong></p>
+
+<p>Robert Nozick, a philosopher who died a few years ago. Nizick invited us to imagine an experience machine, that&#8217;s offer us not just simple rat-machine with impulses to generate pleasure in our brain, he offers, basically, completely realistic virtual reality. When you are hooked up to the machine, it seems to you exactly the same on the inside as it would seem to you if you really were.</p>
+
+<p>You coud have the identical experience of climbing Mount Everest, you&#8217;d feel the wind bracing you. You feel the thrill of having made it to the top and the wind bracingly striking your chin and you feel the satisfaction and you&#8217;ve got the memories of having almost died. Or <strong>write the great american novel</strong> then you&#8217;ve got the experience of staying up late at night not knowing how to make the plot work out, crushing pieces of paper and throwing them away. Or you want to be <strong>finding the cure for cancer</strong>. So you&#8217;ve got exactrly the experience you would have if you were working in your lab having the brilliant breakthrough when you finally realize what the combination is that would make the right antibody. That&#8217;s life on the experience machine. You&#8217;re not doing any of it, you just floating in the lab. But the experience are <strong>identical</strong>.</p>
+
+<p>Now, ask youself then, would you want to spend your life hooked up to the experience machine? How would you feel if you discovered now that you have been living your life hooked up to an experience machine? <strong>Is it the best possible form of human existence?</strong></p>
 
 		
 		
@@ -489,12 +226,8 @@
   
 
 
-<time datetime="2012-10-25T18:05:00-07:00" pubdate data-updated="true">Oct 25<span>th</span>, 2012</time></div>
+<time datetime="2013-08-19T00:00:00-07:00" pubdate data-updated="true">Aug 19<span>th</span>, 2013</time></div>
 	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hack/'>hack</a>, <a class='category' href='/blog/categories/infosec/'>infosec</a>, <a class='category' href='/blog/categories/mischief/'>mischief</a>, <a class='category' href='/blog/categories/startups/'>startups</a>
-
 
 </div>
 	
@@ -502,308 +235,21 @@
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/19/pthreads-and-shared-variables/">Pthreads and Shared Variables</a></h1>
+	<h1 class="title"><a href="/blog/2013/08/16/august-16-friday/">[Death] 18. The Badness of Death, Part III</a></h1>
 	<div class="entry-content">
-		<p>I started yesterday with a ascii picture that shows how threads looks like. Now I want to add variable &#8221;<strong>a</strong>&#8221; into each thread:</p>
+		<p>Lucretious says, look, most of us are upset and anxious at the fact that we&#8217;re going to die. We think death is bad for us. There&#8217;ll be this period after my death in which I won&#8217;t exist. And deprivation account helps us to say why it&#8217;s bad, because during this period of nonexistence, you&#8217;re not enjoying the good things in life. But wait a minute, <em>the period after you die isn&#8217;t the only period during which you don&#8217;t exist. It&#8217;s not the only period in which if only you were still alive, you could still be enjoying the good things in life. There&#8217;s another period of nonexistence.</em> <strong>It&#8217;s the period before my birth</strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>  Master Thread
-</span><span class='line'>        |
-</span><span class='line'>unsigned int a = 0;
-</span><span class='line'>        |
-</span><span class='line'>        |        create workers with pthread_create()
-</span><span class='line'>        |
-</span><span class='line'>      // \\      workers start up
-</span><span class='line'>     / | | \
-</span><span class='line'>     | | | |
-</span><span class='line'>     a a a a     workers do a++ in loop jobs (thread routine)
-</span><span class='line'>     | | | |
-</span><span class='line'>     \ \ / /
-</span><span class='line'>      \\ //      workers terminate
-</span><span class='line'>        |
-</span><span class='line'>        |        join workers with pthread_join()
-</span><span class='line'>        |
-</span><span class='line'>  Master Thread</span></code></pre></td></tr></table></div></figure>
+<p>It is bad? Lucretius says that&#8217;s silly, nobody upset about the fact that there was an eternity before they were born.</p>
 
+<p>Before born you don&#8217;t life, but with death you lost it. So, we can say, that we care about that part after death more than the one before birth. <strong>Because the one after death involves loss, and the one before birth does not.</strong></p>
 
-<p>This picture shows the possibility of synchronization errors when every thread has same access to variable <strong>a</strong>. Let code some example of this problem:</p>
+<p>We imaging to living the longer life. But what is it that happens when I say, if only I&#8217;d been born earlier? Well, says <strong>Feldman</strong>, you don&#8217;t actually imagine a longer life, you just shift the entire life and start it earlier. When we imaging being born earlier we don&#8217;t imaging having longer life. Nothing better about having a life earlier, according to the deprivation account.</p>
 
-<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define N 100000</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">if</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Nope! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>   <span class="k">else</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;OK! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">a</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>So, Feldman says, no wonder, no surprise that you care about the nonexistence after death. Because when you imagine that being different, you imagine a longer life. But when you start thinking about the nonexistence before birth and you imagine that being different, you don&#8217;t imagine more goods in life, you just imagine them taking place at a different time.</p>
 
+<p>Derek Parfit says, it&#8217;s true that when I think about the nonexistence after I die that&#8217;s loss, whereas the nonexistence before I&#8217;m born, that&#8217;s not loss, that&#8217;s mere &#8220;schmoss&#8221;. And it&#8217;s true that we need an explanation about why loss is worse than &#8220;schmoss&#8221;. But we can see that this is not an arbitrary preference on our part, because in fact, it&#8217;s part of a quite general pattern we have of caring about the future in a way that we don&#8217;t care about the past. <strong>This is a very deep fact about human caring. We are oriented towards the future and concerned about what happens in it, in a way that we&#8217;re not oriented and concerned about what happened in the past.</strong></p>
 
-
-
-<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">gcc</span> <span class="n">shared</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">shared</span> <span class="o">&amp;&amp;</span> <span class="p">.</span><span class="o">/</span><span class="n">shared</span>
-</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">161406</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared</span>
-</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">162099</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared</span>
-</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">133299</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>hmm, strange, isn&#8217;t? It happens because of improperly synchronization.</p>
-
-<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="nl">_job:</span>
-</span><span class='line'><span class="mf">0000000100000e80</span>  <span class="n">pushq</span> <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000e81</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rsp</span><span class="p">,</span><span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000e84</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rdi</span><span class="p">,</span><span class="mh">0xf8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mf">0000000100000e88</span>  <span class="n">movl</span>  <span class="err">$</span><span class="mh">0x00000000</span><span class="p">,</span><span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span> <span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="mf">0000000100000e8</span><span class="n">f</span>  <span class="n">jmp</span> <span class="mh">0x100000ea9</span>
-</span><span class='line'><span class="p">;</span> <span class="n">loop</span>
-</span><span class='line'><span class="mf">0000000100000e91</span>  <span class="n">movl</span>  <span class="mh">0x000001e1</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span> <span class="p">;</span> <span class="n">our</span> <span class="n">global</span> <span class="n">a</span>
-</span><span class='line'><span class="mf">0000000100000e97</span>  <span class="n">addl</span>  <span class="err">$</span><span class="mh">0x01</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>            <span class="p">;</span> <span class="n">a</span><span class="o">++</span>
-</span><span class='line'><span class="mf">0000000100000e9</span><span class="n">a</span>  <span class="n">movl</span>  <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="mh">0x000001d8</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">)</span> <span class="p">;</span> <span class="n">save</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea0</span>  <span class="n">movl</span>  <span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea3</span>  <span class="n">addl</span>  <span class="err">$</span><span class="mh">0x01</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>            <span class="p">;</span> <span class="n">i</span><span class="o">++</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea6</span>  <span class="n">movl</span>  <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea9</span>  <span class="n">movl</span>  <span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eac</span>  <span class="n">cmpl</span>  <span class="err">$</span><span class="mh">0x0001869f</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>      <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb1</span>  <span class="n">jle</span> <span class="mh">0x100000e91</span>             <span class="p">;</span> <span class="n">check</span> <span class="n">and</span> <span class="n">jump</span>
-</span><span class='line'><span class="p">;</span> <span class="n">jle</span> <span class="o">-</span> <span class="n">less</span> <span class="n">or</span> <span class="n">equal</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb3</span>  <span class="n">movq</span>  <span class="err">$</span><span class="mh">0x00000000</span><span class="p">,</span><span class="mh">0xe8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebb</span>  <span class="n">movq</span>  <span class="mh">0xe8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebf</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rax</span><span class="p">,</span><span class="mh">0xf0</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec3</span>  <span class="n">movq</span>  <span class="mh">0xf0</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec7</span>  <span class="n">popq</span>  <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec8</span>  <span class="n">ret</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That is how our loop in function <strong>job</strong> looks in machine code (otool -Vt ./shared). And as you can also see, each thread load/save data from same memory address 0x000001e1(%rip), that&#8217;s why we always get wrong answer, because thread compete with each other and improperly. How to fix it? We have to lock variable, change it and then unlock it to allow other threads to change it:</p>
-
-<figure class='code'><figcaption><span>shared2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define N 100000</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="n">pthread_mutex_t</span> <span class="n">mutexA</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">if</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Nope! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>   <span class="k">else</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;OK! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_mutex_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span>
-</span><span class='line'><span class="nf">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/*</span>
-</span><span class='line'><span class="cm">      Lock mutex prior to updating the value in the shared</span>
-</span><span class='line'><span class="cm">      variable and unlock it upon updating. </span>
-</span><span class='line'><span class="cm">      */</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">pthread_mutex_lock</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">a</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>      <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
-</span><span class='line'>   <span class="p">}</span>
-</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now it looks much better!</p>
-
-<figure class='code'><figcaption><span>shared2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">gcc</span> <span class="n">shared2</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">shared2</span> <span class="o">&amp;&amp;</span> <span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
-</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
-</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
-</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That is it! Now we can use shared variables in our threads and build something interesting. In next post I will write about <strong>thread-safety</strong> and how to write thread-safe function.</p>
+<p>Parfit&#8217;e got a very nice example, imagine that you&#8217;ve got some condition, some sort of medical condition that will kill you unless you have an operation. So fair enought, you&#8217;re going to have the operation. This will allow you to live your life. Unfortunately in order to perfom the operation, they can&#8217;t have you anesthetized. You have to be awayke, perhaps in order to tell the surgeon &#8220;Yeah, that&#8217;s where it hurts,&#8221; and it&#8217;s a very painful operation. Only one thing we can do is this: give a super local medication and you will not remember anything about the operation itself (24 hours completely wiped out). So you&#8217;re in the hospital and you wake up and you ask yourself, &#8220;Huh, have I had the operation yet or not?&#8221; Don&#8217;t know, right? So you ask the nurse, &#8220;Have I had the operation yet or not?&#8221; She says &#8220;I don&#8217;t know, we have a couple on the hall today who are some of whom have had it and some of whom are scheduled to have it later today. Let me go look at your file, I&#8217;ll come back and I&#8217;ll tell you.&#8221; I want it to be the case that I&#8217;m one of the people who&#8217;s already had the operation. I don&#8217;t want to be one of the people who hasn&#8217;t yet had the operation. <strong>We want the pain to be in the past.</strong> We care more about what&#8217;s happening in the futer than we care about what&#8217;s happening in the past.</p>
 
 		
 		
@@ -823,12 +269,8 @@
   
 
 
-<time datetime="2012-10-19T16:17:00-07:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time></div>
+<time datetime="2013-08-16T00:00:00-07:00" pubdate data-updated="true">Aug 16<span>th</span>, 2013</time></div>
 	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/mutex/'>mutex</a>, <a class='category' href='/blog/categories/pthread/'>pthread</a>
-
 
 </div>
 	
@@ -836,575 +278,58 @@
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/18/c-posix-threads-boot-camp/">C Posix Threads Boot Camp</a></h1>
+	<h1 class="title"><a href="/blog/2013/08/15/august-15-thursday/">[Modern Art] 3. From Enlightenment to Revolution. Part 5. [Death] the Deprivation Account</a></h1>
 	<div class="entry-content">
-		<p>The White Rabbit put on his spectacles,
-&#8220;Where shall I begin, please your Majesty?&#8221; he asked.
-&#8220;Begin at the beginning,&#8221; the King said, very gravely,
-&#8220;and go on till you come to the end: then stop.&#8221;</p>
+		<h1>Revolution</h1>
 
-<p>Lewis Carroll, Alice&#8217;s Adventures in Wonderland</p>
+<blockquote><p>In place of the old local and national seclusion and self-sufficiency, we have intercourse in every direction, universal inter-dependence of nations. Communist Manifesto</p></blockquote>
 
-<p>This post is about threads and the reason why I&#8217;m writing this because I want to know more and more about thread, but before that I have to repeat and refresh everything about this huge topic. I saw funny qoute about the process of learning and doing concurrency code</p>
+<p>1848 - 1852 what Marx experiences is a period of great disillusion.</p>
 
-<p>&#8220;i don&#8217;t know threads!,&#8221; then &#8220;I got it! I know how it works!,&#8221; then &#8220;I don&#8217;t know threads!&#8221; and so on.</p>
+<blockquote><p>The bourgeoisie has stripped of its halo every occupation hitherto honoured and looked up to with reverent awe. It has converted the physician, the lawyer, the priest, the poet, the man of science, into its paid wage labourers.</p>
 
-<p>So, I&#8217;m going to use here the threads model that is called POSIX threads or Pthreads. Brief story you can read on wikipedia (http://en.wikipedia.org/wiki/POSIX_Threads)[here.] The main thing that its available on many Unix-like OS, and if you are using mac or linux I&#8217;m sure you have file name pthread.h in your libraries directory. The best to start is write &#8220;Hello World&#8221; with threads.</p>
+<p>The present generation is like the Jews whom Moses led through the wilderness. It now only has a new world to conquer, it must go under in order to make room for the men who are able to cope with a new world. The Class Struggles in France</p></blockquote>
 
-<pre><code>  Master Thread
-        |
-        |        create workers with pthread_create()
-        |
-      // \\      workers start up
-     / | | \
-     | | | |
-     | | | |     workers do their jobs (thread routine)
-     | | | |
-     \ \ / /
-      \\ //      workers terminate
-        |
-        |        join workers with pthread_join()
-        |
-  Master Thread
-</code></pre>
+<p>Febraury revolution most the beautiful revolution, it was when everybody was the brother and sisters were all fighting for the same cause. But later on in June of 1848 you get the ugly revoltion. The workers are in the streets of Paris, saying, we want jobs, we want food, we want wages, will allowe us to live well.</p>
 
-<figure class='code'><figcaption><span>hello.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">/* posix thread */</span>
-</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="cm">/* </span>
-</span><span class='line'><span class="cm">   local variable which will be used to store the thread ID of</span>
-</span><span class='line'><span class="cm">   the peer thread</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="cm">/* </span>
-</span><span class='line'><span class="cm">   pthread_create function creates a new thread (obvious)</span>
-</span><span class='line'><span class="cm">   and runs the thread_routine in the context of the new thread</span>
-</span><span class='line'><span class="cm">   with an input arg NULL (just after thread_routine). In our case</span>
-</span><span class='line'><span class="cm">   we just run thread_routine without any argument. </span>
-</span><span class='line'><span class="cm">   when the call to pthread_create returns - tid contains the ID</span>
-</span><span class='line'><span class="cm">   the new thread</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="cm">/*</span>
-</span><span class='line'><span class="cm">   the main thread waits for the peer thread to terminate with</span>
-</span><span class='line'><span class="cm">   the call pthread_join.</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello world!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>It&#8217;s called June Day.</p>
 
+<blockquote><p>The Febraury revolution was the beautiful revolution, the revolution of universal sympathy, because the contradictions which erupted in it against the monarchy were still undeveloped and peacefully dormant, because the social struggle which formed their background had only achieved an ephemeral existence, and existence in phrases, in words. The June revoulution is the ugly revolution, the nasty revolution, because the phrases have given place to the real thing&#8230;</p></blockquote>
 
-<p>compile and run</p>
+<p>The <strong>realy real</strong> for Marx is class strugle. After the revolution 1848 the realy real become <strong>economic law</strong>.</p>
 
-<p>○ gcc hello.c -o hello &amp;&amp; ./hello
-Hello world!</p>
+<blockquote><p>What taste! What cuisine! What wines! And what speeches! Nothing could make me more scornful of success, considering the price at which it is purchased. I sat unmoved, nauseated by the patriotic fervor they whipped up with mealy platitudes such as &#8216;the abyss toward which we are running&#8217; the &#8216;honor of our flag,&#8217; the &#8216;shadow cast by our standards,&#8217; the &#8216;fraternity of peoples.&#8217; Never will there be a quarter as many ovations for the most beautiful works of the masters. <strong>Flaubert</strong></p></blockquote>
 
-<p>Let&#8217;s play a little bit with pthreads, you will see this is much easier than it looks like now.</p>
+<hr />
 
-<figure class='code'><figcaption><span>hello2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[1] I&#39;ve create a thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[2] pthread_join and wait till its finish his job</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[6] Thread %ld terminated. Now in main!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[7] Time to clean up and exit. Bye!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">char</span> <span class="n">dot</span> <span class="o">=</span> <span class="sc">&#39;.&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[3] I&#39;m inside the thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">pthread_self</span><span class="p">());</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[4] Hello world! I&#39;m working...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">%d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[5] Done! Returning to the main thread!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<h1>From metaphysic to value theory</h1>
 
+<p>when somebody dies - it&#8217;s hard for the rest of us.</p>
 
-<p>○ gcc hello2.c -o hello2 &amp;&amp; ./hello2</p>
+<p>If we&#8217;re thinking about the central badness of death, it seems to me that we&#8217;ve got to focus on my being dead. What is it about my being dead that&#8217;s bad for me? When I dead, I&#8217;m not exist.</p>
 
-<figure class='code'><figcaption><span>hello2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">ve</span> <span class="n">create</span> <span class="n">a</span> <span class="kr">thread</span> <span class="mi">4513894400</span>
-</span><span class='line'>  <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">m</span> <span class="n">inside</span> <span class="n">the</span> <span class="kr">thread</span> <span class="mi">4513894400</span>
-</span><span class='line'><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">pthread_join</span> <span class="n">and</span> <span class="n">wait</span> <span class="n">till</span> <span class="n">its</span> <span class="n">finish</span> <span class="n">his</span> <span class="n">job</span>
-</span><span class='line'>  <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="n">Hello</span> <span class="n">world</span><span class="o">!</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">m</span> <span class="n">working</span><span class="p">...</span>
-</span><span class='line'>  <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="n">Done</span><span class="o">!</span> <span class="n">Returning</span> <span class="n">to</span> <span class="n">the</span> <span class="n">main</span> <span class="kr">thread</span><span class="o">!</span>
-</span><span class='line'><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="n">Thread</span> <span class="mi">4513894400</span> <span class="n">terminated</span><span class="p">.</span> <span class="n">Now</span> <span class="n">in</span> <span class="n">main</span><span class="o">!</span>
-</span><span class='line'><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="n">Time</span> <span class="n">to</span> <span class="n">clean</span> <span class="n">up</span> <span class="n">and</span> <span class="n">exit</span><span class="p">.</span> <span class="n">Bye</span><span class="o">!</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>It&#8217;s bad because while you&#8217;re doing this, you&#8217;re not getting something better. Example, stay home and watch something on TV. How it could be bad for me? It&#8217;s a pleasant enought way to spend a half an hour, on the other hand, suppose what I could be doing instead of watching a half an hour of television is being at a really great party.</p>
 
+<p>In this case the fact I stayed at home watching TV is bad for me in this comparative sense. It&#8217;s not in itself an unpleasant way to spend some time. It&#8217;s just there&#8217;s a better way to spend time that I could invest in something else. <em>Theres a lack of the better good</em></p>
 
-<p>I&#8217;ve added while loop into thread_routine function to show how pthread_join works (waits for thread termination). Notice that the pthread_join function can only wait for a specific thread to terminate. Let&#8217;s try to make 5 thread and see how it works:</p>
+<p>A lack is not intrinsically bad, but it&#8217;s still a kind of bad in this second sense. <em>To be lacking a good is itself bad for me.</em></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define NUM_THREADS 5</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">[</span><span class="n">NUM_THREADS</span><span class="p">];</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][1] I&#39;ve create a thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][2] pthread_join and wait till its finish his job</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][6] Thread %ld terminated!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[7] Time to clean up and exit. Bye!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">threadNum</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">char</span> <span class="n">dot</span> <span class="o">=</span> <span class="sc">&#39;.&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[t %d]</span><span class="se">\t</span><span class="s">[3] I&#39;m inside the thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">pthread_self</span><span class="p">());</span>
-</span><span class='line'>    <span class="c1">// printf(&quot;\t[4] Hello world! I&#39;m working...\n&quot;);</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\v</span><span class="s">%*d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="o">*</span><span class="mi">15</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[t %d][5] Done! Returning to the main thread!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>So, nonexistence is bad by virtue of the opportunity costs that are involved. When I don&#8217;t exist I&#8217;m not getting the things that I could have otherwise gotten, if only I were still alive. <strong>Death is bad because it deprives me of the good things in life</strong></p>
 
+<p>How could it be that death is bad for me when I don&#8217;t exist?</p>
 
-<p>Looks like matrix in my terminal.</p>
-
-<p><img src="http://pix.am/urR5.png" alt="" /></p>
-
-<p>Before we start talking about <strong>detaching thread</strong>, you can play with this code and threads, if you don&#8217;t understand something try to change code and see how it will work. In my case was a problem with pthread_join, but after couple examples I&#8217;ve realized how it works and moved on.</p>
-
-<p>By default, threads created joinable and joinable thread can be reaped and killed by other threads. On other case, detached thread cannot be reaped or killed by other threads. Its memory resources are freed automatically by the system when it terminates. To &#8220;detach&#8221; the thread we have to use <strong>pthread_detach</strong> function.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;strings.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#include &lt;sys/socket.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;arpa/inet.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="n">open_listenfd</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="o">*</span><span class="n">connfd_p</span><span class="p">,</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientlen</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">clientaddr</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">port</span> <span class="o">=</span> <span class="mi">1337</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">listenfd</span> <span class="o">=</span> <span class="n">open_listenfd</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">connfd_p</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-</span><span class='line'>        <span class="o">*</span><span class="n">connfd_p</span> <span class="o">=</span> <span class="n">accept</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">clientaddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">clientlen</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="n">connfd_p</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span>
-</span><span class='line'><span class="nf">open_listenfd</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">optval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">serveraddr</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">listenfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">optval</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">bzero</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">serveraddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">serveraddr</span><span class="p">));</span>
-</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">INADDR_ANY</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span> <span class="n">port</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">serveraddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">serveraddr</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">listen</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">4</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">listenfd</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span><span class="o">*</span>
-</span><span class='line'><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">connfd</span> <span class="o">=</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">pthread_detach</span><span class="p">(</span><span class="n">pthread_self</span><span class="p">());</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;New incoming connection...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Done! Close connection!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">close</span><span class="p">(</span><span class="n">connfd</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>huh, tired a little bit, was a C maraphone for couple hours. Here is example of server which waiting connections on tcp port 1337, if somebody connected - creates new thread and start doing his job. I&#8217;ll comment this code in the next post, but it works very well and now you can build your&#8217;s version of web server.</p>
-
-<p>Soon I&#8217;ll write about sharing variables between threads, using mutexes and how to avoid dead locks.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-18T19:03:00-07:00" pubdate data-updated="true">Oct 18<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/mutex/'>mutex</a>, <a class='category' href='/blog/categories/posix/'>posix</a>, <a class='category' href='/blog/categories/pthread/'>pthread</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/06/quadrocopter-in-the-wild/">Quadrocopter in the Wild</a></h1>
-	<div class="entry-content">
-		<p>Today went to the park in Downtown Palo Alto, nice place to test my pilot skills. It was not bad, couple times I did wrong with direction (coulnd&#8217;t spin around the axle, get lost the control). Spin around the axle is going to be my next exercise, because I can fly back and forth, but can&#8217;t turn around and fly with same side. Anyway, that was cool, almost 20 minutes of disconnected from the world.</p>
-
-<iframe width="640" height="360" src="http://www.youtube.com/embed/12pnL0ZyLeo?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-<p>Of course this is not the end and I&#8217;m going to improve this aircraft. I&#8217;m thinking about couple really awesome things, like glasses + camera on quadrocopter:</p>
-
-<p><img src="http://static.ddmcdn.com/gif/video-glasses-1.jpg" alt="" /></p>
-
-<p>or (good one in my case)</p>
-
-<p>NAZA controller with GPS module</p>
-
-<p><img src="http://s4e453e5a36d54.img.gostorego.com/802754/cdn/media/s4/e4/53/e5/a3/6d/54/catalog/product/cache/1/image/370x/9df78eab33525d08d6e5fb8d27136e95/d/j/djinaza.jpg" alt="" /></p>
-
-<p>ps: quadrocopter + kinect</p>
-
-<iframe width="640" height="360" src="http://www.youtube.com/embed/A52FqfOi0Ek?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-06T19:27:00-07:00" pubdate data-updated="true">Oct 6<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/diy/'>diy</a>, <a class='category' href='/blog/categories/hobby/'>hobby</a>, <a class='category' href='/blog/categories/quadrocopter/'>quadrocopter</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/02/weekends-project-quadrocopter-v1-dot-0/">Weekends Project: Quadrocopter v1.0</a></h1>
-	<div class="entry-content">
-		<p>Was an interesting quest to build this thing. At the end I&#8217;ve almost gave up about even test drive it and couple weeks it just waited till my friend asked to try outside, because I&#8217;ve tried to test it at home and it wasn&#8217;t good idea (no pilot expirience, didn&#8217;t know how to controls work and tried to start with perfect vertical lift-off and of course it didn&#8217;t work and I thought something wrong with my hands/software/engines/controllers). <em>An old story, we are afraid to fail at something, so it was really easy to give up than just once test it outside.</em></p>
-
-<p>Anyway, I did it and it flies perfectly. Time to improve pilot/control skills and later will upgrade it with camera and maybe with 3d glasses.</p>
-
-<iframe width="640" height="360" src="http://www.youtube.com/embed/1ws0lYtuihc?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-02T12:03:00-07:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hack/'>hack</a>, <a class='category' href='/blog/categories/palo-alto/'>palo alto</a>, <a class='category' href='/blog/categories/quadrocopter/'>quadrocopter</a>, <a class='category' href='/blog/categories/weekend/'>weekend</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/08/15/quora-digest-2/">Quora Digest 2</a></h1>
-	<div class="entry-content">
-		<ol>
-<li><a href="http://www.quora.com/Lifestyle/What-are-some-ways-to-live-a-simple-lifestyle">What are some ways to live a simple lifestyle?</a> All this being said, enjoy yourself. Live simply to allow yourself more time and energy to actually go out and do things, to read things, to learn things, to make things, to spend time with people, to exercise, to travel.</li>
+<ol type="a">
+<li>Something can be bad for you only if you exist</li>
+<li>When you&#8217;re dead you don&#8217;t exist
+=> C. Death can&#8217;t be bad for you.</li>
 </ol>
 
 
+<blockquote><p>So death, the most terrifying of ills, is nothing to us, since so long as we exist, death is not with us; but when death comes, then we do not exist. It does not then concern either the living or the dead, since for the former it is not, and the latter are no more. <strong>Epicurus</strong></p></blockquote>
+
+<p><strong>Modest version</strong> A. Something can be bad for you, only if you exist at sometime or the other. (dead can be bad for me)
+<strong>Bolder claim</strong> B. Something can be bad for you, only if you exist at the same time as that thing. (then bad can&#8217;t be bad for you)</p>
+
 		
 		
 	</div>
@@ -1423,12 +348,335 @@ Hello world!</p>
   
 
 
-<time datetime="2012-08-15T11:10:00-07:00" pubdate data-updated="true">Aug 15<span>th</span>, 2012</time></div>
+<time datetime="2013-08-15T00:00:00-07:00" pubdate data-updated="true">Aug 15<span>th</span>, 2013</time></div>
 	<div class="tags">
 
+</div>
+	
+</div></article>
 
-	<a class='category' href='/blog/categories/life/'>life</a>, <a class='category' href='/blog/categories/quora/'>quora</a>
 
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/08/14/august-14-wednesday/">[Modern Art] 3. From Enlightenment to Revolution. Part 3. [Death] the Badness of Death, Part II</a></h1>
+	<div class="entry-content">
+		<p>So the worker the more he works, the more he feels outside himself or that he has lost himself by producing something. But for Marx, when we produce things we see ourselves in what we make, we see a reflection of ourselves that increases our understanding. But in industrial world we see our own alienation, our own distance from ourselves.</p>
+
+<blockquote><p>The worker therefore only feels himself ourside his work, and in his work feels outside himself. He feels at home when he is not working, and when he is working he does not feel at home&#8230; Lastly, the external character of labor for the worker appears in the fact that it is not his own, but someone else&#8217;s&#8230;</p>
+
+<p>As a result, therefore, man (the worker) only feels himself freely active in his animal functions - eating, drinking, procreating, or at most in his dwelling and in dressing-up, etc; and in his human fuctuons he no longer feels himself to be anything but an animal. What is animal becomes human and what is human becomes animal.</p></blockquote>
+
+<p>Marx means that what is truly human about us is our ability to do creative work, we plane, we create and that now (with industrialization) becomes what makes us feel like an animal, like we&#8217;re controlled by others. And we feel free when we do animal functions - eat, sleep, procreate, when we should feel most free when we work.</p>
+
+<blockquote><p>The object of labor is, therefore, the objection of man&#8217;s speciess-life: for he duplicates himself not only, as in consciousness, intellectually, but also actively, in reality, and therefore he sees himself in a world that he has created. In tearing away from man the object of his production, therefore, estranged labor tears from him his species-life&#8230;</p></blockquote>
+
+<p>Our species-life is that we are able to see ourselves in the creative work we do.</p>
+
+<p>Even as we work more and more, we become further and further away from who we should be or who we might become. That&#8217;s a contradiction for Marx. <strong>We&#8217;re living like animals even if we have a greater capacity to be human. That should create a synthesis, that&#8217;s the revolution for Marx.</strong></p>
+
+<p>Dialectic can&#8217;t persist forever, because truth emerges in history, history has to resolve contradictions. Marx says, that when the worker realizes that the worker is oppressed and has to control his own labor, that liberates everyone. That show everyone that the work we do should be our own.</p>
+
+<p>The working class for Marx is the vehicle for the resolution of historical contradictions. And when the worker class will resolve this contradtiction, all the rest of us can wake up, and we can see those contradictions resolved too.</p>
+
+<blockquote><p>From the relationship of estranged labor to private property it follows further that the emancipation (освобождение) of society from private property, etc, from servitude, is expressed in the political form of the emancipation of the workes; not that their emancipation alone is at stake, but because the emacipation of the workers contains universal human emancipation&#8230;</p></blockquote>
+
+<p>Bourgeosie, the middle class, a most revolutionaty class.</p>
+
+<blockquote><p>The bourgeoisie has stripped of its halo every occupation hitherto honoured and looked up to with reverent awe. It has converted the physician, the lawyer, the priest, the poet, the man of science, into its paid wage labourers. Communist Manifesto.</p>
+
+<p>The history of all hitherto existing society is the history of class struggless.</p></blockquote>
+
+<p>It&#8217;s bourgeoisie reveal that it&#8217;s economic contradiction that forces people to do things they would otherwise find abhorrent (отвратительный).</p>
+
+<blockquote><p>The bourgeoisie has torn away from the family its sentimental veil, and has reduced the family relation to a mere money relation.</p>
+
+<p>All fixed, fast-frozen relations, with their train of ancient and venerable (почтенный) prejudices and opinions, are swept away, all new-formed ones become antiquated before they can ossify (окостеневать). All that is solid melts into air, all that is holy profaned, and man is at last compelled to face with sober senses his real conditions of life, and his relation with his kind.</p></blockquote>
+
+<p>bourgeoisie shows the &#8220;real&#8221; conditions of life, and that for Marx is economic exploitation. That behind marriage is economic exploitation, behind patriarchy is economic exploitation, behind the economy, behind the government. The real conditions of life are alienation and economic exploitation, that once revealed, will make people want to change the conditions of their lives.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-14T00:00:00-07:00" pubdate data-updated="true">Aug 14<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/08/13/august-13-tuesday/">[Modern Art] 3. From Enlightenment to Revolution. Part 1. [Death] the Badness of Death. Part 1</a></h1>
+	<div class="entry-content">
+		<p>About Marx and his teacher Hegel.</p>
+
+<p>Hegel is the most important philosopher in up until his time.</p>
+
+<blockquote><p>The only Thought which Philosophy brings with it to the contemplation of History, is the simple conception of Reason; that Reason is the Sovereign of the World; that the history of the world, therefore, presents us with a rational process. Hegel, Lecture on the Philosophy of History</p></blockquote>
+
+<p>The only place where you can find the truth is in the world, in history.</p>
+
+<blockquote><p>Reason is the substance of the Universe; viz. that by wchi and in which all reality has its being and subsistence. On the other hand, it is the Infinite Energy of the Universe&#8230;</p></blockquote>
+
+<p>Modernity for Hegel is the period in which we understand that the only place we should look for truth is right around us, not in some divine (божественный) or ideal realm.</p>
+
+<blockquote><p>In traversing the past we have only to do with what is present&#8230; The life of the ever present Spitir is a circle of progressive embodiments, which looked at in one aspect still exist beside each other, and only looked at from another point of view appear as past.</p></blockquote>
+
+<p>Dialectical processes are how the past is retained in the present.</p>
+
+<h1>Thesis | Antithesis => Synthesis</h1>
+
+<p>Fathers | Sons => Synthesis or opposit of it - Negation</p>
+
+<hr />
+
+<p>Conflict makes the world go round. History is reasonable. Truth is in the flesh of history, Hegel takes it from being the flesh of Jesus, to being the stuff of history. That&#8217;s the only realm where truth is found. So you can&#8217;t isolate youself and try to find the truth, truth is on the battlefield, in politics, on the streets, the <strong>truth will emerge in history</strong>. That is Hegel&#8217;s strong belieive.</p>
+
+<blockquote><p>The history of the world is none other than the progress of the consciousness of freedom; a progress whose development according to the necessity of its nature it is our business to investigate. Hegel</p>
+
+<p>The history of all hitherto existing society is the history of class struggles. Communist Manifesto</p>
+
+<p>On the basis of political economy itself, in its own words, we have shown that the worker sinks to the level of a commodity and becomes indeed the most wretched (несчастный) of commodities; that the wretchedness of the worker is in inverse proportion to the power and magnitude of his production&#8230; Marx</p></blockquote>
+
+<p>That creates self-estrangement or alienation. Create more and more, but get less and less, because prices go down and that&#8217;s the problem for workers.</p>
+
+<blockquote><p>The alienation of the worker in his product means not only that his labor becomes an object, an external existence, but that it exists outside him, independently, as something alien to him, and that it becomes a power on its own confronting him. It means that the life which he has conferred on the object confronts him as something hostile and alien.</p></blockquote>
+
+<p>Through your work you see more about yourself, you learn about yourself, from the work you do. Marx says that happenes in capitalism when I make something, it&#8217;s not mine, somebody else takes it away immediately. I make something and the more I make, the more it&#8217;s somebody esle&#8217;s and so by working, I lose myself.</p>
+
+<hr />
+
+<p>Ivan Ilych&#8217;s case is very typical, most of at fundamental level don&#8217;t believe they&#8217;re going to die.</p>
+
+<p>When people have these near brushes with death, it&#8217;s easy to velieve that the fact of their mortality is more vivid. It&#8217;s something before their eye. And they after that can say, I need to change my life, I need to spent less time at the office and more time with my family, telling the people that I love them, doint the things that are important to me, spending less time to worry about getting ahead, making money, getting the plasma TV.</p>
+
+<p>Let&#8217;s say when we find the fact of our mortailty is made vivid, when we change our priorites.</p>
+
+<h2>The claim about everybody dies alone</h2>
+
+<p>Nobody can die your death for you, nobody can take your part. It doesn&#8217;t express very clearly. But what about the cases when person die in car acident in the middle of conversation. He die very fast and seems to me in this case we can say he dies alone, it was very fast.</p>
+
+<p>But what about Socrates? He was not lonely. Hume died, had illines, he used to talk about various matters with friends, he was cheefrul and pleasent to the end. And here is no reason at all to believe that he was feeling lonely.</p>
+
+<h1>Is Death Bad?</h1>
+
+<p>When I die I ceased to exists. We want to turn to ethical question about death. Why is death bad? How death can be death?</p>
+
+<p>Value questions. How and in what ways the death is bad? Is death bad? What makes it bad?</p>
+
+<p>John&#8217;s death is bad for John&#8217;s friends and family. When somebody dies, we lose the chance to continue interacting with a person.</p>
+
+<p><strong>How could it be true that death is bad for the person that dies?</strong></p>
+
+<p>Tale of two Cities</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-13T00:00:00-07:00" pubdate data-updated="true">Aug 13<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/08/09/august-9-friday/">[Death] Believing You Will Die</a></h1>
+	<div class="entry-content">
+		<p>We don&#8217;t have P-functioning when we sleep, so should we say we dead then? Well, that&#8217;s clearly not the right thing to say.</p>
+
+<h2>What is it to be dead?</h2>
+
+<p>It can&#8217;t be just a matter of not <strong>P-functioning</strong>. Suppose that to be alive is to be able to engage in P-functioning.</p>
+
+<p>Sometimes people say that we die alone or everybody dies alone. Somehow, at some level, nobody really believes they&#8217;re going to die at all. Since it&#8217;s impossible to picture being dead, nobody believes in the possibility that they&#8217;re going to die, that they&#8217;re going to cease to exist.</p>
+
+<p>What is it like to be dead? We can&#8217;t imagine being dead. But can we imagine being cell phone or bold ball pen? No, so, there&#8217;s no mystery about what it&#8217;s like to be dead - <strong>it isn&#8217;t like anything</strong>. There is nothing there to describe. When you&#8217;re dead there&#8217;s nothing happening on the inside to be imagined.</p>
+
+<p>From the mere fact that you can&#8217;t picture from the inside what it&#8217;s like to be dead, it doesn&#8217;t follow that nobody believes they&#8217;re going to die.</p>
+
+<p>You can not picture it from the inside, but you can picture it from the outside. Dreamless or fainting - picture of my body lying on the bed or ground unconscious. I can picture my being dead quit easily, no functioning occuring in my body.</p>
+
+<p>Everytime I try to picture myself being dead, I smuggle myself back in, conscious and existing as a person, hence, not dead as a person. Maybe my body (i imagining my body dead, but i&#8217;m not imagining myself, the person, dead).</p>
+
+<p>Nobody believes they&#8217;re going to undergo bodily death?</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-09T00:00:00-07:00" pubdate data-updated="true">Aug 9<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/08/08/august-8-thursday/">[Modern Art] 2. What Is Enlightenment? Part III and IV</a></h1>
+	<div class="entry-content">
+		<blockquote><p>Everything begins to change in appearance&#8230; The more they see one another, the less they can do without seeing one another still more. A tender and sweet sentiment steals into the soul, and at the least obstacle becomes an impetuous frenzy; jealousy awakens together with love; Discord triumphs, and the greatest of all passions receives sacrifices of human blood. Discourse on Inequality</p></blockquote>
+
+<p>We begin to act for each other, we want to appear the way we want to be seen which is a departure from how we just act naturally.</p>
+
+<blockquote><p>Everyone began to look at everyone else and to wish to be looked at himself, and public esteem acquired a value&#8230; The fermentation caused by these new leavens eventually produced <strong>compounds fatal to happiness and innocence</strong>.</p></blockquote>
+
+<p>When we begin to want to appear in a certain way for the other, we begin to be fakers, we begin to be hypocrites. <strong>We begin to leave who we really were and begin to try to be something for somebody else.</strong></p>
+
+<p><strong>We want to be someone who we are not just so we can please another.</strong> We need things like luxuries, but they don&#8217;t seem like luxuries anymore, we need those things to be who we think we are.</p>
+
+<blockquote><p>&#8230;since these conveniences, by becoming habitual, had almost entirely ceased to be enjoyable, and at the same time degenerated into true needs, it became much more cruel to be deprived of them than to possess them was sweet, and men were unhappy to lose them without being happy to possess them.</p></blockquote>
+
+<p>You deisre something, and when you get it, after awhile you don&#8217;t get any pleasure from it, but if you lose it - it causes you pain. <strong>Become more vulnerable to pain</strong>. As you acquire luxuries, you become more vulnerable to pain, because the luxuries you acquire after a while you get, just get habituated to them, they become just part of your life and you don&#8217;t get pleasure from them.</p>
+
+<blockquote><p>Although men now had less endurance, and natural pity had already undergone some modification, this period in the development of the human faculties, occupying a just mean <strong>between</strong> indolence of the primitive state and the petulant activity of our vanity, must have been the happiest and the logest-lasting epoch. &#8230; <em>the real youth of the world</em>&#8230;</p>
+
+<p>Lacking valid resons to justify and sufficient strength to defend himself&#8230; the rich, under the pressure of necessity, at last conceived the most well-considered project ever to enter man&#8217;s mind; to use ven his atackers forces in his favor, to make his adversaries his defenders, to instill in them other maxims and to give them different institutions as favorable to himself as natural Right was contrary to him.</p></blockquote>
+
+<p>In other words, the rich create a scheme to get the poor to defend property.</p>
+
+<blockquote><p>All ran toward their chains in the belief that they were securing their freedom; for while they had enought reason to sense the advantages of a political establishment, they had not enough experience to foresee its dangers.</p></blockquote>
+
+<p>It creates a situation where the rest of society wants to emulate the rich, tries to become rich, corrupting themselves even further. So on the one hand, they suffer because they&#8217;re poor, and then they suffer in the soul becuase they think that the key to salvation is the acquisition of wealth, becoming superior to other people.</p>
+
+<p>Rich people are so sentitive, because you can hurt, they protect their fancy castles, fancy clothes, they have so many ways in which they invested in luxuries, that they are sensitive in every part of their goods.</p>
+
+<hr />
+
+<h2>Natural love of freedom</h2>
+
+<blockquote><p>Man&#8217;s natural dispositions for or against servitude must therefore not be judged by the degradation of enslaved Peoples but by the prodigious (огромный) feats (подвиги) of all free Peoples to protect themselves against oppression (угнетение).</p>
+
+<p>Animals &#8230; born free and abhorring captivity smash their heads against the bars of their prison.</p></blockquote>
+
+<p>Rich people are happy because of the existence of the poor. That the wealth itself doesn&#8217;t mean that much to them, but what means something to them is that they could look at other people and feel superior to them. Rich like having that much food because the other people are starving.</p>
+
+<blockquote><p>That indeed, is the genuine cause of all these differences: the Savage lives in himself; sociable man, always outside himself, is capable of living only in the opinion of others and, so to speak, derives the sentiment of his own existence solely from their judgment.</p></blockquote>
+
+<p>We want to be seen in a certain way by other people.</p>
+
+<blockquote><p>It is manifestly against the Law of Nature, however defined, that a child command an old man, an imbecile lead a wise man, and a handful of people abound in superfluities while the starving multitude lacks in necessities.</p>
+
+<p>Voltaire writes: I have received, sir, your new book agains the human species, and I thank you for it&#8230; No one has ever been so witty as you are in trying to turn us into brutes: to read your book makes one long to go on all fours. Since, however, it is now some sixty years since I gave up the practice, I feel it is unfortunately imposible for me to resume it: I leave this natural habit to those more fit for it than are you and I.</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-08T00:00:00-07:00" pubdate data-updated="true">Aug 8<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/08/06/august-6-wednesday/">[Modern Art] 2. What Is Enlightenment? Part II</a></h1>
+	<div class="entry-content">
+		<h1>Discourse on the Origins of Inequality</h1>
+
+<blockquote><p>For all the rest of the day, wandering deep into the forest, I sought and I found the vision of those primitive times, the history of which I proudly traced. I demolished the petty lies of mankind; I dared strip man&#8217;s nature naked, to follow the progress of time, and trace the things which have distorted it; and by comparing man as he has made himself with man as he is by nature, I showed him in his pretended perfection (&#8220;progress&#8221;) the true source of his misery.</p>
+
+<p>Exalted by these sublime meditations my soul soared towards Divinity, from whose height I looked down on my fellow men pursuing the blind path of their prejudices, of their errors, of their misfortunes and their crimes. Then I cried to them in a voice which they could not hear, &#8220;Madmen who ceaselessly complain of Nature, learn that all your misfortunes arise from yourselves!&#8221;</p>
+
+<p>There is, I sense, an age at which the individual human being would want to stop; you will seek the age at which you would wish your Spicies had stopped.</p></blockquote>
+
+<h2>Two principles prior to reason:</h2>
+
+<ol>
+<li>interest in self-preservation (hide, get away, keep alive)</li>
+<li>is the natural repugnance at seeing another sentient being suffer.</li>
+</ol>
+
+
+<blockquote><p>Whereas in this primitive state&#8230; everyone bedded down at random and often for only a single night; males and females united fortuitously, according to chance encounters, opportunity and desire, without speech being an especially necessary interpreter of what they had to tell one another; they parted just as readily.</p></blockquote>
+
+<p>You are not measuring yourself against another, you are off to the next encounter. Only when you are in society when people start looking at each other, trying to be someone else for another, act for another, only in such situation will inequality really begin to increase in dynamic fashion.</p>
+
+<blockquote><p>It will be evident how much smaller the difference between man and man must be in the state of Nature than in the state of society, and how much natural inequality in the human species must increase as a result of instituted inequality.</p>
+
+<p>The first man who, having enclosed a piece of ground, to who, it occurred to say <em>this is mine</em> and found people sufficiently simple to believe him, was the true founder of civil society.</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-06T00:00:00-07:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time></div>
+	<div class="tags">
 
 </div>
 	

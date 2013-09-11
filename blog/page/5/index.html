@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="Welcome to the world of extremely high scalability, performance and stability for the most demanding production environments. Today I&#8217;m going &hellip;">
+	<meta name="description" content="Today we are going to learn about data execution prevention (DEP) and address space layout randomization (ASLR). Last Sunday I read about return- &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -73,24 +73,329 @@
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads/">Ruby With EventMachine and JRuby With Real Threads: Part I</a></h1>
+	<h1 class="title"><a href="/blog/2012/12/09/bypassing-dep-slash-aslr-protections/">Bypassing DEP/ASLR Protections</a></h1>
 	<div class="entry-content">
-		<p>Welcome to the world of extremely high scalability, performance and stability for the most demanding production environments. Today I&#8217;m going to learn and describe a little bit about EventMachine that is a high perfomance implementation of the <a href="http://en.wikipedia.org/wiki/Reactor_pattern">Reactor Pattern</a>.</p>
+		<p>Today we are going to learn about data execution prevention (DEP) and address space layout randomization (ASLR). Last Sunday I read about <a href="http://khakimov.com/blog/2012/12/02/return-into-libc-without-function-calls/">return-into-libc</a> and one week before was post about <a href="http://khakimov.com/blog/2012/11/20/buffer-overflow/">buffer overflow</a> as-is. Both methods reqired to know the address of attacker shellcode and/or standard kernel library (we found out the address of system() function in the memory to use it in <strong>return-into-libc</strong> with this code int main() { system();}). Modern systems decided to implement something what will make stack addresses and addressess of library routines unpredictable and different from machine to machine (no more universal exploits =) kidding).</p>
 
-<p>Basically, we can use it for critical networked applications, including web servers and proxies, email and IM production systems, authentication/authorization processors, and many more. In my case in attracted me with simplicity of using with tons tcp connections for scanning web as example.</p>
+<p>Author <a href="https://twitter.com/justdionysus">Dionysus Blazakis</a> holds BS from University of Maryland and doing interesting things, I saw his presentation &#8220;The Apple Sandbox&#8221; and then found this paper, great job Dionysus. I inspired by his example and it motivates me to keep digging in research field. Dion, if you&#8217;ll ever read this I just want to say thank you! Lets get back to his paper and read what this smart fellow prepared for us.</p>
 
-<p>Recommended links:</p>
+<p><a title="View Blazakis on Scribd" href="http://www.scribd.com/doc/116197211/Blazakis" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Blazakis</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/116197211/content?start_page=1&view_mode=scroll&access_key=key-1dr5xy06ojvmp97eq1hg" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_39852" width="100%" height="600" frameborder="0"></iframe></p>
 
-<ul>
-<li>[1] <a href="http://rubyeventmachine.com/">http://rubyeventmachine.com/</a></li>
-<li>[2] <a href="http://eventmachine.rubyforge.org/">http://eventmachine.rubyforge.org/</a></li>
-<li>[3] <a href="http://peepcode.com">peepcode screencast about eventmachine</a></li>
-</ul>
+<p>DEP and ASLR are very real problem in the side of an exploit developer. DEP makes locating shellcode difficult, ASLR further complicates an attack by obfuscating the base address of the loaded data. Adobe Flash Player is used as an example, Dion also referenced to JIT spraying (Just-In-Time).</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>A Just-in-time compiler (JIT), by definition, produces machine 
+</span><span class='line'>code as its output. Since it produces executable data, a JIT 
+</span><span class='line'>compiler is one of the few types of programs that **cannot** be 
+</span><span class='line'>run in a **no-executable-data environment**. Therefore, JIT 
+</span><span class='line'>compilers are normally exempt from data execution prevention. A 
+</span><span class='line'>JIT spray compiles code that then proceeds to spray the memory 
+</span><span class='line'>with enough instances of exploit code to overwhelm the address 
+</span><span class='line'>space randomization and execute the exploit itself.</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Simple example of Echo server (telnet 127.0.0.1 8000):</p>
+<p></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>JIT spraying is very simular to heap spraying, in simple terms attacker stuff heap with multiple copies of attack code (payload) and that increases the chances of successful exploitation.</p>
+
+<p>JIT Spray Exploit Demo</p>
+
+<iframe width="640" height="480" src="http://www.youtube.com/embed/HJuBpciJ3Ao?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p>So, why do you need this? If you found the overflow in the modern browsers you will not able to use it easily, because of randomization, the address space is randomized and you don&#8217;t know where to point EIP and even if you have data in the heap DEP wont allow you to execute it. But you can use Just-In-Time compiler which will allocate writable memory for you and write executable code into it. For more details please read the paper above. Enjoy!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-09T21:13:00-08:00" pubdate data-updated="true">Dec 9<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/great-papers/'>great papers</a>, <a class='category' href='/blog/categories/research/'>research</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/05/you-and-your-research/">You and Your Research</a></h1>
+	<div class="entry-content">
+		<iframe width="853" height="480" src="http://www.youtube.com/embed/JoVx_-bM8Tg?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p><a href="https://conference.hitb.org/hitbsecconf2012kul/materials/D1T2%20-%20Haroon%20Meer%20-%20You%20and%20Your%20Research.pdf">PDF</a></p>
+
+<p>What does it take to do quality research? What stops you from being a one-hit wonder? Is there an age limit to productive hackery? What are the key ingredients needed and how can you up your chances of doing great work? In a talk unabashedly stolen from far greater minds we hope to answer these questions and discuss their repercussions.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-05T16:43:00-08:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/-hitb2012kul/'>#HITB2012KUL</a>, <a class='category' href='/blog/categories/motivation/'>motivation</a>, <a class='category' href='/blog/categories/research/'>research</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/02/return-into-libc-without-function-calls/">Return-into-libc Without Function Calls</a></h1>
+	<div class="entry-content">
+		<p>Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel recently added to their processors a per-page execute disable bit to ease WOX implementation and even Microsoft implement WOX (no location in memory into which the attacker can inject code to execute, or just imagine no memory location in a process image is marked both writable - W and executable - X) all it means you can not execute your shellcode on the stack.</p>
+
+<p>Today I read about technique is known as <strong>return into libc</strong> by <a href="http://cseweb.ucsd.edu/~hovav/">Hovav Shacham</a> (btw, his Ph.D. advisor was professor of Computer Science and Electrial Engineering at Stanford <a href="http://crypto.stanford.edu/~dabo/">Dan Boneh</a>. I took his CS155 class, he is really good in his field).</p>
+
+<p>What is this about? If we can&#8217;t write in stack what should we do? We can&#8217;t inject code, so, we will use code that already exists in the proccess image we are attacking. <strong>Libc</strong> is the usual target that contains various basic functions, such as printf() and exit(). These functions are share, so any program that uses the printf() function directs execution into the appropriate location in libc. And attacker with his explout can do the same thing and direct a program&#8217;s execution into a certain function in libc. But in principle any available code, either from the program&#8217;s text segment of from a library it links to, could be used instead libc.</p>
+
+<p>Enjoy!</p>
+
+<p><a title="View Geometry (1) on Scribd" href="http://www.scribd.com/doc/115228599/Geometry-1" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Geometry (1)</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/115228599/content?start_page=1&view_mode=scroll&access_key=key-1qjla86da9zi8xelaiqr" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_22341" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>I played a litle bit with <strong>return into libc</strong> and the main idea was to force the program to spawn a shell without executing anything on the stack, by returning int the libc function system().</p>
+
+<figure class='code'><figcaption><span>sys.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span> <span class="n">system</span><span class="p">();</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="n">gcc</span> <span class="o">-</span><span class="n">o</span> <span class="n">t</span> <span class="n">tmp</span><span class="p">.</span><span class="n">c</span>
+</span><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="n">gdb</span> <span class="o">-</span><span class="n">q</span> <span class="p">.</span><span class="o">/</span><span class="n">t</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="k">break</span> <span class="n">main</span>
+</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span> <span class="n">at</span> <span class="mh">0x804837a</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">run</span>
+</span><span class='line'><span class="n">Starting</span> <span class="n">program</span><span class="o">:</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">t</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span><span class="p">,</span> <span class="mh">0x0804837a</span> <span class="n">in</span> <span class="n">main</span> <span class="p">()</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">print</span> <span class="n">system</span>
+</span><span class='line'><span class="err">$</span><span class="mi">1</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="n">text</span> <span class="n">variable</span><span class="p">,</span> <span class="n">no</span> <span class="n">debug</span> <span class="n">info</span><span class="o">&gt;</span><span class="p">}</span> <span class="mh">0xb7ed0d80</span> <span class="o">&lt;</span><span class="n">system</span><span class="o">&gt;</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">quit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>here we got address of function <strong>system()</strong> and it is located at <strong>0xb7ed0d80</strong>.</p>
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">a</span><span class="p">.</span><span class="n">out</span> <span class="err">$</span><span class="p">(</span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="err">&#39;</span><span class="n">print</span> <span class="s">&quot;AAAA&quot;</span><span class="n">x7</span> <span class="p">.</span> <span class="s">&quot;</span><span class="se">\x80\x0d\xed\xb7</span><span class="s">&quot;</span><span class="err">&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="nl">sh:</span> <span class="o">????????:</span> <span class="n">command</span> <span class="n">not</span> <span class="n">found</span>
+</span><span class='line'><span class="n">Segmentation</span> <span class="n">fault</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>7 words of data are used for spacin in the exploit and then we call system() as you can see. In this example I don&#8217;t pass any arguments, but it&#8217;s should be of course &#8220;/bin/sh&#8221;. That&#8217;s my Sunday and happy hacking hours!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-02T14:12:00-08:00" pubdate data-updated="true">Dec 2<span>nd</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/great-papers/'>great papers</a>, <a class='category' href='/blog/categories/research/'>research</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/11/24/what-is-wrong-with-http-secure/">What Is Wrong With HTTP Secure</a></h1>
+	<div class="entry-content">
+		<p>That&#8217;s not a secret that I in love with security and I&#8217;m using some applications on a regular basis to protect my security such as vpn when using public wifi or https everythere where it is possible. HTTPS is not a holy Grail, but often https is enough to secure facebook or gmail connection. Of course I know about DNS changer/spoof or force HTTP session insted HTTPS which attackers use often and that&#8217;s why I&#8217;m using also <strong><a href="https://chrome.google.com/webstore/detail/kb-ssl-enforcer/flcpelgcagfhfoegekianiofphddckof/details">KB SSL Enforcer</a></strong>.</p>
+
+<p>KB SSL Enforcer helps automatically detects if a site supports SSL and redirects you to it. Also it blocks insecure content when you load page over ssl and something on this page has insecure css/js/image.</p>
+
+<p>Security can be compromised completely by an active atacker exploiting a simple mistake such as loading css, image or Flash banner over an insecure connection. For instance,</p>
+
+<p><a href="https://nytimes.com">nytimes.com</a>
+<img src="http://pix.am/L0CO.png" alt="" /></p>
+
+<p><a href="https://woot.com">woot.com</a>:
+<img src="http://pix.am/GPYh.png" alt="" /></p>
+
+<p><a href="https://www.dailymotion.com/us">dailymotion.com</a>
+<img src="http://pix.am/kY88.png" alt="" /></p>
+
+<p><a href="https://www.ehow.com/">ehow.com</a>
+<img src="http://pix.am/bFrO.png" alt="" /></p>
+
+<p>so on and so on&#8230; Problem is very simple - <strong>hardcoded http://</strong> links.</p>
+
+<p><strong>Solution?</strong> Please, don&#8217;t use hardcoded http:// if you have http and https! I hope having https version is going to be as a standard and this is really good news &#8221;<a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a>&#8221;. This RFC was approved couple days ago, read it and don&#8217;t forget to check your website!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-24T12:33:00-08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/https/'>https</a>, <a class='category' href='/blog/categories/security/'>security</a>, <a class='category' href='/blog/categories/ssl/'>ssl</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/11/24/hero-lecture-dr-vint-cerf/">Hero Lecture: Dr. Vint Cerf</a></h1>
+	<div class="entry-content">
+		<iframe width="640" height="480" src="http://www.youtube.com/embed/v7Lai2lkKnM?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-24T00:01:00-08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hero/'>hero</a>, <a class='category' href='/blog/categories/legend/'>legend</a>, <a class='category' href='/blog/categories/stanford/'>stanford</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/11/20/buffer-overflow/">Buffer Overflow</a></h1>
+	<div class="entry-content">
+		<p>I&#8217;m very interesting in research paper and want to know better what computer security research is like. I found Vitaly Shmatikov and his course about great papers in Computer Security and decided to try each weekend read and write about one paper.</p>
+
+<p>Vitaly Shmatikov is one of most interesting person for me in computer security and privacy. He got his PhD at Stanford and his thesis was &#8221;<a href="https://www.cs.utexas.edu/~shmat/shmat_tcs.pdf">Finite-State Analysis of Security Protocols</a>&#8221;, also his prof at Stanford was John C. Mitchell.</p>
+
+<p>So, today I want to start with Buffer Overflow and here is paper 1999 by Crispin Cowan, Perry Wagle, Calton Pu,Steve Beattie, and Jonathan Walpole.</p>
+
+<p><a title="View Overflow on Scribd" href="http://www.scribd.com/doc/113583111/Overflow" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Overflow</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/113583111/content?start_page=1&view_mode=scroll&access_key=key-39aierbs22vhrn0azpl" data-auto-height="true" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_1657" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>Btw, in this paper they metioned about Morris Worm and early versions of using buffer overflow and I found the peace of Morris Worm&#8217;s overflow:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -102,32 +407,45 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;eventmachine&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">module</span> <span class="nn">EchoServer</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">post_init</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;connected&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">receive_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">close_connection_after_writing</span> <span class="k">if</span> <span class="n">data</span> <span class="o">=~</span> <span class="sr">/quit/</span>
-</span><span class='line'>    <span class="n">send_data</span> <span class="s2">&quot;=&gt; you sent: </span><span class="si">#{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="k">do</span>
-</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">start_server</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="no">EchoServer</span>
-</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;runnning echo server on 8000&quot;</span>
-</span><span class='line'><span class="k">end</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>; VAX binary code fragment from the Morris Internet Worm.
+</span><span class='line'>; Downloaded to the fingerd serving process via the gets() hole.
+</span><span class='line'>; Performs execve(“/bin/sh”,0,0)
+</span><span class='line'>pushl $0068732f   ; last half of name: "/sh\0"
+</span><span class='line'>pushl $6e69622f   ; first half of name: "/bin"
+</span><span class='line'>mov   sp,r10            ; pointer to the string
+</span><span class='line'>pushl $0          ; 3rd parameter: environment = null
+</span><span class='line'>pushl $0          ; 2nd parameter: args = null
+</span><span class='line'>pushl r10         ; 1st parameter: pointer to the executable name
+</span><span class='line'>pushl $3          ; 3 parameters on the stack
+</span><span class='line'>movl  sp,ap       ; ArgumentPointer points to arguments
+</span><span class='line'>chmk  $3b         ; SoftwareException 0x3B = EXECVE call</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It used a buffer overflow against the fingerd daemon. Other worms also often use buffer overflow to compromise the machine. CodeRed used overflow in MS-IIS server, SQL Slammer - overflow in MSSQL server, Sasser overflow in Windows LSASS, Conficker used overflow in Windows RPC and famous Stuxnet used several 0day overflows and same Windows RPC as Conficker. Looks like Buffer Overflow is the basis of many software vulnerabilities and can be maliciously exploited.</p>
+
+<p>In computer security and programming, a buffer overflow, or buffer overrun, is an anomaly where a program, while writing data to a buffer, overruns the buffer&#8217;s boundary and overwrites adjacent memory. <strong>Buffer</strong> is a data storage area inside computer memory (stack or heap).</p>
+
+<p>Suppose we have Webserver contain this function</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>    <span class="c1">// allocate 100 bytes on stack </span>
+</span><span class='line'>      <span class="n">strcpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>   <span class="c1">// copy argument into local buffer</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here is example of web scanner (we have to use asynchronous libraries with EventMachine, you can&#8217;t use any I/O blocking process in EM.run {} environment):</p>
+<p><strong>strcpy</strong> does not check whether the string at *s contains fewer than 126 characters and if a string longer than 126 bytes is copied into buffer, it will overwrite adjacent stack locations.</p>
+
+<p><img src="http://pix.am/ou9H.png" alt="" />
+<img src="http://pix.am/HSH8.png" alt="" /></p>
+
+<p>We overflow the return address and set address of attack code (the value in the RET position must point to the beginning of attack assembly code in the buffer, otherwise application will crash with segmentation violation).</p>
+
+<p>Other exampe from <strong>Hacking</strong> book</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -152,37 +470,33 @@
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;em-http-request&#39;</span> <span class="c1"># asynchronous version</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span><span class='line'>   <span class="kt">char</span> <span class="n">buffer_one</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">buffer_two</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">pending</span> <span class="o">=</span> <span class="mi">1000</span>
-</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="p">{</span>
-</span><span class='line'>  <span class="mi">1000</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://127.0.0.1&quot;</span>
-</span><span class='line'>      <span class="n">http</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">HttpRequest</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">get</span>
+</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer_one</span><span class="p">,</span> <span class="s">&quot;one&quot;</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer_two</span><span class="p">,</span> <span class="s">&quot;two&quot;</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2"> - </span><span class="si">#{</span><span class="n">http</span><span class="o">.</span><span class="n">response_header</span><span class="o">[</span><span class="s1">&#39;SERVER&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">pending</span> <span class="o">&lt;</span> <span class="mi">1</span>
-</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[BEFORE] buffer_two is at %p contain </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[BEFORE] buffer_one is at %p contain </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[BEFORE] value is at %p and is %d (0x%08x)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="se">\n</span><span class="s2"> - </span><span class="si">#{</span><span class="n">http</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">pending</span> <span class="o">&lt;</span> <span class="mi">1</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">[STRCPY] copying %d bytes into buffer_two</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span>
+</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer_two</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[AFTER] buffer_two is at %p and contains </span><span class="se">\&#39;</span><span class="s">%s</span><span class="se">\&#39;\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">,</span> <span class="n">buffer_two</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[AFTER] buffer_one is at %p and contains </span><span class="se">\&#39;</span><span class="s">%s</span><span class="se">\&#39;\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">,</span> <span class="n">buffer_one</span><span class="p">);</span>
+</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[AFTER] value is at %p and is %d (0x%08x)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;Took </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is not good example, because it doesn&#8217;t work well. When I&#8217;m trying to run its only gets 355 request succeed. I don&#8217;t know yet why (my version is many connection in the same time and it&#8217;s just doesn&#8217;t process all of them) but my supposition is we should use batch, like 100 connection in the same time. Let&#8217;s try to implement it:</p>
+
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -194,121 +508,22 @@
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;em-http-request&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
-</span><span class='line'>
-</span><span class='line'><span class="mi">10000</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;http://127.0.0.1&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">100</span>
-</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">run</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">pending</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">add_periodic_timer</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span>
-</span><span class='line'>    <span class="c1"># urls = urls[BATCH_SIZE..-1] every loop. 1000, 900, 800 .. 200, 100, 0</span>
-</span><span class='line'>    <span class="n">batch</span><span class="p">,</span> <span class="n">urls</span> <span class="o">=</span> <span class="n">urls</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="no">BATCH_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">]</span><span class="p">,</span> <span class="p">(</span><span class="n">urls</span><span class="o">[</span><span class="no">BATCH_SIZE</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="o">||</span> <span class="o">[]</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">batch</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">http</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">HttpRequest</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">get</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2"> - </span><span class="si">#{</span><span class="n">http</span><span class="o">.</span><span class="n">response_header</span><span class="o">[</span><span class="s1">&#39;SERVER&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">pending</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">urls</span><span class="o">.</span><span class="n">empty?</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="se">\n</span><span class="s2"> - </span><span class="si">#{</span><span class="n">http</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>        <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">pending</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">urls</span><span class="o">.</span><span class="n">empty?</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="n">pending</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">pending</span><span class="si">}</span><span class="s2"> pending&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
-</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures in </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2">s&quot;</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">overflow</span><span class="err">@</span><span class="n">hacking</span><span class="o">:~/</span><span class="n">booksrc</span> <span class="err">$</span> <span class="n">gcc</span> <span class="o">-</span><span class="n">o</span> <span class="n">overflow_example</span> <span class="n">overflow_example</span><span class="p">.</span><span class="n">c</span>
+</span><span class='line'><span class="n">overflow</span><span class="err">@</span><span class="n">hacking</span><span class="o">:~/</span><span class="n">booksrc</span> <span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">overflow_example</span> <span class="mi">1234567890</span>
+</span><span class='line'><span class="p">[</span><span class="n">BEFORE</span><span class="p">]</span> <span class="n">buffer_two</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f0</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="n">two</span><span class="err">&#39;</span>
+</span><span class='line'><span class="p">[</span><span class="n">BEFORE</span><span class="p">]</span> <span class="n">buffer_one</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f8</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="n">one</span><span class="err">&#39;</span>
+</span><span class='line'><span class="p">[</span><span class="n">BEFORE</span><span class="p">]</span> <span class="n">value</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff804</span> <span class="n">and</span> <span class="n">is</span> <span class="mi">5</span> <span class="p">(</span><span class="mh">0x00000005</span><span class="p">)</span>
+</span><span class='line'><span class="p">[</span><span class="n">STRCPY</span><span class="p">]</span> <span class="n">copying</span> <span class="mi">10</span> <span class="n">bytes</span> <span class="n">into</span> <span class="n">buffer_two</span>
+</span><span class='line'><span class="p">[</span><span class="n">AFTER</span><span class="p">]</span> <span class="n">buffer_two</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f0</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="mi">1234567890</span><span class="err">&#39;</span>
+</span><span class='line'><span class="p">[</span><span class="n">AFTER</span><span class="p">]</span> <span class="n">buffer_one</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff7f8</span> <span class="n">and</span> <span class="n">contains</span> <span class="err">&#39;</span><span class="mi">90</span><span class="err">&#39;</span>
+</span><span class='line'><span class="p">[</span><span class="n">AFTER</span><span class="p">]</span> <span class="n">value</span> <span class="n">is</span> <span class="n">at</span> <span class="mh">0xbffff804</span> <span class="n">and</span> <span class="n">is</span> <span class="mi">5</span> <span class="p">(</span><span class="mh">0x00000005</span><span class="p">)</span>
+</span><span class='line'><span class="n">overflow</span><span class="err">@</span><span class="n">hacking</span><span class="o">:~/</span><span class="n">booksrc</span> <span class="err">$</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>We added BATCH_SIZE and it helped to control the queue of requests, so if we increase BATCH_SIZE = 1000 then we will get same problem: 351 successful, 649 failures in 5.57171 s.</p>
+<p>Probably you will try to check this code on your computer (macos in my case), but <a href="https://en.wikipedia.org/wiki/Buffer_overflow_protection">buffer overflow protection</a> was included in release GCC 4.1 and you have to use <strong>-fno-stack-protector</strong> to compile your code. (hmm, i&#8217;m still getting error Program received signal SIGABRT, Aborted. which kills the proccess, couple clicks with google told me to recompile gcc. Seems now it&#8217;s not easy to write bogus code =)). In this case I have virtual machine with 32-bit pretty old Ubuntu.</p>
 
-<p>BATCH_SIZE = 100 # => 1000 successful, 0 failures in 1.215148 s</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-19T12:53:00-07:00" pubdate data-updated="true">Apr 19<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/eventmachine/'>eventmachine</a>, <a class='category' href='/blog/categories/green-threads/'>green threads</a>, <a class='category' href='/blog/categories/jruby/'>jruby</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/threads/'>threads</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/04/16/freedom-of-information/">Freedom of Information</a></h1>
-	<div class="entry-content">
-		<p>Today I decided to try EventMachine in action. EventMachine provides a fast, lightweight framework for implementing Ruby programs that can use the network to communicate with other processes. As usual I can&#8217;t just repeat &#8220;hello world&#8221; examples, like here is a fully-functional echo server:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>t.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -320,114 +535,36 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt; </span>
+</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">module</span> <span class="nn">EchoServer</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">post_init</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;-- someone connected to the echo server!&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="kt">void</span> <span class="nf">Q</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">c</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">strcpy</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">arg</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
-</span><span class='line'>    <span class="n">send_data</span> <span class="s2">&quot;&gt;&gt;&gt;you sent: </span><span class="si">#{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>    <span class="n">close_connection</span> <span class="k">if</span> <span class="n">data</span> <span class="o">=~</span> <span class="sr">/quit/i</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">unbind</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;-- someone disconnected from the echo server!&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">EventMachine</span><span class="o">::</span><span class="n">run</span> <span class="p">{</span>
-</span><span class='line'>  <span class="no">EventMachine</span><span class="o">::</span><span class="n">start_server</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">8081</span><span class="p">,</span> <span class="no">EchoServer</span>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">Q</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I need something to work on, something valuable. I&#8217;ve thought about <a href="http://en.wikipedia.org/wiki/Internet_censorship_in_the_People's_Republic_of_China">censorship in internet</a>, blocking <a href="http://en.wikipedia.org/wiki/Censorship_of_Twitter">twitter</a>, <a href="http://en.wikipedia.org/wiki/Censorship_of_YouTube">youtube</a> and <a href="http://en.wikipedia.org/wiki/Censorship#Internet">other</a> and want to build proxy, something like tor, but just for few websites like twitter, facebook and youtube for example.</p>
+<p>The return address in a stack frame can be located by undestanding how the stack frame is created. This process begins in the main() function even before the function call.</p>
 
-<h2>idea</h2>
+<p>Couple things you have to know about the stack. The stack is used to pass prcedure arguments, <strong>to store return information</strong>, to save registers for later restoration and for local storage. The portion of the stack allocated for a single procedure call is called a <strong>stack frame</strong>. $EBP register serving as the <strong>frame pointer</strong> and register $ESP serving as the <strong>stack pointer</strong>.</p>
 
-<p>To build small app on ruby which shoud be easy to install and has two modes. <strong>Aides</strong> (servers) and <strong>victims</strong> (client) mode. Aides will provide a proxy connection, but for security reason only to access to the lists of allowed websites, so nobody will not use it to do some bad things, only victims who are looking for access to twitter/facebook/youtube will able to access and use it.</p>
+<p>The main idea is when main() calls Q() the <strong>return</strong> address within main() where the program should resume execution when it returns from Q. If somebody can overwrite return address it can jump or/and execute other code.</p>
 
-<p><img src="http://pix.am/y55O.png" alt="test" /></p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Stack_Overflow_2.png" alt="" /></p>
 
-<p>So, people in any country install the server and people can get/update information trough their internet connection if somebody will blocked twitter as example. If direct connection doesn&#8217;t work, install ruby script and activate victim mode, connect to blocked website through Aides servers.</p>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Stack_Overflow_3.png" alt="" /></p>
 
-		
-		
-	</div>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Stack_Overflow_4.png" alt="" /></p>
 
+<p>More details you can find in the paper above. If you are interesting in roots of the problem and how actually stack/heap works, I highly recommend to read the book <a href="http://www.amazon.com/Computer-Systems-A-Programmers-Perspective/dp/013034074X">Computer System: A Programmer&#8217;s Perspective by Bryant and O&#8217;Hallaron</a>.</p>
 
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-16T14:07:00-07:00" pubdate data-updated="true">Apr 16<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/eventmachine/'>eventmachine</a>, <a class='category' href='/blog/categories/idea/'>idea</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/04/14/first-rails-project-thoughts/">First Rails Project: Thoughts</a></h1>
-	<div class="entry-content">
-		<p>Huh, long time no post there. I&#8217;ve been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants, drank some wine, beer, white russian and even sake. Whole week was disconnected and didn&#8217;t touch laptop (confess, only hackernews), so now I&#8217;m really ready back to the big fight. So, I came back from airport and in few hours finished my first small project on Rails.</p>
-
-<p><img src="http://distilleryimage6.s3.amazonaws.com/72f5c216810511e1a39b1231381b7ba1_7.jpg" alt="Santa Monica beach" /></p>
-
-<h2>idea</h2>
-
-<p>I just built the place where I can put my thoughts with timeline. Possibly I&#8217;ll add questions about any sphere of our lives, like <em>&#8220;What do you think about love?&#8221;</em> or <em>&#8220;What do you think about your age?&#8221;</em> and look at the progress with my thoughts through time. Everything changing in our world and my thoughts are not exception, so I want to look at the progress and how it is changing. Anyway, first version is <a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">here</a>:</p>
-
-<p><img src="http://pix.am/bJ5h.png" alt="" /></p>
-
-<h2>technology</h2>
-
-<p>I&#8217;ve used js library <a href="http://timeline.verite.co/">timeline</a> as a core and implement it to work with rails.</p>
-
-<blockquote><ul>
-<li>Full stack:
-
-<ul>
-<li>ruby on rails</li>
-<li><a href="https://github.com/plataformatec/devise">devise - Flexible authentication solution for Rails</a></li>
-<li><a href="http://timeline.verite.co/">timeline js library</a></li>
-<li>jquery</li>
-<li><a href="http://twitter.github.com/bootstrap/">twitter bootstrap</a></li>
-<li>heroku</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-
-<h2>bugs</h2>
-
-<p>Yea, a lot of bugs and roughness with ui, html, css and js. Currently my priority are just code the ruby code and practice with rails and not stuck with js/html/css/design. I&#8217;m always thinking about perfection and that was a reason heretofore why I gave up with many ideas and hobbies, I didn&#8217;t realize one small but very valuable thing - as a beginner you can&#8217;t do everything perfect. I always compared my code with some opensource project and it was always reason for melancholy, because I though that my code worst ever and I will never able to build something by myself. But the path of trial and error showed me the truth - just practice and focus on one thing.</p>
-
-<h2><a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">My thoughts timeline</a></h2>
+<p>The first step is always the hardest. Will see how long I hold out.</p>
 
 		
 		
@@ -447,11 +584,11 @@
   
 
 
-<time datetime="2012-04-14T22:06:00-07:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time></div>
+<time datetime="2012-11-20T23:17:00-08:00" pubdate data-updated="true">Nov 20<span>th</span>, 2012</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/practice/'>practice</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/great-papers/'>great papers</a>, <a class='category' href='/blog/categories/research/'>research</a>
 
 
 </div>
@@ -460,139 +597,48 @@
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/20/playing-with-hackernews/">Playing With HackerNews</a></h1>
+	<h1 class="title"><a href="/blog/2012/11/17/computer-and-network-security-specializations/">Computer and Network Security Specializations</a></h1>
 	<div class="entry-content">
-		<p>Since monday I started playing with RubyOnRails and very happy that I
-didn&#8217;t skip Ruby part as many beginers mistakenly do. I&#8217;m reading <a href="http://pragprog.com/book/rails4/agile-web-development-with-rails">Agile Web Development with Rails</a> (big thanks to <a href="http://ap.thinkeffect.com">Andrija</a>) now and still have a lot of questions, but
-today want to talk about other things.</p>
-
-<p>As you know many books and tutorials show boring examples like &#8220;Hello Word&#8221; and my inflamed brain alwayls is looking for opportunity. To build, to parse or hack something. Today when I was waiting my turkey sandwitch in Palo Alto Cafe I read comment where is an author is talking about hackernews karma, like how is awesome to have large karma. I also checked his submissions and realised he just posted random stuff from techcrunch/gizmodo/mashable/etc. So, why not to try post new on HN with ruby?</p>
-
-<p>I certainly do not intend to increase my karma with spam HN, but I was
-interested to do it and going to share just few things about the
-process.</p>
-
-<h2>How to get fnid? </h2>
-
-<p>To post something on HN you have to know fnid which generate everytime
-when you GET <a href="http://news.ycombinator.com/submit">http://news.ycombinator.com/submit</a>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;nokogiri&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;open-uri&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">fetch</span>
-</span><span class='line'>  <span class="n">submit_html</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;http://news.ycombinator.com/submit&#39;</span><span class="p">,</span> <span class="s2">&quot;Cookie&quot;</span> <span class="o">=&gt;</span>
-</span><span class='line'><span class="s1">&#39;user=check_yours_cookie_and_put_here&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
-</span><span class='line'>  <span class="n">doc</span> <span class="o">=</span> <span class="no">Nokogiri</span><span class="o">::</span><span class="no">HTML</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">submit_html</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//form/input&#39;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">][</span><span class="s1">&#39;value&#39;</span><span class="o">]</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Posting</h2>
-
-<p>Method fetch returns fnid. Ok, now we are going to submit our news with
-method post:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;net/http&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">fnid</span> <span class="o">=</span> <span class="n">fetch</span> <span class="c1">#our fetch method</span>
-</span><span class='line'>  <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fnid&#39;</span> <span class="o">=&gt;</span> <span class="n">fnid</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span> <span class="o">=&gt;</span> <span class="n">url</span> <span class="p">}</span>
-</span><span class='line'>  <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;http://news.ycombinator.com/r&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># the most interesting part. make headers with</span>
-</span><span class='line'>  <span class="c1"># Cookie and Referer, also you can add User-Agent</span>
-</span><span class='line'>  <span class="n">request</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">request</span><span class="o">.</span><span class="n">set_form_data</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">request</span><span class="o">[</span><span class="s2">&quot;Cookie&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;user=check_yours_cookie_and_put_here&#39;</span>
-</span><span class='line'>  <span class="n">request</span><span class="o">[</span><span class="s2">&quot;Referer&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;http://news.ycombinator.com/submit&#39;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Nice and simple, that&#8217;s why I fall in love with Ruby. Here is my
-sandwich arrived ;)</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-20T21:56:00-07:00" pubdate data-updated="true">Mar 20<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hackernews/'>hackernews</a>, <a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/http/'>http</a>, <a class='category' href='/blog/categories/nokogiri/'>nokogiri</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/16/put-off-procrastination/">Put Off Procrastination</a></h1>
-	<div class="entry-content">
-		<p>I&#8217;ve already written about idea with <a href="http://pupsor.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/">blocker</a> and today I really tired of this and in hour wrote the script which allow you to block facebook, gmail, HN and so on with automatic changing statuses in Skype and Adium (DND).</p>
-
-<p>The project called <a href="https://github.com/pupsor/freodom/">Freodom</a>.</p>
-
-<blockquote><p>  Frēodōm is the Old English word for freedom; the state of being free and unconstrained.</p></blockquote>
-
-<p><img src="http://i103.photobucket.com/albums/m151/KiJosh/procrastination.jpg" alt="put
-off" /></p>
-
-<ol>
-<li>Frēodōm blocks:
-  facebook.com,
-  news.ycombinator.com,
-  reddit.com,
-  gmail.com,
-  &#8230;</li>
-<li>Automatically changes status to DND (skype/adium)</li>
+		<ol type="a">
+<li><p>Each of the following: CS 140, 144, 155, 244, 255</p></li>
+<li><p>CS 140: Operating Systems</p></li>
+<li>CS 144: Introduction to Computer Networking (*)</li>
+<li>CS 155: Computer and Network Security (*)</li>
+<li>CS 244: Advanced Topics in Networking</li>
+<li><p>CS 255: Introduction to Cryptography</p></li>
+<li><p>At least three of the following: CS 142, 240, 241, 244B, 244C, 259, 261, 340, 344, 355, 365</p></li>
+<li><p>CS 142: Web Applications (*)</p></li>
+<li>CS 240: Advanced Topics in Operating Systems</li>
+<li>CS 241: Secure Web Programming</li>
+<li>CS 244B: Distributed Systems</li>
+<li>CS 244C: Distributed System Projects</li>
+<li>CS 259: Security Modeling and Analysis</li>
+<li>CS 261: Optimization and Algorithmic Paradigms</li>
+<li>CS 340: Networked Systems for Virtual Worlds</li>
+<li>CS 344: Building an Internet Router</li>
+<li>CS 355: Topics in Cryptography</li>
+<li><p>CS 365: Randomized Algorithms</p></li>
+<li><p>Sufficient additional units selected from (b) and the following: CS 240E, 244E, 245, 294S<em>, 295, 341, 344B, 345, 347, 361A, 393</em>, 395<em>, 399</em>, EE 384A, 384B, 384C, 384M, 384S, 384X, 384Y</p></li>
+<li><p>CS 240E: Embedded Wireless Systems</p></li>
+<li>CS 244E: Wireless Networking</li>
+<li>CS 245: Database System Principles</li>
+<li>CS 294S: Paradigm Shifts in Mobile and Social Computing Systems</li>
+<li>CS 295: Software Engineering</li>
+<li>CS 341: Project in Mining Massive Data Sets</li>
+<li>CS 344B: Advanced Topics in Distributed Systems</li>
+<li>CS 345: Advanced Topics in Database Systems</li>
+<li>CS 347: Parallel and Distributed Data Management</li>
+<li>CS 361A: Advanced Algorithms</li>
+<li>CS 393: Computer Laboratory</li>
+<li>CS 395: Independent Database Project</li>
+<li>CS 399: Independent Project</li>
+<li>EE 384A: Internet Routing Protocols and Standards</li>
+<li>EE 384B: Mutimedia Communication over the Internet</li>
+<li>EE 384C: Wireless Local Area Networks</li>
+<li>EE 384M: Network Algorithms</li>
+<li>EE 384S: Network Architectures and Performance Engineering</li>
+<li>EE 384X: Packet Switch Architectures I</li>
+<li>EE 384Y: Packet Switch Architectures II</li>
 </ol>
 
 
@@ -614,11 +660,11 @@ off" /></p>
   
 
 
-<time datetime="2012-03-16T22:07:00-07:00" pubdate data-updated="true">Mar 16<span>th</span>, 2012</time></div>
+<time datetime="2012-11-17T10:41:00-08:00" pubdate data-updated="true">Nov 17<span>th</span>, 2012</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/idea/'>idea</a>, <a class='category' href='/blog/categories/practice/'>practice</a>, <a class='category' href='/blog/categories/programming/'>programming</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/stanford/'>stanford</a>, <a class='category' href='/blog/categories/study/'>study</a>
 
 
 </div>
@@ -627,59 +673,17 @@ off" /></p>
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/15/tips-and-tricks/">Tips and Tricks</a></h1>
+	<h1 class="title"><a href="/blog/2012/11/15/he-dot-net-colocation-facility/">HE.net Colocation Facility</a></h1>
 	<div class="entry-content">
-		<p>Class methods are usually called with the double colon.</p>
+		<p>I&#8217;ve read post <a href="http://www.codinghorror.com/blog/2012/10/building-servers-for-fun-and-prof-ok-maybe-just-for-fun.html">&#8220;Building Servers for Fun and Prof&#8230; OK, Maybe Just for Fun&#8221;</a> and really like it what you can easily buy and build your own server and install it in the datacenter. Especially it was cool for me, because I&#8217;m living now in Bay Area and couple huge datacenters located here.</p>
 
-<p>The respond_to? method is really nice and I plead that you never forget
-it’s there. The respond_to? checks any object to be sure that it has a
-certain method. It then gives back a true or false.</p>
+<p>I had couple servers in HE.net (dedicated server, rented from hosting company which managed them) and I always have a dream about visiting this place to see hundreds and hundreds computers in racks, routers with blinking lights and noise from cooling system. And couple weeks ago one of my friend asked me to help to manage couple his servers in Fremont, HE.net datacenter. He gave me permission and week ago, sunny Sunday I went to Fremont to check his cabinet (he rented full cabinet includes 42 Units, Power and 100 Mbps bandwidth for only $600 per month).</p>
 
-<p>.collect keeps the answer the block gives back and adds it to a new
-Array. The collect method is the perfect way of building a new Array
-which is based on the items in an existing Array.</p>
+<p><img src="http://pix.am/oLeel.jpg" alt="" /></p>
 
-<p>Always remember that a Module is only an inn. A roof over their heads.
-It is not a self-aware Class and, therefore, cannot be brought to life
-with new.</p>
+<p>They provide everything, even screwdrivers and drills if you need to maintain new server or change memory. So now I&#8217;m thinking about building new server and install it there. I also heard about datacenter in San Jose, but haven&#8217;t checked it yet. I think, people will realise what building infrastructure much cheaper and more useful (you can customize every layer) than using solutions from the &#8220;box&#8221;. Sure, I understand the difference, but it&#8217;s not always crazy to build infrastructure and save tons of money when you are doing (lean) startup.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SkatingContest</span>
-</span><span class='line'>   <span class="k">def</span> <span class="nf">the_winner</span><span class="p">;</span> <span class="vi">@the_winner</span><span class="p">;</span> <span class="k">end</span>
-</span><span class='line'>   <span class="k">def</span> <span class="nf">the_winner</span><span class="o">=</span><span class="p">(</span> <span class="nb">name</span> <span class="p">)</span>
-</span><span class='line'>     <span class="k">unless</span> <span class="nb">name</span><span class="o">.</span><span class="n">respond_to?</span> <span class="ss">:to_str</span>
-</span><span class='line'>       <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;The winner&#39;s name must be a String,</span>
-</span><span class='line'><span class="s2">         not a math problem or a list of names or any of that business.&quot;</span>
-</span><span class='line'>     <span class="k">end</span>
-</span><span class='line'>     <span class="vi">@the_winner</span> <span class="o">=</span> <span class="nb">name</span>
-</span><span class='line'>   <span class="k">end</span>
-</span><span class='line'> <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h1>Adding reference column:</h1>
-
-<p>When you are modifying an existing table then references will not work. And actually, it is not really necessary when integer will work just as well.</p>
-
-<p>I&#8217;d say the advantage of using references instead of a plain integer is that the model will be predefined with belongs_to and since the model is already created and will not be affected when you migrate something existing, the purpose is kind of lost.</p>
-
-<p>So I would do like this instead:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rails</span> <span class="n">g</span> <span class="n">migration</span> <span class="n">add_user_id_to_tester</span> <span class="n">user_id</span><span class="ss">:integer</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And then manually add belongs_to :user in the Tester model</p>
+<p>And I totally agree with Jeff, build servers it&#8217;s a lot of fun! =)</p>
 
 		
 		
@@ -699,11 +703,11 @@ with new.</p>
   
 
 
-<time datetime="2012-03-15T17:15:00-07:00" pubdate data-updated="true">Mar 15<span>th</span>, 2012</time></div>
+<time datetime="2012-11-15T16:46:00-08:00" pubdate data-updated="true">Nov 15<span>th</span>, 2012</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
+	<a class='category' href='/blog/categories/colocation/'>colocation</a>, <a class='category' href='/blog/categories/he-net/'>he.net</a>, <a class='category' href='/blog/categories/henet/'>henet</a>
 
 
 </div>
@@ -712,219 +716,25 @@ with new.</p>
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/09/how-to-make-new-instagrams-friends-with-ruby/">How to Make New Instagram&#8217;s Friends With Ruby</a></h1>
+	<h1 class="title"><a href="/blog/2012/10/28/attacking-the-internet-voting-system/">Attacking the Internet Voting System</a></h1>
 	<div class="entry-content">
-		<p>I moved to Palo Alto few month ago from LA and realized that I didn&#8217;t know anybody in Bay Area. I was looking for a new friends ;) I had one and his name is Ruby, so we decided to write some code which will help me to make new friends in instagram. First of all it was a good practice and also interesting task where you can easily get feedback from action (code and you get friends).</p>
+		<p>Today is Sunday, just finished my third week of Networking class, learned a lot about ip, tcp, udp, how tcp makes reliable data transer, whats congestion avoidance, how packets and windows works, queuing on the routers, TCP Tahoe, TCP Reno and many other interesting things.</p>
 
-<h2>Instagram</h2>
+<p>It&#8217;s interesting how many things behind so &#8220;obvious&#8221; TCP/IP for example. &#8220;Where Wizards Stay Up Late: The Origins Of The Internet&#8221; book makes my discovery much more interesting, you can see &#8220;real&#8221; life of invetors, how they tried and fell and eventually built the Internet. I bet they didn&#8217;t think what it would be so popular as it is, but even so, they didn&#8217;t think for sure what it would be used as voting platform.</p>
 
-<p>It’s a fast, beautiful and fun way to share your life with friends through a series of pictures.</p>
+<p>Couple days ago I read <a href="https://jhalderm.com/pub/papers/dcvoting-fc12.pdf">this paper</a> and found it very interesting.</p>
 
-<p>Snap a photo with your iPhone, choose a filter to transform the look and feel, send to Facebook, Twitter or Flickr – it’s all as easy as pie. It’s photo sharing, reinvented.</p>
+<p><img src="http://9.mshcdn.com/wp-content/uploads/2012/10/Podium.jpg" alt="" /></p>
 
-<p>Instagram has <a href="http://instagram.com/developer/">API</a> which allows you to do anything you want - search users, their likes, relationships, comments, tags, locations and geo.</p>
-
-<h2>Idea</h2>
-
-<p>The idea was simple - to find by tags people who posted their photos from San Francisco and Bay Area (#sanfrancisco, #bayarea, #paloalto, #mountainview and so on). What will I get? I will get the users who probably living there and then I will just follow them and probably they will follow me back. So I will get followers from Bay Area and will able to talk through my pics with people who are living in Bay Area. As example, I can ask about some nice event or party and maybe somebody will share some or invite ;) Stupid isn&#8217;t? But it works!</p>
-
-<h2>Code</h2>
-
-<figure class='code'><figcaption><span>Let me introduce myself ;)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;open-uri&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;net/http&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;net/https&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">ACCESS_TOKEN</span> <span class="o">=</span> <span class="s2">&quot;put_yours_access_token_there&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">begin</span>
-</span><span class='line'>    <span class="nb">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">each_line</span> <span class="p">{</span><span class="o">|</span><span class="n">line</span><span class="o">|</span> <span class="n">response</span> <span class="o">+=</span> <span class="n">line</span> <span class="p">}</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">rescue</span> <span class="no">OpenURI</span><span class="o">::</span><span class="no">HTTPError</span>
-</span><span class='line'>    <span class="kp">nil</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_followers</span>
-</span><span class='line'>  <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.instagram.com/v1/users/self/followed-by?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="n">next_url</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">followers</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="n">next_url</span>
-</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">next_url</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">next_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">result</span><span class="o">[</span><span class="s1">&#39;data&#39;</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="n">followers</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;username&#39;</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="n">data</span><span class="o">[</span><span class="s1">&#39;id&#39;</span><span class="o">]</span><span class="p">)}</span>
-</span><span class='line'>    <span class="nb">p</span> <span class="n">followers</span><span class="o">.</span><span class="n">count</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">followers</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">unfollow_mutual_friends</span><span class="p">(</span><span class="n">followers</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.instagram.com/v1/users/self/follows?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="n">next_url</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="n">next_url</span>
-</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">next_url</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">next_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">result</span><span class="o">[</span><span class="s1">&#39;data&#39;</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span>
-</span><span class='line'>      <span class="k">unless</span> <span class="n">followers</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;username&#39;</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;https://api.instagram.com/v1/users/</span><span class="si">#{</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;id&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/relationship?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">http</span><span class="o">.</span><span class="n">use_ssl</span> <span class="o">=</span> <span class="kp">true</span>
-</span><span class='line'>        <span class="n">http</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">SSL</span><span class="o">::</span><span class="no">VERIFY_NONE</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">request</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">request</span><span class="o">.</span><span class="n">set_form_data</span><span class="p">(</span><span class="s2">&quot;action&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;unfollow&quot;</span><span class="p">,</span> <span class="s2">&quot;access_token&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'>        <span class="nb">p</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;username&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2"> code </span><span class="si">#{</span><span class="n">response</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">find_users_by_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.instagram.com/v1/tags/</span><span class="si">#{</span><span class="n">tag</span><span class="si">}</span><span class="s2">/media/recent?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>  <span class="n">next_url</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">users</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">while</span> <span class="n">next_url</span>
-</span><span class='line'>    <span class="n">result</span> <span class="o">=</span> <span class="n">fetch</span><span class="p">(</span><span class="n">next_url</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">next_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;pagination&#39;</span><span class="o">][</span><span class="s1">&#39;next_url&#39;</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">result</span><span class="o">[</span><span class="s1">&#39;data&#39;</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="n">users</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="n">data</span><span class="o">[</span><span class="s1">&#39;user&#39;</span><span class="o">][</span><span class="s1">&#39;username&#39;</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="n">data</span><span class="o">[</span><span class="s1">&#39;user&#39;</span><span class="o">][</span><span class="s1">&#39;id&#39;</span><span class="o">]</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>    <span class="c1"># people who likes pics with this tag</span>
-</span><span class='line'>    <span class="c1">#data[&#39;likes&#39;][&#39;data&#39;].each { |likes| @users.merge!(likes[&#39;username&#39;] =&gt; likes[&#39;id&#39;]) } </span>
-</span><span class='line'>    <span class="nb">p</span> <span class="n">users</span><span class="o">.</span><span class="n">count</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">follow_users</span><span class="p">(</span><span class="n">potential_friends</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">potential_friends</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">username</span><span class="p">,</span> <span class="nb">id</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;https://api.instagram.com/v1/users/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">/relationship?access_token=</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">http</span><span class="o">.</span><span class="n">use_ssl</span> <span class="o">=</span> <span class="kp">true</span>
-</span><span class='line'>    <span class="n">http</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">SSL</span><span class="o">::</span><span class="no">VERIFY_NONE</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">request</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">request</span><span class="o">.</span><span class="n">set_form_data</span><span class="p">(</span><span class="s2">&quot;action&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;follow&quot;</span><span class="p">,</span> <span class="s2">&quot;access_token&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2"> added&quot;</span> <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="s2">&quot;200&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<blockquote><p>In 2010, Washington, D.C. developed an Internet voting pilot project that was intended to allow overseas absentee voters to cast their ballots using a website. This paper describes our experience participating in this trial. Within 48 hours of the system going live, we had gained nearcomplete control of the election server. We successfully changed every vote and revealed almost every secret ballot. Election oﬃcials did not detect our intrusion for nearly two business days and might have remained unaware for far longer had we not deliberately left a prominent clue.</p></blockquote>
 
 
-<p>So, if we want to find and follow people who tagged their pics with tag #paloalto:</p>
+<p>Highly recommend to read even you don&#8217;t know/care about internet security, authors describe every steps and it looks like cyber-thriller. Spoil!</p>
 
-<figure class='code'><figcaption><span>find users by tag #paloalto and follow them</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">potential_friends</span> <span class="o">=</span> <span class="n">find_users_by_tag</span><span class="p">(</span><span class="s2">&quot;paloalto&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="n">follow_user</span><span class="p">(</span><span class="n">potential_friends</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<blockquote><p>After a few hours of examination, we found a shell injection vulnerability that eventually allowed us to compromise the web application server.<br/>&#8230;<br/>We also gained access to the database by ﬁnding credentials in the bash history ﬁle (mysql -h 10.1.143.75 -udvbm -pP@ssw0rd).<br/>&#8230;<br/>After about 3.5 hours using the cracker’s default settings, we recovered the secondary administrator password cisco123 from a salted MD5 hash.<br/>&#8230;<br/>We realized that one of the default logins to the terminal server (user: admin, password: admin)<br/>&#8230;<br/>The terminal server provided built-in support for keystroke logging of serial console sessions and forwarding of logged keystrokes to a remote syslog server, which we enabled and conﬁgured to forward to one of our machines. This allowed us to observe in real time as system administrators logged in and conﬁgured the switches, and to capture the switches’ administrative password, !@#123abc.<br/>&#8230;<br/>We found a pair of webcams on the DVBM network both publicly accessible without any password that showed views of the server room that housed the pilot. <br/>&#8230;</p></blockquote>
 
 
-<p>To unfollow people we have to know who is following us and then unfollow who is not.</p>
-
-<figure class='code'><figcaption><span>unfollow !mutual people</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">followers</span> <span class="o">=</span> <span class="n">get_followers</span>
-</span><span class='line'><span class="n">unfollow_mutual_friends</span><span class="p">(</span><span class="n">followers</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>so, that&#8217;s it. Of course this is my ugly code has to be improved and will be better to add some features like save followers list, save position of finding user by tag (disconnect or something - save the last url and next run will be continue parsing from this position). Anyway, this is just simple ruby script (heh, I&#8217;ve rewritten few time, it was good practice but still code look ugly I know).</p>
-
-<p>ps: proof
-<img src="http://pix.am/HIiH.png" alt="proof" /></p>
+<p>Enjoy!</p>
 
 		
 		
@@ -944,11 +754,11 @@ with new.</p>
   
 
 
-<time datetime="2012-03-09T11:09:00-08:00" pubdate data-updated="true">Mar 9<span>th</span>, 2012</time></div>
+<time datetime="2012-10-28T14:08:00-07:00" pubdate data-updated="true">Oct 28<span>th</span>, 2012</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/instagram/'>instagram</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+	<a class='category' href='/blog/categories/paper/'>paper</a>, <a class='category' href='/blog/categories/penetration-testing/'>penetration testing</a>
 
 
 </div>
@@ -957,14 +767,19 @@ with new.</p>
 
 
     <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/07/c-style-shorthand-conditional-operator/">C-style Shorthand Conditional Operator ?</a></h1>
+	<h1 class="title"><a href="/blog/2012/10/25/behind-the-hacks/">Behind the Hacks</a></h1>
 	<div class="entry-content">
-		<figure class='code'><figcaption><span>C-style shorthand conditional operator</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">?</span> <span class="s2">&quot;true value&quot;</span> <span class="p">:</span> <span class="s2">&quot;false value&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
+		<p>I&#8217;ve realized what I have bunch of emails where I&#8217;ve send people &#8220;bugs&#8221; on their websites (I&#8217;ll share here only that already fixed &#8220;bugs&#8221;). As example, once I&#8217;ve read about startup http://1.ai on HN. I thought such a nice domain name and interesting .ai zone =) Couple checks and pretty annoy xss:</p>
+
+<blockquote><p>Hey guys,</p><p>Read about you on HN, first of all thanks for the great job and don&#8217;t<br/>forget to close xss here<br/>http://1.ai/%3Cimg%20src=%22http://i.imgur.com/aAJSR.jpg%22%3E</p><p>thanks</p><p>-rus</p></blockquote>
 
 
-<p>Returns &#8220;false value&#8221;</p>
+<p>just after that i&#8217;ve got email:</p>
+
+<blockquote><p>Hello Ruslan,<br/>thank you for your help - will notify the sysadmin asap :)<br/>Enjoy the account and feel free to let me know if you do have suggestions/security ideas. <br/>At the moment beside relatively small things the permissions and security should guarantee that <br/>everything runs smoothly but we will certainly do more fixes (like this one) over time !<br/>best Regards<br/>David</p></blockquote>
+
+
+<p>That&#8217;s cool when people response very fast and with positive feedback, usually people just ignore emails like this, I have no idea why. Maybe because it seems strange, maybe they don&#8217;t care about that till time when somebody use it.</p>
 
 		
 		
@@ -984,119 +799,12 @@ with new.</p>
   
 
 
-<time datetime="2012-03-07T19:15:00-08:00" pubdate data-updated="true">Mar 7<span>th</span>, 2012</time></div>
+<time datetime="2012-10-25T18:05:00-07:00" pubdate data-updated="true">Oct 25<span>th</span>, 2012</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/ruby-/'>ruby,</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
+	<a class='category' href='/blog/categories/hack/'>hack</a>, <a class='category' href='/blog/categories/infosec/'>infosec</a>, <a class='category' href='/blog/categories/mischief/'>mischief</a>, <a class='category' href='/blog/categories/startups/'>startups</a>
 
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/07/next-idea-for-hacking-with-ruby/">Next Idea for Hacking With Ruby</a></h1>
-	<div class="entry-content">
-		<p>Right now I&#8217;m sitting at public library of Palo Alto because I have reason. This reason is based on my laziness and totally destructions by anything around me, probably correct word which can describe my problem is procrastination, you can read about  <a href="http://youarenotsosmart.com/2010/10/27/procrastination/">Proctastionation here</a>.</p>
-
-<blockquote><p>  Procrastination is an impulse; it’s buying candy at the checkout. Procrastination is also hyperbolic discounting, taking the sure thing in the present over the caliginous prospect some day far away.</p></blockquote>
-
-<p>So, now you can understand why am I sitting in public library, because this is only one place where I can easily focus and concentrate for doing things or learn to code. Only here I never think about one more cup o tea/coffee or lying to the sofa and think about thinking. But still one bad thing happened here and this thing (I&#8217;ve never thought what I&#8217;ll able to say this) is internet, to be honest I&#8217;m talking about &#8220;bad&#8221; side of internet like any kind of social networks, AIM, Skype and email.</p>
-
-<p>As you can see those things are our impulse with fast feedback; it&#8217;s buying candy at the checkout or checking facebook&#8217;s page, email, twitter, response on each message in Skype and Jabber. To finish my long entry I want to be disconnected for the time when I want to concentrate and focus on current task. But how? Even public library has wi-fi spot. To solve this problem I should disconect myself from the internet or filter it without any &#8220;easy&#8221; turn off solution, if I want to disconnect for 1 hour - I will and nothing can unblock it except reboot.</p>
-
-<p><img src="http://thejesuswave.files.wordpress.com/2009/03/concentration.gif" alt="Concentrate with Ruby" /></p>
-
-<p>I&#8217;ve seen few apps with same idea, like <a href="http://macfreedom.com/">Freedom</a> that disconect network for a certain time (like have a freedom for 1 hour or 2 hours ;). It costs $10 and works well, but I want to count how many hours I was disconected, maybe try to count how many requests I did to facebook, twitter and how addicted am I and so on.</p>
-
-<p>Few ideas how to do it on mac:</p>
-
-<blockquote><ul>
-<li> /etc/hosts</li>
-<li> ipfw</li>
-<li> just shutdown network interface</li>
-</ul>
-</blockquote>
-
-<p>to be continue&#8230;</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-07T13:54:00-08:00" pubdate data-updated="true">Mar 7<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/idea/'>idea</a>, <a class='category' href='/blog/categories/practice/'>practice</a>, <a class='category' href='/blog/categories/programming/'>programming</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/04/cli-alternative-to-delicious-for-saving-links/">CLI Alternative to Delicious for Saving Links</a></h1>
-	<div class="entry-content">
-		<p>Month ago my friend asked me if I want to learn to code
-he will help me to <a href="http://artemyankov.com/post/7112169965/essentials-to-learn-ruby-from-zero-to-advanced">learn Ruby from scratch</a>.
-That was good idea and now I&#8217;m going through the list and today finished Elegient Ruby by Russ Olsen
-what was really good book. As you know nothing better than practice and
-I&#8217;ve started doing some simple stuff and to motivate myself I&#8217;m working
-on some interesting small project to automation and simplification my
-daily tasks and few days ago I did Droplicious.</p>
-
-<p><img src="https://a248.e.akamai.net/assets.github.com/img/e8e0ee1f3c0182f3081890076752ae1ebd02e97d/687474703a2f2f7069782e616d2f7a3279542e706e67" alt="bookmarks in you
-terminal" /></p>
-
-<p><a href="https://github.com/pupsor/droplicious">Droplicious</a> is Delicious (bookmark app) at you terminal with syncronization function between your&#8217;s boxes via dropbox. This is my first project with Ruby, so, code looks pretty ugly.
-Now it has only few features (and probably it is enough):</p>
-
-<blockquote><ul>
-<li>add link with desc and tags</li>
-<li>search by tag</li>
-<li>open link in current browser</li>
-<li>dropbox does sync job ;)</li>
-</ul>
-</blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-04T22:29:00-08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2012</time></div>
-	<div class="tags">
 
 </div>
 	
@@ -1106,6 +814,8 @@ Now it has only few features (and probably it is enough):</p>
     
         <a href="/blog/page/4/" class="prev">Prev</a>
     
+    
+        <a href="/blog/page/6/" class="next">Next</a>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
