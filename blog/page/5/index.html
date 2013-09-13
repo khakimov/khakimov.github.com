@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="This paper demonstrate a technique for automatically producing English Shellcode — that is, transforming arbitrary shellcode into a representation &hellip;">
+	<meta name="description" content="I wrote the post What Is Wrong With HTTP Secure and my friend gave me an idea to try just rewrite hardcoded link (http:// -> https://). The beauty &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,116 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/23/automatically-rewrite-http-to-https-with-js/">Automatically Rewrite HTTP to HTTPS With JS</a></h1>
+	<div class="entry-content">
+		<p>I wrote the post <a href="http://khakimov.com/blog/2012/11/24/what-is-wrong-with-http-secure/">What Is Wrong With HTTP Secure</a> and my friend gave me an idea to try just rewrite hardcoded link (http:// -> https://). The beauty of JS are simplicity, documentations and tons of examples, so even if you don&#8217;t know how to get element without using jQuery it will be easy to figure out in couple minutes as I did in the night.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">===</span> <span class="s1">&#39;https:&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// http to https for &lt;link&gt;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">links</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">links</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">href</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;http:&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">link</span> <span class="o">=</span> <span class="nx">links</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">href</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;http:&#39;</span><span class="p">,</span> <span class="s1">&#39;https:&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">links</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">link</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// http to https for &lt;script&gt;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">scripts</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">scripts</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">scripts</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;http:&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">script</span> <span class="o">=</span> <span class="nx">scripts</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;http:&#39;</span><span class="p">,</span> <span class="s1">&#39;https:&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">scripts</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">script</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// http to https for images</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">images</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="nx">images</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;http:&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">img</span> <span class="o">=</span> <span class="nx">images</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">&#39;http:&#39;</span><span class="p">,</span> <span class="s1">&#39;https:&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">images</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">img</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Maybe folks from KBIT.dk will add it to their chrome extensions <a href="https://code.google.com/p/kbsslenforcer/">KB SSL Enforcer</a>. Anyway, my Internet looks much better now =) and safer!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-23T11:15:00-08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/https/'>https</a>, <a class='category' href='/blog/categories/js/'>js</a>, <a class='category' href='/blog/categories/security/'>security</a>, <a class='category' href='/blog/categories/ssl/'>ssl</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -747,57 +857,6 @@
 
 
 	<a class='category' href='/blog/categories/colocation/'>colocation</a>, <a class='category' href='/blog/categories/he-net/'>he.net</a>, <a class='category' href='/blog/categories/henet/'>henet</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/28/attacking-the-internet-voting-system/">Attacking the Internet Voting System</a></h1>
-	<div class="entry-content">
-		<p>Today is Sunday, just finished my third week of Networking class, learned a lot about ip, tcp, udp, how tcp makes reliable data transer, whats congestion avoidance, how packets and windows works, queuing on the routers, TCP Tahoe, TCP Reno and many other interesting things.</p>
-
-<p>It&#8217;s interesting how many things behind so &#8220;obvious&#8221; TCP/IP for example. &#8220;Where Wizards Stay Up Late: The Origins Of The Internet&#8221; book makes my discovery much more interesting, you can see &#8220;real&#8221; life of invetors, how they tried and fell and eventually built the Internet. I bet they didn&#8217;t think what it would be so popular as it is, but even so, they didn&#8217;t think for sure what it would be used as voting platform.</p>
-
-<p>Couple days ago I read <a href="https://jhalderm.com/pub/papers/dcvoting-fc12.pdf">this paper</a> and found it very interesting.</p>
-
-<p><img src="http://9.mshcdn.com/wp-content/uploads/2012/10/Podium.jpg" alt="" /></p>
-
-<blockquote><p>In 2010, Washington, D.C. developed an Internet voting pilot project that was intended to allow overseas absentee voters to cast their ballots using a website. This paper describes our experience participating in this trial. Within 48 hours of the system going live, we had gained nearcomplete control of the election server. We successfully changed every vote and revealed almost every secret ballot. Election oﬃcials did not detect our intrusion for nearly two business days and might have remained unaware for far longer had we not deliberately left a prominent clue.</p></blockquote>
-
-
-<p>Highly recommend to read even you don&#8217;t know/care about internet security, authors describe every steps and it looks like cyber-thriller. Spoil!</p>
-
-<blockquote><p>After a few hours of examination, we found a shell injection vulnerability that eventually allowed us to compromise the web application server.<br/>&#8230;<br/>We also gained access to the database by ﬁnding credentials in the bash history ﬁle (mysql -h 10.1.143.75 -udvbm -pP@ssw0rd).<br/>&#8230;<br/>After about 3.5 hours using the cracker’s default settings, we recovered the secondary administrator password cisco123 from a salted MD5 hash.<br/>&#8230;<br/>We realized that one of the default logins to the terminal server (user: admin, password: admin)<br/>&#8230;<br/>The terminal server provided built-in support for keystroke logging of serial console sessions and forwarding of logged keystrokes to a remote syslog server, which we enabled and conﬁgured to forward to one of our machines. This allowed us to observe in real time as system administrators logged in and conﬁgured the switches, and to capture the switches’ administrative password, !@#123abc.<br/>&#8230;<br/>We found a pair of webcams on the DVBM network both publicly accessible without any password that showed views of the server room that housed the pilot. <br/>&#8230;</p></blockquote>
-
-
-<p>Enjoy!</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-28T14:08:00-07:00" pubdate data-updated="true">Oct 28<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/paper/'>paper</a>, <a class='category' href='/blog/categories/penetration-testing/'>penetration testing</a>
 
 
 </div>
