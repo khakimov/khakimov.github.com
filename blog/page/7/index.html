@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="Was an interesting quest to build this thing. At the end I&#8217;ve almost gave up about even test drive it and couple weeks it just waited till my &hellip;">
+	<meta name="description" content="Today went to the park in Downtown Palo Alto, nice place to test my pilot skills. It was not bad, couple times I did wrong with direction (coulnd&# &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,59 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/10/06/quadrocopter-in-the-wild/">Quadrocopter in the Wild</a></h1>
+	<div class="entry-content">
+		<p>Today went to the park in Downtown Palo Alto, nice place to test my pilot skills. It was not bad, couple times I did wrong with direction (coulnd&#8217;t spin around the axle, get lost the control). Spin around the axle is going to be my next exercise, because I can fly back and forth, but can&#8217;t turn around and fly with same side. Anyway, that was cool, almost 20 minutes of disconnected from the world.</p>
+
+<iframe width="640" height="360" src="http://www.youtube.com/embed/12pnL0ZyLeo?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p>Of course this is not the end and I&#8217;m going to improve this aircraft. I&#8217;m thinking about couple really awesome things, like glasses + camera on quadrocopter:</p>
+
+<p><img src="http://static.ddmcdn.com/gif/video-glasses-1.jpg" alt="" /></p>
+
+<p>or (good one in my case)</p>
+
+<p>NAZA controller with GPS module</p>
+
+<p><img src="http://s4e453e5a36d54.img.gostorego.com/802754/cdn/media/s4/e4/53/e5/a3/6d/54/catalog/product/cache/1/image/370x/9df78eab33525d08d6e5fb8d27136e95/d/j/djinaza.jpg" alt="" /></p>
+
+<p>ps: quadrocopter + kinect</p>
+
+<iframe width="640" height="360" src="http://www.youtube.com/embed/A52FqfOi0Ek?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-06T19:27:00-07:00" pubdate data-updated="true">Oct 6<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/diy/'>diy</a>, <a class='category' href='/blog/categories/hobby/'>hobby</a>, <a class='category' href='/blog/categories/quadrocopter/'>quadrocopter</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -519,247 +572,6 @@ form that can help us improve the safety and reliability of your code.</li>
 
 
 	<a class='category' href='/blog/categories/blogging/'>blogging</a>, <a class='category' href='/blog/categories/links/'>links</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/08/01/c-tricks/">C Tricks</a></h1>
-	<div class="entry-content">
-		<p>This C code shows me a big sign <strong>&#8220;You don&#8217;t know C!&#8221;</strong> =) Trying to figure out how it works. Any idea?</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="k">const</span> <span class="n">ft</span><span class="p">[</span><span class="mi">2</span><span class="p">])(</span><span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="p">{</span> <span class="n">f</span><span class="p">,</span> <span class="n">exit</span> <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">ft</span><span class="p">[</span><span class="n">j</span><span class="o">/</span><span class="mi">1000</span><span class="p">](</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>or this one</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">(</span><span class="o">&amp;</span><span class="n">main</span> <span class="o">+</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">exit</span> <span class="o">-</span> <span class="o">&amp;</span><span class="n">main</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">j</span><span class="o">/</span><span class="mi">1000</span><span class="p">))(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>&#8230;will update this post with ideas ;)</p>
-
-<p>Ok, if you are mac use then you have to use <strong>otool</strong> to view the generated assembly code. <strong>otool -tV ./test</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">(</span><span class="n">__TEXT</span><span class="p">,</span><span class="n">__text</span><span class="p">)</span> <span class="n">section</span>
-</span><span class='line'><span class="nl">start:</span>
-</span><span class='line'><span class="mf">0000000100000e40</span>        <span class="n">pushq</span>   <span class="err">$</span><span class="mh">0x00</span>
-</span><span class='line'><span class="mf">0000000100000e42</span>        <span class="n">movq</span>    <span class="o">%</span><span class="n">rsp</span><span class="p">,</span><span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000e45</span>        <span class="n">andq</span>    <span class="err">$</span><span class="mh">0xf0</span><span class="p">,</span><span class="o">%</span><span class="n">rsp</span>
-</span><span class='line'><span class="mf">0000000100000e49</span>        <span class="n">movq</span>    <span class="mh">0x08</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rdi</span>
-</span><span class='line'><span class="mf">0000000100000e4</span><span class="n">d</span>        <span class="n">leaq</span>    <span class="mh">0x10</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rsi</span>
-</span><span class='line'><span class="mf">0000000100000e51</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">edi</span><span class="p">,</span><span class="o">%</span><span class="n">edx</span>
-</span><span class='line'><span class="mf">0000000100000e53</span>        <span class="n">addl</span>    <span class="err">$</span><span class="mh">0x01</span><span class="p">,</span><span class="o">%</span><span class="n">edx</span>
-</span><span class='line'><span class="mf">0000000100000e56</span>        <span class="n">shll</span>    <span class="err">$</span><span class="mh">0x03</span><span class="p">,</span><span class="o">%</span><span class="n">edx</span>
-</span><span class='line'><span class="mf">0000000100000e59</span>        <span class="n">addq</span>    <span class="o">%</span><span class="n">rsi</span><span class="p">,</span><span class="o">%</span><span class="n">rdx</span>
-</span><span class='line'><span class="mf">0000000100000e5</span><span class="n">c</span>        <span class="n">movq</span>    <span class="o">%</span><span class="n">rdx</span><span class="p">,</span><span class="o">%</span><span class="n">rcx</span>
-</span><span class='line'><span class="mf">0000000100000e5</span><span class="n">f</span>        <span class="n">jmp</span>     <span class="mh">0x100000e65</span>
-</span><span class='line'><span class="mf">0000000100000e61</span>        <span class="n">addq</span>    <span class="err">$</span><span class="mh">0x08</span><span class="p">,</span><span class="o">%</span><span class="n">rcx</span>
-</span><span class='line'><span class="mf">0000000100000e65</span>        <span class="n">cmpq</span>    <span class="err">$</span><span class="mh">0x00</span><span class="p">,(</span><span class="o">%</span><span class="n">rcx</span><span class="p">)</span>
-</span><span class='line'><span class="mf">0000000100000e69</span>        <span class="n">jne</span>     <span class="mh">0x100000e61</span>
-</span><span class='line'><span class="mf">0000000100000e6</span><span class="n">b</span>        <span class="n">addq</span>    <span class="err">$</span><span class="mh">0x08</span><span class="p">,</span><span class="o">%</span><span class="n">rcx</span>
-</span><span class='line'><span class="mf">0000000100000e6</span><span class="n">f</span>        <span class="n">callq</span>   <span class="n">_main</span>
-</span><span class='line'><span class="mf">0000000100000e74</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="o">%</span><span class="n">edi</span>
-</span><span class='line'><span class="mf">0000000100000e76</span>        <span class="n">callq</span>   <span class="mh">0x100000f04</span>     <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">_exit</span>
-</span><span class='line'><span class="mf">0000000100000e7</span><span class="n">b</span>        <span class="n">hlt</span>
-</span><span class='line'><span class="mf">0000000100000e7</span><span class="n">c</span>        <span class="n">nop</span>
-</span><span class='line'><span class="mf">0000000100000e7</span><span class="n">d</span>        <span class="n">nop</span>
-</span><span class='line'><span class="mf">0000000100000e7</span><span class="n">e</span>        <span class="n">nop</span>
-</span><span class='line'><span class="mf">0000000100000e7</span><span class="n">f</span>        <span class="n">nop</span>
-</span><span class='line'><span class="nl">_f:</span>
-</span><span class='line'><span class="mf">0000000100000e80</span>        <span class="n">pushq</span>   <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000e81</span>        <span class="n">movq</span>    <span class="o">%</span><span class="n">rsp</span><span class="p">,</span><span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000e84</span>        <span class="n">subq</span>    <span class="err">$</span><span class="mh">0x10</span><span class="p">,</span><span class="o">%</span><span class="n">rsp</span>
-</span><span class='line'><span class="mf">0000000100000e88</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">edi</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mf">0000000100000e8</span><span class="n">a</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="mh">0xfc</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mf">0000000100000e8</span><span class="n">d</span>        <span class="n">movl</span>    <span class="mh">0xfc</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mf">0000000100000e90</span>        <span class="n">xorb</span>    <span class="o">%</span><span class="n">cl</span><span class="p">,</span><span class="o">%</span><span class="n">cl</span>
-</span><span class='line'><span class="mf">0000000100000e92</span>        <span class="n">leaq</span>    <span class="mh">0x0000009b</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span><span class="o">%</span><span class="n">rdx</span>
-</span><span class='line'><span class="mf">0000000100000e99</span>        <span class="n">movq</span>    <span class="o">%</span><span class="n">rdx</span><span class="p">,</span><span class="o">%</span><span class="n">rdi</span>
-</span><span class='line'><span class="mf">0000000100000e9</span><span class="n">c</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
-</span><span class='line'><span class="mf">0000000100000e9</span><span class="n">e</span>        <span class="n">movb</span>    <span class="o">%</span><span class="n">cl</span><span class="p">,</span><span class="o">%</span><span class="n">al</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea0</span>        <span class="n">callq</span>   <span class="mh">0x100000f0a</span>     <span class="p">;</span> <span class="n">symbol</span> <span class="n">stub</span> <span class="k">for</span><span class="o">:</span> <span class="n">_printf</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea5</span>        <span class="n">movl</span>    <span class="mh">0xfc</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">ecx</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea8</span>        <span class="n">movl</span>    <span class="err">$</span><span class="mh">0x10624dd3</span><span class="p">,</span><span class="o">%</span><span class="n">esi</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ead</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">ecx</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eaf</span>        <span class="n">imull</span>   <span class="o">%</span><span class="n">esi</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb1</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">edx</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb3</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="o">%</span><span class="n">ecx</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb5</span>        <span class="n">shrl</span>    <span class="err">$</span><span class="mh">0x1f</span><span class="p">,</span><span class="o">%</span><span class="n">ecx</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb8</span>        <span class="n">sarl</span>    <span class="err">$</span><span class="mh">0x06</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebb</span>        <span class="n">leal</span>    <span class="p">(</span><span class="o">%</span><span class="n">rax</span><span class="p">,</span><span class="o">%</span><span class="n">rcx</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebe</span>        <span class="n">movslq</span>  <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="o">%</span><span class="n">rax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec1</span>        <span class="n">leaq</span>    <span class="mh">0x00000180</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span><span class="o">%</span><span class="n">rcx</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec8</span>        <span class="n">movq</span>    <span class="p">(</span><span class="o">%</span><span class="n">rcx</span><span class="p">,</span><span class="o">%</span><span class="n">rax</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ecc</span>        <span class="n">movl</span>    <span class="mh">0xfc</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">ecx</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ecf</span>        <span class="n">leal</span>    <span class="mh">0x01</span><span class="p">(</span><span class="o">%</span><span class="n">rcx</span><span class="p">),</span><span class="o">%</span><span class="n">ecx</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ed2</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">ecx</span><span class="p">,</span><span class="o">%</span><span class="n">edi</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ed4</span>        <span class="n">call</span>    <span class="o">*%</span><span class="n">rax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ed6</span>        <span class="n">addq</span>    <span class="err">$</span><span class="mh">0x10</span><span class="p">,</span><span class="o">%</span><span class="n">rsp</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eda</span>        <span class="n">popq</span>    <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">edb</span>        <span class="n">ret</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">edc</span>        <span class="n">nopl</span>    <span class="mh">0x00</span><span class="p">(</span><span class="o">%</span><span class="n">rax</span><span class="p">)</span>
-</span><span class='line'><span class="nl">_main:</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ee0</span>        <span class="n">pushq</span>   <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ee1</span>        <span class="n">movq</span>    <span class="o">%</span><span class="n">rsp</span><span class="p">,</span><span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ee4</span>        <span class="n">subq</span>    <span class="err">$</span><span class="mh">0x20</span><span class="p">,</span><span class="o">%</span><span class="n">rsp</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ee8</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">edi</span><span class="p">,</span><span class="mh">0xfc</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eeb</span>        <span class="n">movq</span>    <span class="o">%</span><span class="n">rsi</span><span class="p">,</span><span class="mh">0xf0</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eef</span>        <span class="n">movl</span>    <span class="err">$</span><span class="mh">0x00000001</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ef4</span>        <span class="n">movl</span>    <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="o">%</span><span class="n">edi</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ef6</span>        <span class="n">callq</span>   <span class="n">_f</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">efb</span>        <span class="n">movl</span>    <span class="mh">0xec</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">efe</span>        <span class="n">addq</span>    <span class="err">$</span><span class="mh">0x20</span><span class="p">,</span><span class="o">%</span><span class="n">rsp</span>
-</span><span class='line'><span class="mf">0000000100000f</span><span class="mo">02</span>        <span class="n">popq</span>    <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000f</span><span class="mo">03</span>        <span class="n">ret</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<iframe width="560" height="315" src="http://www.youtube.com/embed/i2fhNVQPb5I?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-01T18:25:00-07:00" pubdate data-updated="true">Aug 1<span>st</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/programming/'>programming</a>
 
 
 </div>
