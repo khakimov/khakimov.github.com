@@ -7,7 +7,8 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="I moved to Palo Alto few month ago from LA and realized that I didn&#8217;t know anybody in Bay Area. I was looking for a new friends ;) I had one &hellip;">
+	<meta name="description" content="Class methods are usually called with the double colon. The respond_to? method is really nice and I plead that you never forget
+it’s there. The &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +71,91 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/03/15/tips-and-tricks/">Tips and Tricks</a></h1>
+	<div class="entry-content">
+		<p>Class methods are usually called with the double colon.</p>
+
+<p>The respond_to? method is really nice and I plead that you never forget
+it’s there. The respond_to? checks any object to be sure that it has a
+certain method. It then gives back a true or false.</p>
+
+<p>.collect keeps the answer the block gives back and adds it to a new
+Array. The collect method is the perfect way of building a new Array
+which is based on the items in an existing Array.</p>
+
+<p>Always remember that a Module is only an inn. A roof over their heads.
+It is not a self-aware Class and, therefore, cannot be brought to life
+with new.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">SkatingContest</span>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">the_winner</span><span class="p">;</span> <span class="vi">@the_winner</span><span class="p">;</span> <span class="k">end</span>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">the_winner</span><span class="o">=</span><span class="p">(</span> <span class="nb">name</span> <span class="p">)</span>
+</span><span class='line'>     <span class="k">unless</span> <span class="nb">name</span><span class="o">.</span><span class="n">respond_to?</span> <span class="ss">:to_str</span>
+</span><span class='line'>       <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">&quot;The winner&#39;s name must be a String,</span>
+</span><span class='line'><span class="s2">         not a math problem or a list of names or any of that business.&quot;</span>
+</span><span class='line'>     <span class="k">end</span>
+</span><span class='line'>     <span class="vi">@the_winner</span> <span class="o">=</span> <span class="nb">name</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Adding reference column:</h1>
+
+<p>When you are modifying an existing table then references will not work. And actually, it is not really necessary when integer will work just as well.</p>
+
+<p>I&#8217;d say the advantage of using references instead of a plain integer is that the model will be predefined with belongs_to and since the model is already created and will not be affected when you migrate something existing, the purpose is kind of lost.</p>
+
+<p>So I would do like this instead:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">rails</span> <span class="n">g</span> <span class="n">migration</span> <span class="n">add_user_id_to_tester</span> <span class="n">user_id</span><span class="ss">:integer</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then manually add belongs_to :user in the Tester model</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-15T17:15:00-07:00" pubdate data-updated="true">Mar 15<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/tips/'>tips</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
