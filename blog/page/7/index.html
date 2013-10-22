@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="That&#8217;s not a secret that I in love with security and I&#8217;m using some applications on a regular basis to protect my security such as vpn &hellip;">
+	<meta name="description" content="This paper demonstrate a technique for automatically producing English Shellcode — that is, transforming arbitrary shellcode into a representation &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,264 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/10/english-shellcode/">English Shellcode</a></h1>
+	<div class="entry-content">
+		<p>This paper demonstrate a technique for automatically producing English Shellcode — that is, transforming arbitrary shellcode into a representation that is statistically similar to English prose.</p>
+
+<p><img src="http://pix.am/kWJT.png" alt="" /></p>
+
+<p><a title="View Ccs243 Mason on Scribd" href="http://www.scribd.com/doc/116712351/Ccs243-Mason" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Ccs243 Mason</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/116712351/content?start_page=1&view_mode=scroll&access_key=key-kfmhab4cfcscgy1dh9i" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_18420" width="100%" height="600" frameborder="0"></iframe></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-10T21:56:00-08:00" pubdate data-updated="true">Dec 10<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/security/'>security</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/09/bypassing-dep-slash-aslr-protections/">Bypassing DEP/ASLR Protections</a></h1>
+	<div class="entry-content">
+		<p>Today we are going to learn about data execution prevention (DEP) and address space layout randomization (ASLR). Last Sunday I read about <a href="http://khakimov.com/blog/2012/12/02/return-into-libc-without-function-calls/">return-into-libc</a> and one week before was post about <a href="http://khakimov.com/blog/2012/11/20/buffer-overflow/">buffer overflow</a> as-is. Both methods reqired to know the address of attacker shellcode and/or standard kernel library (we found out the address of system() function in the memory to use it in <strong>return-into-libc</strong> with this code int main() { system();}). Modern systems decided to implement something what will make stack addresses and addressess of library routines unpredictable and different from machine to machine (no more universal exploits =) kidding).</p>
+
+<p>Author <a href="https://twitter.com/justdionysus">Dionysus Blazakis</a> holds BS from University of Maryland and doing interesting things, I saw his presentation &#8220;The Apple Sandbox&#8221; and then found this paper, great job Dionysus. I inspired by his example and it motivates me to keep digging in research field. Dion, if you&#8217;ll ever read this I just want to say thank you! Lets get back to his paper and read what this smart fellow prepared for us.</p>
+
+<p><a title="View Blazakis on Scribd" href="http://www.scribd.com/doc/116197211/Blazakis" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Blazakis</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/116197211/content?start_page=1&view_mode=scroll&access_key=key-1dr5xy06ojvmp97eq1hg" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_39852" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>DEP and ASLR are very real problem in the side of an exploit developer. DEP makes locating shellcode difficult, ASLR further complicates an attack by obfuscating the base address of the loaded data. Adobe Flash Player is used as an example, Dion also referenced to JIT spraying (Just-In-Time).</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>A Just-in-time compiler (JIT), by definition, produces machine 
+</span><span class='line'>code as its output. Since it produces executable data, a JIT 
+</span><span class='line'>compiler is one of the few types of programs that **cannot** be 
+</span><span class='line'>run in a **no-executable-data environment**. Therefore, JIT 
+</span><span class='line'>compilers are normally exempt from data execution prevention. A 
+</span><span class='line'>JIT spray compiles code that then proceeds to spray the memory 
+</span><span class='line'>with enough instances of exploit code to overwhelm the address 
+</span><span class='line'>space randomization and execute the exploit itself.</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>JIT spraying is very simular to heap spraying, in simple terms attacker stuff heap with multiple copies of attack code (payload) and that increases the chances of successful exploitation.</p>
+
+<p>JIT Spray Exploit Demo</p>
+
+<iframe width="640" height="480" src="http://www.youtube.com/embed/HJuBpciJ3Ao?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p>So, why do you need this? If you found the overflow in the modern browsers you will not able to use it easily, because of randomization, the address space is randomized and you don&#8217;t know where to point EIP and even if you have data in the heap DEP wont allow you to execute it. But you can use Just-In-Time compiler which will allocate writable memory for you and write executable code into it. For more details please read the paper above. Enjoy!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-09T21:13:00-08:00" pubdate data-updated="true">Dec 9<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/great-papers/'>great papers</a>, <a class='category' href='/blog/categories/research/'>research</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/05/you-and-your-research/">You and Your Research</a></h1>
+	<div class="entry-content">
+		<iframe width="853" height="480" src="http://www.youtube.com/embed/JoVx_-bM8Tg?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
+<p><a href="https://conference.hitb.org/hitbsecconf2012kul/materials/D1T2%20-%20Haroon%20Meer%20-%20You%20and%20Your%20Research.pdf">PDF</a></p>
+
+<p>What does it take to do quality research? What stops you from being a one-hit wonder? Is there an age limit to productive hackery? What are the key ingredients needed and how can you up your chances of doing great work? In a talk unabashedly stolen from far greater minds we hope to answer these questions and discuss their repercussions.</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-05T16:43:00-08:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/-hitb2012kul/'>#HITB2012KUL</a>, <a class='category' href='/blog/categories/motivation/'>motivation</a>, <a class='category' href='/blog/categories/research/'>research</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/12/02/return-into-libc-without-function-calls/">Return-into-libc Without Function Calls</a></h1>
+	<div class="entry-content">
+		<p>Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel recently added to their processors a per-page execute disable bit to ease WOX implementation and even Microsoft implement WOX (no location in memory into which the attacker can inject code to execute, or just imagine no memory location in a process image is marked both writable - W and executable - X) all it means you can not execute your shellcode on the stack.</p>
+
+<p>Today I read about technique is known as <strong>return into libc</strong> by <a href="http://cseweb.ucsd.edu/~hovav/">Hovav Shacham</a> (btw, his Ph.D. advisor was professor of Computer Science and Electrial Engineering at Stanford <a href="http://crypto.stanford.edu/~dabo/">Dan Boneh</a>. I took his CS155 class, he is really good in his field).</p>
+
+<p>What is this about? If we can&#8217;t write in stack what should we do? We can&#8217;t inject code, so, we will use code that already exists in the proccess image we are attacking. <strong>Libc</strong> is the usual target that contains various basic functions, such as printf() and exit(). These functions are share, so any program that uses the printf() function directs execution into the appropriate location in libc. And attacker with his explout can do the same thing and direct a program&#8217;s execution into a certain function in libc. But in principle any available code, either from the program&#8217;s text segment of from a library it links to, could be used instead libc.</p>
+
+<p>Enjoy!</p>
+
+<p><a title="View Geometry (1) on Scribd" href="http://www.scribd.com/doc/115228599/Geometry-1" style="margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block; text-decoration: underline;">Geometry (1)</a><iframe class="scribd_iframe_embed" src="http://www.scribd.com/embeds/115228599/content?start_page=1&view_mode=scroll&access_key=key-1qjla86da9zi8xelaiqr" data-auto-height="false" data-aspect-ratio="0.772727272727273" scrolling="no" id="doc_22341" width="100%" height="600" frameborder="0"></iframe></p>
+
+<p>I played a litle bit with <strong>return into libc</strong> and the main idea was to force the program to spawn a shell without executing anything on the stack, by returning int the libc function system().</p>
+
+<figure class='code'><figcaption><span>sys.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+</span><span class='line'>   <span class="n">strcpy</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span> <span class="n">system</span><span class="p">();</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="n">gcc</span> <span class="o">-</span><span class="n">o</span> <span class="n">t</span> <span class="n">tmp</span><span class="p">.</span><span class="n">c</span>
+</span><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="n">gdb</span> <span class="o">-</span><span class="n">q</span> <span class="p">.</span><span class="o">/</span><span class="n">t</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="k">break</span> <span class="n">main</span>
+</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span> <span class="n">at</span> <span class="mh">0x804837a</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">run</span>
+</span><span class='line'><span class="n">Starting</span> <span class="n">program</span><span class="o">:</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">t</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Breakpoint</span> <span class="mi">1</span><span class="p">,</span> <span class="mh">0x0804837a</span> <span class="n">in</span> <span class="n">main</span> <span class="p">()</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">print</span> <span class="n">system</span>
+</span><span class='line'><span class="err">$</span><span class="mi">1</span> <span class="o">=</span> <span class="p">{</span><span class="o">&lt;</span><span class="n">text</span> <span class="n">variable</span><span class="p">,</span> <span class="n">no</span> <span class="n">debug</span> <span class="n">info</span><span class="o">&gt;</span><span class="p">}</span> <span class="mh">0xb7ed0d80</span> <span class="o">&lt;</span><span class="n">system</span><span class="o">&gt;</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">quit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>here we got address of function <strong>system()</strong> and it is located at <strong>0xb7ed0d80</strong>.</p>
+
+<figure class='code'><figcaption><span>tmp.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">rus</span><span class="err">@</span><span class="n">rus</span><span class="o">-</span><span class="n">desktop</span><span class="o">:/</span><span class="n">tmp</span> <span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">a</span><span class="p">.</span><span class="n">out</span> <span class="err">$</span><span class="p">(</span><span class="n">perl</span> <span class="o">-</span><span class="n">e</span> <span class="err">&#39;</span><span class="n">print</span> <span class="s">&quot;AAAA&quot;</span><span class="n">x7</span> <span class="p">.</span> <span class="s">&quot;</span><span class="se">\x80\x0d\xed\xb7</span><span class="s">&quot;</span><span class="err">&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="nl">sh:</span> <span class="o">????????:</span> <span class="n">command</span> <span class="n">not</span> <span class="n">found</span>
+</span><span class='line'><span class="n">Segmentation</span> <span class="n">fault</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>7 words of data are used for spacin in the exploit and then we call system() as you can see. In this example I don&#8217;t pass any arguments, but it&#8217;s should be of course &#8220;/bin/sh&#8221;. That&#8217;s my Sunday and happy hacking hours!</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-02T14:12:00-08:00" pubdate data-updated="true">Dec 2<span>nd</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/computer-security/'>computer security</a>, <a class='category' href='/blog/categories/great-papers/'>great papers</a>, <a class='category' href='/blog/categories/research/'>research</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -540,907 +798,6 @@
 
 
 	<a class='category' href='/blog/categories/paper/'>paper</a>, <a class='category' href='/blog/categories/penetration-testing/'>penetration testing</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/25/behind-the-hacks/">Behind the Hacks</a></h1>
-	<div class="entry-content">
-		<p>I&#8217;ve realized what I have bunch of emails where I&#8217;ve send people &#8220;bugs&#8221; on their websites (I&#8217;ll share here only that already fixed &#8220;bugs&#8221;). As example, once I&#8217;ve read about startup http://1.ai on HN. I thought such a nice domain name and interesting .ai zone =) Couple checks and pretty annoy xss:</p>
-
-<blockquote><p>Hey guys,</p><p>Read about you on HN, first of all thanks for the great job and don&#8217;t<br/>forget to close xss here<br/>http://1.ai/%3Cimg%20src=%22http://i.imgur.com/aAJSR.jpg%22%3E</p><p>thanks</p><p>-rus</p></blockquote>
-
-
-<p>just after that i&#8217;ve got email:</p>
-
-<blockquote><p>Hello Ruslan,<br/>thank you for your help - will notify the sysadmin asap :)<br/>Enjoy the account and feel free to let me know if you do have suggestions/security ideas. <br/>At the moment beside relatively small things the permissions and security should guarantee that <br/>everything runs smoothly but we will certainly do more fixes (like this one) over time !<br/>best Regards<br/>David</p></blockquote>
-
-
-<p>That&#8217;s cool when people response very fast and with positive feedback, usually people just ignore emails like this, I have no idea why. Maybe because it seems strange, maybe they don&#8217;t care about that till time when somebody use it.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-25T18:05:00-07:00" pubdate data-updated="true">Oct 25<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/hack/'>hack</a>, <a class='category' href='/blog/categories/infosec/'>infosec</a>, <a class='category' href='/blog/categories/mischief/'>mischief</a>, <a class='category' href='/blog/categories/startups/'>startups</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/19/pthreads-and-shared-variables/">Pthreads and Shared Variables</a></h1>
-	<div class="entry-content">
-		<p>I started yesterday with a ascii picture that shows how threads looks like. Now I want to add variable &#8221;<strong>a</strong>&#8221; into each thread:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>  Master Thread
-</span><span class='line'>        |
-</span><span class='line'>unsigned int a = 0;
-</span><span class='line'>        |
-</span><span class='line'>        |        create workers with pthread_create()
-</span><span class='line'>        |
-</span><span class='line'>      // \\      workers start up
-</span><span class='line'>     / | | \
-</span><span class='line'>     | | | |
-</span><span class='line'>     a a a a     workers do a++ in loop jobs (thread routine)
-</span><span class='line'>     | | | |
-</span><span class='line'>     \ \ / /
-</span><span class='line'>      \\ //      workers terminate
-</span><span class='line'>        |
-</span><span class='line'>        |        join workers with pthread_join()
-</span><span class='line'>        |
-</span><span class='line'>  Master Thread</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This picture shows the possibility of synchronization errors when every thread has same access to variable <strong>a</strong>. Let code some example of this problem:</p>
-
-<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define N 100000</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">if</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Nope! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>   <span class="k">else</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;OK! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">a</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">gcc</span> <span class="n">shared</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">shared</span> <span class="o">&amp;&amp;</span> <span class="p">.</span><span class="o">/</span><span class="n">shared</span>
-</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">161406</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared</span>
-</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">162099</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared</span>
-</span><span class='line'><span class="n">Nope</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">133299</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>hmm, strange, isn&#8217;t? It happens because of improperly synchronization.</p>
-
-<figure class='code'><figcaption><span>shared.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="nl">_job:</span>
-</span><span class='line'><span class="mf">0000000100000e80</span>  <span class="n">pushq</span> <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000e81</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rsp</span><span class="p">,</span><span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mf">0000000100000e84</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rdi</span><span class="p">,</span><span class="mh">0xf8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mf">0000000100000e88</span>  <span class="n">movl</span>  <span class="err">$</span><span class="mh">0x00000000</span><span class="p">,</span><span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span> <span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="mf">0000000100000e8</span><span class="n">f</span>  <span class="n">jmp</span> <span class="mh">0x100000ea9</span>
-</span><span class='line'><span class="p">;</span> <span class="n">loop</span>
-</span><span class='line'><span class="mf">0000000100000e91</span>  <span class="n">movl</span>  <span class="mh">0x000001e1</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span> <span class="p">;</span> <span class="n">our</span> <span class="n">global</span> <span class="n">a</span>
-</span><span class='line'><span class="mf">0000000100000e97</span>  <span class="n">addl</span>  <span class="err">$</span><span class="mh">0x01</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>            <span class="p">;</span> <span class="n">a</span><span class="o">++</span>
-</span><span class='line'><span class="mf">0000000100000e9</span><span class="n">a</span>  <span class="n">movl</span>  <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="mh">0x000001d8</span><span class="p">(</span><span class="o">%</span><span class="n">rip</span><span class="p">)</span> <span class="p">;</span> <span class="n">save</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea0</span>  <span class="n">movl</span>  <span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea3</span>  <span class="n">addl</span>  <span class="err">$</span><span class="mh">0x01</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>            <span class="p">;</span> <span class="n">i</span><span class="o">++</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea6</span>  <span class="n">movl</span>  <span class="o">%</span><span class="n">eax</span><span class="p">,</span><span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ea9</span>  <span class="n">movl</span>  <span class="mh">0xe4</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">eax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eac</span>  <span class="n">cmpl</span>  <span class="err">$</span><span class="mh">0x0001869f</span><span class="p">,</span><span class="o">%</span><span class="n">eax</span>      <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb1</span>  <span class="n">jle</span> <span class="mh">0x100000e91</span>             <span class="p">;</span> <span class="n">check</span> <span class="n">and</span> <span class="n">jump</span>
-</span><span class='line'><span class="p">;</span> <span class="n">jle</span> <span class="o">-</span> <span class="n">less</span> <span class="n">or</span> <span class="n">equal</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">eb3</span>  <span class="n">movq</span>  <span class="err">$</span><span class="mh">0x00000000</span><span class="p">,</span><span class="mh">0xe8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebb</span>  <span class="n">movq</span>  <span class="mh">0xe8</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ebf</span>  <span class="n">movq</span>  <span class="o">%</span><span class="n">rax</span><span class="p">,</span><span class="mh">0xf0</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">)</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec3</span>  <span class="n">movq</span>  <span class="mh">0xf0</span><span class="p">(</span><span class="o">%</span><span class="n">rbp</span><span class="p">),</span><span class="o">%</span><span class="n">rax</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec7</span>  <span class="n">popq</span>  <span class="o">%</span><span class="n">rbp</span>
-</span><span class='line'><span class="mo">0000000100000</span><span class="n">ec8</span>  <span class="n">ret</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That is how our loop in function <strong>job</strong> looks in machine code (otool -Vt ./shared). And as you can also see, each thread load/save data from same memory address 0x000001e1(%rip), that&#8217;s why we always get wrong answer, because thread compete with each other and improperly. How to fix it? We have to lock variable, change it and then unlock it to allow other threads to change it:</p>
-
-<figure class='code'><figcaption><span>shared2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define N 100000</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="n">pthread_mutex_t</span> <span class="n">mutexA</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid1</span><span class="p">,</span> <span class="n">tid2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">if</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Nope! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>   <span class="k">else</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;OK! a = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_mutex_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span>
-</span><span class='line'><span class="nf">job</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>   <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/*</span>
-</span><span class='line'><span class="cm">      Lock mutex prior to updating the value in the shared</span>
-</span><span class='line'><span class="cm">      variable and unlock it upon updating. </span>
-</span><span class='line'><span class="cm">      */</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">pthread_mutex_lock</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">a</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>      <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutexA</span><span class="p">);</span>
-</span><span class='line'>   <span class="p">}</span>
-</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now it looks much better!</p>
-
-<figure class='code'><figcaption><span>shared2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">gcc</span> <span class="n">shared2</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">shared2</span> <span class="o">&amp;&amp;</span> <span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
-</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
-</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
-</span><span class='line'><span class="p">.</span><span class="o">/</span><span class="n">shared2</span>
-</span><span class='line'><span class="n">OK</span><span class="o">!</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">200000</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That is it! Now we can use shared variables in our threads and build something interesting. In next post I will write about <strong>thread-safety</strong> and how to write thread-safe function.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-19T16:17:00-07:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/mutex/'>mutex</a>, <a class='category' href='/blog/categories/pthread/'>pthread</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/18/c-posix-threads-boot-camp/">C Posix Threads Boot Camp</a></h1>
-	<div class="entry-content">
-		<p>The White Rabbit put on his spectacles,
-&#8220;Where shall I begin, please your Majesty?&#8221; he asked.
-&#8220;Begin at the beginning,&#8221; the King said, very gravely,
-&#8220;and go on till you come to the end: then stop.&#8221;</p>
-
-<p>Lewis Carroll, Alice&#8217;s Adventures in Wonderland</p>
-
-<p>This post is about threads and the reason why I&#8217;m writing this because I want to know more and more about thread, but before that I have to repeat and refresh everything about this huge topic. I saw funny qoute about the process of learning and doing concurrency code</p>
-
-<p>&#8220;i don&#8217;t know threads!,&#8221; then &#8220;I got it! I know how it works!,&#8221; then &#8220;I don&#8217;t know threads!&#8221; and so on.</p>
-
-<p>So, I&#8217;m going to use here the threads model that is called POSIX threads or Pthreads. Brief story you can read on wikipedia (http://en.wikipedia.org/wiki/POSIX_Threads)[here.] The main thing that its available on many Unix-like OS, and if you are using mac or linux I&#8217;m sure you have file name pthread.h in your libraries directory. The best to start is write &#8220;Hello World&#8221; with threads.</p>
-
-<pre><code>  Master Thread
-        |
-        |        create workers with pthread_create()
-        |
-      // \\      workers start up
-     / | | \
-     | | | |
-     | | | |     workers do their jobs (thread routine)
-     | | | |
-     \ \ / /
-      \\ //      workers terminate
-        |
-        |        join workers with pthread_join()
-        |
-  Master Thread
-</code></pre>
-
-<figure class='code'><figcaption><span>hello.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">/* posix thread */</span>
-</span><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="cm">/* </span>
-</span><span class='line'><span class="cm">   local variable which will be used to store the thread ID of</span>
-</span><span class='line'><span class="cm">   the peer thread</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="cm">/* </span>
-</span><span class='line'><span class="cm">   pthread_create function creates a new thread (obvious)</span>
-</span><span class='line'><span class="cm">   and runs the thread_routine in the context of the new thread</span>
-</span><span class='line'><span class="cm">   with an input arg NULL (just after thread_routine). In our case</span>
-</span><span class='line'><span class="cm">   we just run thread_routine without any argument. </span>
-</span><span class='line'><span class="cm">   when the call to pthread_create returns - tid contains the ID</span>
-</span><span class='line'><span class="cm">   the new thread</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="cm">/*</span>
-</span><span class='line'><span class="cm">   the main thread waits for the peer thread to terminate with</span>
-</span><span class='line'><span class="cm">   the call pthread_join.</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello world!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>   <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>compile and run</p>
-
-<p>○ gcc hello.c -o hello &amp;&amp; ./hello
-Hello world!</p>
-
-<p>Let&#8217;s play a little bit with pthreads, you will see this is much easier than it looks like now.</p>
-
-<figure class='code'><figcaption><span>hello2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
-</span><span class='line'>   <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[1] I&#39;ve create a thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[2] pthread_join and wait till its finish his job</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[6] Thread %ld terminated. Now in main!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[7] Time to clean up and exit. Bye!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>   <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">char</span> <span class="n">dot</span> <span class="o">=</span> <span class="sc">&#39;.&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[3] I&#39;m inside the thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">pthread_self</span><span class="p">());</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[4] Hello world! I&#39;m working...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">%d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[5] Done! Returning to the main thread!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>○ gcc hello2.c -o hello2 &amp;&amp; ./hello2</p>
-
-<figure class='code'><figcaption><span>hello2.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">ve</span> <span class="n">create</span> <span class="n">a</span> <span class="kr">thread</span> <span class="mi">4513894400</span>
-</span><span class='line'>  <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">m</span> <span class="n">inside</span> <span class="n">the</span> <span class="kr">thread</span> <span class="mi">4513894400</span>
-</span><span class='line'><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">pthread_join</span> <span class="n">and</span> <span class="n">wait</span> <span class="n">till</span> <span class="n">its</span> <span class="n">finish</span> <span class="n">his</span> <span class="n">job</span>
-</span><span class='line'>  <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="n">Hello</span> <span class="n">world</span><span class="o">!</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">m</span> <span class="n">working</span><span class="p">...</span>
-</span><span class='line'>  <span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="n">Done</span><span class="o">!</span> <span class="n">Returning</span> <span class="n">to</span> <span class="n">the</span> <span class="n">main</span> <span class="kr">thread</span><span class="o">!</span>
-</span><span class='line'><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="n">Thread</span> <span class="mi">4513894400</span> <span class="n">terminated</span><span class="p">.</span> <span class="n">Now</span> <span class="n">in</span> <span class="n">main</span><span class="o">!</span>
-</span><span class='line'><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="n">Time</span> <span class="n">to</span> <span class="n">clean</span> <span class="n">up</span> <span class="n">and</span> <span class="n">exit</span><span class="p">.</span> <span class="n">Bye</span><span class="o">!</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I&#8217;ve added while loop into thread_routine function to show how pthread_join works (waits for thread termination). Notice that the pthread_join function can only wait for a specific thread to terminate. Let&#8217;s try to make 5 thread and see how it works:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define NUM_THREADS 5</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>   <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">[</span><span class="n">NUM_THREADS</span><span class="p">];</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][1] I&#39;ve create a thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][2] pthread_join and wait till its finish his job</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">pthread_join</span><span class="p">(</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[t %d][6] Thread %ld terminated!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">tid</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;[7] Time to clean up and exit. Bye!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">threadNum</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">arg</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">char</span> <span class="n">dot</span> <span class="o">=</span> <span class="sc">&#39;.&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[t %d]</span><span class="se">\t</span><span class="s">[3] I&#39;m inside the thread %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">pthread_self</span><span class="p">());</span>
-</span><span class='line'>    <span class="c1">// printf(&quot;\t[4] Hello world! I&#39;m working...\n&quot;);</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\v</span><span class="s">%*d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="o">*</span><span class="mi">15</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">[t %d][5] Done! Returning to the main thread!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">threadNum</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Looks like matrix in my terminal.</p>
-
-<p><img src="http://pix.am/urR5.png" alt="" /></p>
-
-<p>Before we start talking about <strong>detaching thread</strong>, you can play with this code and threads, if you don&#8217;t understand something try to change code and see how it will work. In my case was a problem with pthread_join, but after couple examples I&#8217;ve realized how it works and moved on.</p>
-
-<p>By default, threads created joinable and joinable thread can be reaped and killed by other threads. On other case, detached thread cannot be reaped or killed by other threads. Its memory resources are freed automatically by the system when it terminates. To &#8220;detach&#8221; the thread we have to use <strong>pthread_detach</strong> function.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;pthread.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;strings.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#include &lt;sys/socket.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;arpa/inet.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="o">*</span><span class="n">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="n">open_listenfd</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">pthread_t</span> <span class="n">tid</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="o">*</span><span class="n">connfd_p</span><span class="p">,</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">clientlen</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">clientaddr</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">port</span> <span class="o">=</span> <span class="mi">1337</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">listenfd</span> <span class="o">=</span> <span class="n">open_listenfd</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">connfd_p</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-</span><span class='line'>        <span class="o">*</span><span class="n">connfd_p</span> <span class="o">=</span> <span class="n">accept</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">clientaddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">clientlen</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tid</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_routine</span><span class="p">,</span> <span class="n">connfd_p</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span>
-</span><span class='line'><span class="nf">open_listenfd</span><span class="p">(</span><span class="kt">int</span> <span class="n">port</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">optval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">serveraddr</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">listenfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">optval</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">bzero</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">serveraddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">serveraddr</span><span class="p">));</span>
-</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">INADDR_ANY</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">serveraddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span> <span class="n">port</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">serveraddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">serveraddr</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">listen</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">-</span><span class="mi">4</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">listenfd</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span><span class="o">*</span>
-</span><span class='line'><span class="nf">thread_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">connfd</span> <span class="o">=</span> <span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">pthread_detach</span><span class="p">(</span><span class="n">pthread_self</span><span class="p">());</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;New incoming connection...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Done! Close connection!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">free</span><span class="p">(</span><span class="n">arg</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">close</span><span class="p">(</span><span class="n">connfd</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>huh, tired a little bit, was a C maraphone for couple hours. Here is example of server which waiting connections on tcp port 1337, if somebody connected - creates new thread and start doing his job. I&#8217;ll comment this code in the next post, but it works very well and now you can build your&#8217;s version of web server.</p>
-
-<p>Soon I&#8217;ll write about sharing variables between threads, using mutexes and how to avoid dead locks.</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-18T19:03:00-07:00" pubdate data-updated="true">Oct 18<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/mutex/'>mutex</a>, <a class='category' href='/blog/categories/posix/'>posix</a>, <a class='category' href='/blog/categories/pthread/'>pthread</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/06/quadrocopter-in-the-wild/">Quadrocopter in the Wild</a></h1>
-	<div class="entry-content">
-		<p>Today went to the park in Downtown Palo Alto, nice place to test my pilot skills. It was not bad, couple times I did wrong with direction (coulnd&#8217;t spin around the axle, get lost the control). Spin around the axle is going to be my next exercise, because I can fly back and forth, but can&#8217;t turn around and fly with same side. Anyway, that was cool, almost 20 minutes of disconnected from the world.</p>
-
-<iframe width="640" height="360" src="http://www.youtube.com/embed/12pnL0ZyLeo?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-<p>Of course this is not the end and I&#8217;m going to improve this aircraft. I&#8217;m thinking about couple really awesome things, like glasses + camera on quadrocopter:</p>
-
-<p><img src="http://static.ddmcdn.com/gif/video-glasses-1.jpg" alt="" /></p>
-
-<p>or (good one in my case)</p>
-
-<p>NAZA controller with GPS module</p>
-
-<p><img src="http://s4e453e5a36d54.img.gostorego.com/802754/cdn/media/s4/e4/53/e5/a3/6d/54/catalog/product/cache/1/image/370x/9df78eab33525d08d6e5fb8d27136e95/d/j/djinaza.jpg" alt="" /></p>
-
-<p>ps: quadrocopter + kinect</p>
-
-<iframe width="640" height="360" src="http://www.youtube.com/embed/A52FqfOi0Ek?rel=0" frameborder="0" allowfullscreen></iframe>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-06T19:27:00-07:00" pubdate data-updated="true">Oct 6<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/diy/'>diy</a>, <a class='category' href='/blog/categories/hobby/'>hobby</a>, <a class='category' href='/blog/categories/quadrocopter/'>quadrocopter</a>
 
 
 </div>
