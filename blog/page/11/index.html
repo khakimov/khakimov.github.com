@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="I&#8217;ve already written about idea with blocker and today I really tired of this and in hour wrote the script which allow you to block facebook, &hellip;">
+	<meta name="description" content="Huh, long time no post there. I&#8217;ve been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,188 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/04/14/first-rails-project-thoughts/">First Rails Project: Thoughts</a></h1>
+	<div class="entry-content">
+		<p>Huh, long time no post there. I&#8217;ve been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants, drank some wine, beer, white russian and even sake. Whole week was disconnected and didn&#8217;t touch laptop (confess, only hackernews), so now I&#8217;m really ready back to the big fight. So, I came back from airport and in few hours finished my first small project on Rails.</p>
+
+<p><img src="http://distilleryimage6.s3.amazonaws.com/72f5c216810511e1a39b1231381b7ba1_7.jpg" alt="Santa Monica beach" /></p>
+
+<h2>idea</h2>
+
+<p>I just built the place where I can put my thoughts with timeline. Possibly I&#8217;ll add questions about any sphere of our lives, like <em>&#8220;What do you think about love?&#8221;</em> or <em>&#8220;What do you think about your age?&#8221;</em> and look at the progress with my thoughts through time. Everything changing in our world and my thoughts are not exception, so I want to look at the progress and how it is changing. Anyway, first version is <a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">here</a>:</p>
+
+<p><img src="http://pix.am/bJ5h.png" alt="" /></p>
+
+<h2>technology</h2>
+
+<p>I&#8217;ve used js library <a href="http://timeline.verite.co/">timeline</a> as a core and implement it to work with rails.</p>
+
+<blockquote><ul>
+<li>Full stack:
+
+<ul>
+<li>ruby on rails</li>
+<li><a href="https://github.com/plataformatec/devise">devise - Flexible authentication solution for Rails</a></li>
+<li><a href="http://timeline.verite.co/">timeline js library</a></li>
+<li>jquery</li>
+<li><a href="http://twitter.github.com/bootstrap/">twitter bootstrap</a></li>
+<li>heroku</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+
+<h2>bugs</h2>
+
+<p>Yea, a lot of bugs and roughness with ui, html, css and js. Currently my priority are just code the ruby code and practice with rails and not stuck with js/html/css/design. I&#8217;m always thinking about perfection and that was a reason heretofore why I gave up with many ideas and hobbies, I didn&#8217;t realize one small but very valuable thing - as a beginner you can&#8217;t do everything perfect. I always compared my code with some opensource project and it was always reason for melancholy, because I though that my code worst ever and I will never able to build something by myself. But the path of trial and error showed me the truth - just practice and focus on one thing.</p>
+
+<h2><a href="http://hollow-flower-2767.herokuapp.com/users/1/timelines#4">My thoughts timeline</a></h2>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-14T22:06:00-07:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/practice/'>practice</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/03/20/playing-with-hackernews/">Playing With HackerNews</a></h1>
+	<div class="entry-content">
+		<p>Since monday I started playing with RubyOnRails and very happy that I
+didn&#8217;t skip Ruby part as many beginers mistakenly do. I&#8217;m reading <a href="http://pragprog.com/book/rails4/agile-web-development-with-rails">Agile Web Development with Rails</a> (big thanks to <a href="http://ap.thinkeffect.com">Andrija</a>) now and still have a lot of questions, but
+today want to talk about other things.</p>
+
+<p>As you know many books and tutorials show boring examples like &#8220;Hello Word&#8221; and my inflamed brain alwayls is looking for opportunity. To build, to parse or hack something. Today when I was waiting my turkey sandwitch in Palo Alto Cafe I read comment where is an author is talking about hackernews karma, like how is awesome to have large karma. I also checked his submissions and realised he just posted random stuff from techcrunch/gizmodo/mashable/etc. So, why not to try post new on HN with ruby?</p>
+
+<p>I certainly do not intend to increase my karma with spam HN, but I was
+interested to do it and going to share just few things about the
+process.</p>
+
+<h2>How to get fnid? </h2>
+
+<p>To post something on HN you have to know fnid which generate everytime
+when you GET <a href="http://news.ycombinator.com/submit">http://news.ycombinator.com/submit</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;nokogiri&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;open-uri&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">fetch</span>
+</span><span class='line'>  <span class="n">submit_html</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;http://news.ycombinator.com/submit&#39;</span><span class="p">,</span> <span class="s2">&quot;Cookie&quot;</span> <span class="o">=&gt;</span>
+</span><span class='line'><span class="s1">&#39;user=check_yours_cookie_and_put_here&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
+</span><span class='line'>  <span class="n">doc</span> <span class="o">=</span> <span class="no">Nokogiri</span><span class="o">::</span><span class="no">HTML</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">submit_html</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">doc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//form/input&#39;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">][</span><span class="s1">&#39;value&#39;</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Posting</h2>
+
+<p>Method fetch returns fnid. Ok, now we are going to submit our news with
+method post:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;net/http&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">fnid</span> <span class="o">=</span> <span class="n">fetch</span> <span class="c1">#our fetch method</span>
+</span><span class='line'>  <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fnid&#39;</span> <span class="o">=&gt;</span> <span class="n">fnid</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span> <span class="o">=&gt;</span> <span class="n">url</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;http://news.ycombinator.com/r&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># the most interesting part. make headers with</span>
+</span><span class='line'>  <span class="c1"># Cookie and Referer, also you can add User-Agent</span>
+</span><span class='line'>  <span class="n">request</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">request</span><span class="o">.</span><span class="n">set_form_data</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">request</span><span class="o">[</span><span class="s2">&quot;Cookie&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;user=check_yours_cookie_and_put_here&#39;</span>
+</span><span class='line'>  <span class="n">request</span><span class="o">[</span><span class="s2">&quot;Referer&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;http://news.ycombinator.com/submit&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nice and simple, that&#8217;s why I fall in love with Ruby. Here is my
+sandwich arrived ;)</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-20T21:56:00-07:00" pubdate data-updated="true">Mar 20<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/hackernews/'>hackernews</a>, <a class='category' href='/blog/categories/hacking/'>hacking</a>, <a class='category' href='/blog/categories/http/'>http</a>, <a class='category' href='/blog/categories/nokogiri/'>nokogiri</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -608,7 +790,7 @@ Now it has only few features (and probably it is enough):</p>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+	<footer id="footer" class="inner">Copyright &copy; 2014
 
     khakimov
 
