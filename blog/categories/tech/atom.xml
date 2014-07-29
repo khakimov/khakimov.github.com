@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: tech | nameless]]></title>
+  <link href="http://khakimov.github.com/blog/categories/tech/atom.xml" rel="self"/>
+  <link href="http://khakimov.github.com/"/>
+  <updated>2014-07-29T00:10:22-07:00</updated>
+  <id>http://khakimov.github.com/</id>
+  <author>
+    <name><![CDATA[khakimov]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Шаги прогресса (19 Июля - 26 Июля)]]></title>
+    <link href="http://khakimov.github.com/blog/2014/07/28/tech-19-26-july-2014/"/>
+    <updated>2014-07-28T22:39:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2014/07/28/tech-19-26-july-2014</id>
+    <content type="html"><![CDATA[<p>Июль 19 - Июль 26, 2014</p>
+
+<ol>
+<li><p>SpaceX совершил успешную посадку первой ступени Falcon 9, тем самым подтвердив возвожность             последовательного вхождения из космоса на гиперзвуковой скорости, перезапуск главных двигателей    и плавной посадки на минимальной скорости.</p>
+
+<p><iframe width="560" height="315" src="http://khakimov.github.com//www.youtube.com/embed/CQnR5fhCXkQ" frameborder="0" allowfullscreen></iframe></p></li>
+<li><p>Новый прорыв с лазером получающийся при использовании одного искусственного атома для                генерирации и излучения частицы света, играющий важную роль в создании квантовых компьютеров,       который будут превосходить текущие суперкомпьютеры. Свет от лазера получают путем пропускания         электричества через искусственный атом (искусственный атом состоит из наноразмерных частей          сверхпроводника). Причина использования искусственного атома заключается в том, что теперь это         может быть частью электрической цепи на чипе, чего нельзя сделать с настоящим атомом. С этим        лазером электрическая энергия преобразуется в свет, что дает возможность передавать информацию       в/из квантового компьютера.</p>
+
+<p><a href="http://now.dartmouth.edu/2014/07/dancing-electrons-are-at-the-heart-of-a-laser-breakthrough/">News</a></p></li>
+<li><p>Kickstarter кампания от Cyberith Virtualizer позволяет пользователям свободно двигаться в виртуальном мире используя всенаправленную беговую дорожку (через оптические сенсоры на поверхности дорожки определяет каждое движение ног, а сенсоры в опорах позволяют определять вертикальное положение).</p>
+
+<p><iframe width="560" height="315" src="http://khakimov.github.com//www.youtube.com/embed/fbu8OUq1CUE" frameborder="0" allowfullscreen></iframe></p></li>
+<li><p>Ученым удалось преобразовать разряженный воздух в 'оптоволокно', которое может передавать и усиливать световые сигналы без каких-либо кабелей.</p>
+
+<p><img src="http://static.ddmcdn.com/gif/zap-it-with-lasers-opener-670.jpg" alt="" /></p>
+
+<p><a href="http://news.discovery.com/tech/gear-and-gadgets/optical-fiber-made-out-of-thin-air-140723.htm">News</a></p></li>
+<li><p>Исследователи разработали устройство позволяющее определять изменения указывающие на болезнь Альцгеймера за 15-20 лет до клинического диагноза. Прибор позволяет смотреть через сетчатку глаза (идентично тому, как это делают офтальмологи) и видеть изменения, которые позволяют диагностировать заболевание.</p>
+
+<p><a href="http://www.eurekalert.org/pub_releases/2014-07/cmc-son070814.php">News</a></p></li>
+<li><p>Исследователи из MIT показали процесс который используя влажность в воздухе может генерировать достаточно электричества для зарядки мобильного телефона или очистки воды.</p>
+
+<p><img src="http://wp.streetwise.co/wp-content/uploads//2014/07/Electric-Humidity.gif" alt="" /></p></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>
