@@ -4,7 +4,7 @@
   <title><![CDATA[nameless]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-07-29T00:09:57-07:00</updated>
+  <updated>2014-07-30T22:38:07-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -14,13 +14,59 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Science July 27, 2014]]></title>
+    <link href="http://khakimov.github.com/blog/2014/07/30/science-july-27/"/>
+    <updated>2014-07-30T22:27:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2014/07/30/science-july-27</id>
+    <content type="html"><![CDATA[<ol>
+<li><p>Ученые впервые смогли удалить ВИЧ вирус из ДНК человека. Результат обнадеживающий для одной       клетки, но вопрос о миллионах других зараженных остается открытым, как выбрать и излечить            остальные все (100%) зараженные, чтобы вирус остановился и не продолжал копировать себя?</p>
+
+<p><img src="http://images.gizmag.com/hero/hiv-virus-cu.jpg" alt="" /></p>
+
+<p><a href="http://www.the-scientist.com/?articles.view/articleNo/40531/title/Genome-Editing-Cuts-Out-HIV/">Genome Editing Cuts Out HIV</a></p></li>
+<li><p>Найденные при раскопках в Сибири останки нового вида и рода травоядного динозавра                     &#8220;Кулиндадромеус забайкальский&#8221; указывает на то, что перья, вероятно, существовали у общего           предка всех динозавров.</p>
+
+<p><img src="http://cs619631.vk.me/v619631842/12bf7/9U0CXcHiWnk.jpg" alt="" /></p>
+
+<p><a href="http://www.scientificamerican.com/article/most-dinosaurs-may-have-sported-birdlike-feathers">Most Dinosaurs May Have Sported Birdlike Feathers</a></p></li>
+<li><p>Стенфордский биолог предупредил о массов вымирании представителей мегафауны включая в себя          слонов, носорогов, полярных медведей и бесчисленное множество других видов по всему миру.            Крупные животные, как правило, имеют более низкий темп прироста и производят меньше потомства,       а их размер и количество мяса делает их легкой и более привлекательной добычей для охотников.</p>
+
+<p><img src="http://www.stihi.ru/pics/2012/10/04/5804.jpg" alt="" /></p>
+
+<p><a href="http://news.stanford.edu/news/2014/july/sixth-mass-extinction-072414.html">6th mass extinction event</a></p></li>
+<li><p>Теоретики предложили анализировать внеземные промышленные загрязнения для поисков внеземной      цивилизаций.</p>
+
+<p><img src="http://www.dvice.com/sites/dvice/files/styles/blog_post_media/public/jellybldgs11.jpg?itok=8Ksh4tuA" alt="" /></p>
+
+<p><a href="http://phys.org/news/2014-07-approach-extraterrestrial-intelligence-alien-polluters.html">Search for extraterrestrial intelligence</a></p></li>
+<li><p>Британские ученые научились определять рак через анализ крови.</p>
+
+<p><img src="http://www.doctortipster.com/wp-content/uploads/2012/07/Ovarian-Cancer-Blood-Test.jpg" alt="" /></p>
+
+<p><a href="http://www.telegraph.co.uk/health/10993401/British-scientists-develop-blood-test-that-could-detect-all-forms-of-cancer.html">blood test that could detect all forms of cancer</a></p></li>
+<li><p>Исследователи создали первый биологический уселитель, который для уселения биологических             сигналов, используя ДНК и безвредную E.coli (кишечная палочка) бактерию. Возможно использовать        при создании нового типа сенсоров для определения вредных токсинов или заболеваний в организме        до того, как они нанесут вред.</p>
+
+<p><img src="http://newscenter.lbl.gov/wp-content/uploads/sites/2/2011/11/E.coli-Th1.jpg" alt="" /></p>
+
+<p><a href="http://www3.imperial.ac.uk/newsandeventspggrp/imperialcollege/newssummary/news_24-7-2014-17-21-47">First ever biological amplifier created by Imperial scientists</a></p>
+
+<p><a href="http://nar.oxfordjournals.org/content/early/2014/07/15/nar.gku593">Study</a></p></li>
+<li><p>Только 8.2 процента человеческого генома несет в себе функционально значение, остальное, по      заявлению ученых из Оксфордского университета, является пережитками эволюции или вообще не           несет никаких функций.</p>
+
+<p><img src="http://images.nationalgeographic.com/wpf/media-live/photos/000/178/cache/human-genome-ten-years-in_17889_600x450.jpg" alt="" /></p>
+
+<p><a href="http://www.redorbit.com/news/health/1113198987/human-genome-functionality-study-072514/">Less Than 10 Percent Of Human DNA Actually Has A Function</a></p></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Шаги прогресса (19 Июля - 26 Июля)]]></title>
     <link href="http://khakimov.github.com/blog/2014/07/28/tech-19-26-july-2014/"/>
     <updated>2014-07-28T22:39:00-07:00</updated>
     <id>http://khakimov.github.com/blog/2014/07/28/tech-19-26-july-2014</id>
-    <content type="html"><![CDATA[<p>Июль 19 - Июль 26, 2014</p>
-
-<ol>
+    <content type="html"><![CDATA[<ol>
 <li><p>SpaceX совершил успешную посадку первой ступени Falcon 9, тем самым подтвердив возвожность             последовательного вхождения из космоса на гиперзвуковой скорости, перезапуск главных двигателей    и плавной посадки на минимальной скорости.</p>
 
 <p><iframe width="560" height="315" src="http://khakimov.github.com//www.youtube.com/embed/CQnR5fhCXkQ" frameborder="0" allowfullscreen></iframe></p></li>
@@ -597,31 +643,6 @@ I teach classes because I am a professor.</p>
 <p><strong>Subjective</strong> - is something that exists depending on the consciosness and beliefs of a single individual and it will disappear or change if that particular individual changes his or her beliefs. Exmaple: many children believe in the existence of imaginery friend that only the child himself can see and can talk to. And usually as a child grows up, he stops believing in this imaginary friend.</p>
 
 <p><strong>Inter-subjective</strong> - is something that exists within the communication network that link the subjective consciosness of many individuals. If a single individual changes his/her beliefs or even dies, it is of little importance. However, if most individuals in the network die or change their beliefs, then the inter-subjective phenomenon will mutate and change or completely disappear. Example: Gods, nations, human rights, money, corporations and so on.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[modernart] Intensity and the Ordinary [humankind] Building Pyramids]]></title>
-    <link href="http://khakimov.github.com/blog/2013/09/17/september-17-tuesday/"/>
-    <updated>2013-09-17T00:00:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2013/09/17/september-17-tuesday</id>
-    <content type="html"><![CDATA[<p>Freud established his credibility as an enlightenment thinker, he goes on to talk about why the only thing you can really look at scienitifcally is the pleasure principle. <strong>Three sources of suffering - own body, the external world and other people</strong>.</p>
-
-<p>He says, so many other writers, whether they&#8217;re religious writers or philosophical writers or politicals, social commentators, what they really want to do is instead of facing what really causes us sorrow, and pain, they want actually to give us consolation (утешение). <strong>Consolation</strong> is not what we should pursue, it is awful thing, because it disguises where our suffering comes from and makes it harder for us to deal with these <strong>sources of suffering</strong></p>
-
-<blockquote><p>Life, as we find it, is too hard for us; it brings us too many pains, disappointments and impossible tasks. In order to bear it we cannot dispense with palliative (паллиативный, смягчающий) measures. Civilization and Its Discontents</p></blockquote>
-
-<p>It means we come up with some kind of drugs, so we don&#8217;t have to deal with life as it really is.</p>
-
-<blockquote><p>&#8230; we cannot fail to be struck by the similarity between the process of civiliation and the libidinal (sexual desire) development of the individual. &#8230; it is impossible to overlook the extent to which civilization is built upon a renunciation (formal rejection of something) of instinct, how much it presupposes precisely the non-satisfaction&#8230; of powerful instincts.</p></blockquote>
-
-<p>Every time you have people say, well, love your neighbor, be to strangers, all that, you always find some scapegoat (a person who is blamed for the wrongdoing, mistakes козел отпущения) that you can take your rage out on. Every time you ask people to be sweet and kind as a rule, they will find something to attack.</p>
-
-<blockquote><p>In this respect the Jewish people, scattered everywhere, have rendered the most useful service to the civiliations of the countries that have been their hosts; but unfortunately all the massacres of the Jews in the Middle Ages did not suffice to make that period more peaceful and secure for their Christian fellows. Civilization and Its Discontents.</p></blockquote>
-
-<p>Not only do we find scapegoats out there that we can hate and attack and turn our aggression inward as a result of our guilt. As we become more civilized we have more and more occasions to feel we&#8217;re not living up to our ideals, <strong>become twisted and wracked by guilt, because we&#8217;re not living up to the expectations we&#8217;ve created for ourselves. We&#8217;re not studying enough, we&#8217;re not working hard enought, we&#8217;re not making enought money.</strong></p>
-
-<hr />
 ]]></content>
   </entry>
   
