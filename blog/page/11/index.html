@@ -7,7 +7,7 @@
 	<meta name="author" content="khakimov">
 
 	
-	<meta name="description" content="Welcome to the world of extremely high scalability, performance and stability for the most demanding production environments. Today I&#8217;m going &hellip;">
+	<meta name="description" content="When I came back at home yesterday and tested the code on real data I realized that wasn&#8217;t work well. 1000 urls was ok, but 1_000_000 wasn&# &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -70,6 +70,339 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2012/04/21/eventmachine-and-web-crawler/">EventMachine and Web Crawler</a></h1>
+	<div class="entry-content">
+		<p>When I came back at home yesterday and tested the code on real data I realized that wasn&#8217;t work well. 1000 urls was ok, but 1_000_000 wasn&#8217;t, EM didn&#8217;t callback anything.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;1.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">gets</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">strip</span>
+</span><span class='line'>    <span class="c1">#urls &lt;&lt; &quot;http://127.0.0.1&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">urls</span><span class="o">.</span><span class="n">size</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">DumbHttpClient</span>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">post_init</span>
+</span><span class='line'>     <span class="n">send_data</span> <span class="s2">&quot;GET / HTTP/1.1</span><span class="se">\r\n</span><span class="s2">Host: _</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span>
+</span><span class='line'>     <span class="vi">@data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>     <span class="vi">@parsed</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">receive_data</span> <span class="n">data</span>
+</span><span class='line'>     <span class="vi">@data</span> <span class="o">&lt;&lt;</span> <span class="n">data</span>
+</span><span class='line'>     <span class="k">if</span> <span class="o">!</span><span class="vi">@parsed</span> <span class="ow">and</span> <span class="vi">@data</span> <span class="o">=~</span> <span class="sr">/[\n][\r]*[\n]/m</span>
+</span><span class='line'>       <span class="vi">@parsed</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>       <span class="nb">p</span> <span class="n">data</span>
+</span><span class='line'>       <span class="n">close_connection</span>
+</span><span class='line'>     <span class="k">end</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">unbind</span>
+</span><span class='line'>     <span class="nb">puts</span> <span class="s2">&quot;A connection has terminated&quot;</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'> <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'> <span class="no">EventMachine</span><span class="o">::</span><span class="n">run</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">urls</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="o">|</span>
+</span><span class='line'>     <span class="k">begin</span>
+</span><span class='line'>       <span class="no">EventMachine</span><span class="o">::</span><span class="n">connect</span> <span class="n">url</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="no">DumbHttpClient</span>
+</span><span class='line'>     <span class="k">rescue</span> <span class="no">EventMachine</span><span class="o">::</span><span class="no">ConnectionError</span>
+</span><span class='line'>       <span class="nb">p</span> <span class="s2">&quot;Something wrong with </span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>     <span class="k">end</span>
+</span><span class='line'>     <span class="nb">p</span> <span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span>
+</span><span class='line'>   <span class="k">end</span>
+</span><span class='line'> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'> <span class="nb">puts</span> <span class="s2">&quot;The event loop has ended&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This simple example which just send/receive data from web. It works well only if you try to grab ~1000 websites. Before gets result its going through <em>.each</em> and only after finish this loop starts sending data and receive_data. Version with BATCH_SIZE that I did yesterday pretend to create queue and that&#8217;s why it works with 1_000_000 urls, but after first hundred requests speed goes down.</p>
+
+<p>Then I&#8217;ve read about <a href="http://rdoc.info/github/eventmachine/eventmachine/master/EventMachine/Iterator">EM::Iterator</a> and did this example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;eventmachine&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;em-http&#39;</span>
+</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;1.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">gets</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">strip</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="no">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">kqueue</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="no">EventMachine</span><span class="o">.</span><span class="n">run</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">pending</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="no">EM</span><span class="o">.</span><span class="n">add_periodic_timer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">batch</span><span class="p">,</span> <span class="n">urls</span> <span class="o">=</span> <span class="n">urls</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="no">BATCH_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">]</span><span class="p">,</span> <span class="p">(</span><span class="n">urls</span><span class="o">[</span><span class="no">BATCH_SIZE</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="o">||</span> <span class="o">[]</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">EM</span><span class="o">::</span><span class="no">Iterator</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="p">,</span><span class="n">iter</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">http</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">HttpRequest</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="ss">:connect_timeout</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span> <span class="ss">:inactivity_timeout</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">get</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2"> - </span><span class="si">#{</span><span class="n">http</span><span class="o">.</span><span class="n">response_header</span><span class="o">[</span><span class="s1">&#39;SERVER&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">iter</span><span class="o">.</span><span class="n">next</span>
+</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">pending</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">urls</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="se">\n</span><span class="s2"> - </span><span class="si">#{</span><span class="n">http</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>        <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">iter</span><span class="o">.</span><span class="n">next</span>
+</span><span class='line'>        <span class="no">EM</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">pending</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">urls</span><span class="o">.</span><span class="n">empty?</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="n">pending</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="n">iter</span><span class="o">.</span><span class="n">next</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">pending</span><span class="si">}</span><span class="s2"> pending. </span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures&quot;</span>
+</span><span class='line'>    <span class="nb">p</span> <span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Works, but speed not as I expected. Network used only 200kb/s and 1mbit once at the pick. So, that means parallels works not as we want, we want to use network as much as possible.</p>
+
+<p>Then I&#8217;ve read about <a href="https://github.com/igrigorik/em-synchrony">em-synchrony</a> and did this example of crawler (ruby 1.9.3 and em-synchrony):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;em-synchrony&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;em-synchrony/em-http&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">urls</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;10k.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">gets</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">urls</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">strip</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="nb">p</span> <span class="n">urls</span><span class="o">.</span><span class="n">size</span>
+</span><span class='line'><span class="n">t1</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'><span class="n">successes</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">failures</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="no">EM</span><span class="o">.</span><span class="n">synchrony</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">concurrency</span> <span class="o">=</span> <span class="mi">200</span>
+</span><span class='line'>  <span class="n">pending</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="c1"># iterator will execute async blocks until completion, .each, .inject also work!</span>
+</span><span class='line'>  <span class="n">results</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">Synchrony</span><span class="o">::</span><span class="no">Iterator</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">concurrency</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="p">,</span> <span class="n">iter</span><span class="o">|</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1"># fire async requests, on completion advance the iterator</span>
+</span><span class='line'>      <span class="n">http</span> <span class="o">=</span> <span class="no">EventMachine</span><span class="o">::</span><span class="no">HttpRequest</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">aget</span>
+</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">callback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">iter</span><span class="o">.</span><span class="n">return</span><span class="p">(</span><span class="n">http</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">successes</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures, connection </span><span class="si">#{</span><span class="no">EM</span><span class="o">::</span><span class="n">connection_count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="n">http</span><span class="o">.</span><span class="n">errback</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">iter</span><span class="o">.</span><span class="n">return</span><span class="p">(</span><span class="n">http</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">failures</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">pending</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">p</span> <span class="n">results</span> <span class="c1"># all completed requests</span>
+</span><span class='line'>  <span class="no">EventMachine</span><span class="o">.</span><span class="n">stop</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">t2</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">successes</span><span class="si">}</span><span class="s2"> successful, </span><span class="si">#{</span><span class="n">failures</span><span class="si">}</span><span class="s2"> failures in </span><span class="si">#{</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="si">}</span><span class="s2"> s&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since I&#8217;ve done a lot of examples I&#8217;ve learned a good lesson - never block the main EM.run {}:</p>
+
+<ul>
+<li>no sleep(1)</li>
+<li>no long loops like I did 10_000.each</li>
+<li>no blocking I/O</li>
+</ul>
+
+
+<p>concurrency = 1000</p>
+
+<p>935 successful, 65 failures in 186.044609 s</p>
+
+<p>concurrency = 50</p>
+
+<p>957 successful, 43 failures in 67.982429 s</p>
+
+<p>concurrency = 300</p>
+
+<p>956 successful, 44 failures in 26.822961 s</p>
+
+<p>In the next post I&#8217;m going to try EM::Deferrable and will see how it will work. Still don&#8217;t have good solution, so, keep digging. I just wanna get the shit out of my internet connection, like using bandwidth as can as possible ;)</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-21T14:47:00-07:00" pubdate data-updated="true">Apr 21<span>st</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/concurrency/'>concurrency</a>, <a class='category' href='/blog/categories/crawl/'>crawl</a>, <a class='category' href='/blog/categories/eventmachine/'>eventmachine</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -1051,61 +1384,12 @@ with new.</p>
 	
 </div></article>
 
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/03/04/cli-alternative-to-delicious-for-saving-links/">CLI Alternative to Delicious for Saving Links</a></h1>
-	<div class="entry-content">
-		<p>Month ago my friend asked me if I want to learn to code
-he will help me to <a href="http://artemyankov.com/post/7112169965/essentials-to-learn-ruby-from-zero-to-advanced">learn Ruby from scratch</a>.
-That was good idea and now I&#8217;m going through the list and today finished Elegient Ruby by Russ Olsen
-what was really good book. As you know nothing better than practice and
-I&#8217;ve started doing some simple stuff and to motivate myself I&#8217;m working
-on some interesting small project to automation and simplification my
-daily tasks and few days ago I did Droplicious.</p>
-
-<p><img src="https://a248.e.akamai.net/assets.github.com/img/e8e0ee1f3c0182f3081890076752ae1ebd02e97d/687474703a2f2f7069782e616d2f7a3279542e706e67" alt="bookmarks in you
-terminal" /></p>
-
-<p><a href="https://github.com/pupsor/droplicious">Droplicious</a> is Delicious (bookmark app) at you terminal with syncronization function between your&#8217;s boxes via dropbox. This is my first project with Ruby, so, code looks pretty ugly.
-Now it has only few features (and probably it is enough):</p>
-
-<blockquote><ul>
-<li>add link with desc and tags</li>
-<li>search by tag</li>
-<li>open link in current browser</li>
-<li>dropbox does sync job ;)</li>
-</ul>
-</blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-03-04T22:29:00-08:00" pubdate data-updated="true">Mar 4<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-</div>
-	
-</div></article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/10/" class="prev">Prev</a>
     
+    
+        <a href="/blog/page/12/" class="next">Next</a>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>

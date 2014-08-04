@@ -4,7 +4,7 @@
   <title><![CDATA[nameless]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-07-30T22:38:07-07:00</updated>
+  <updated>2014-08-03T17:38:10-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,37 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Science August 3, 2014]]></title>
+    <link href="http://khakimov.github.com/blog/2014/08/03/science-august-3/"/>
+    <updated>2014-08-03T17:36:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2014/08/03/science-august-3</id>
+    <content type="html"><![CDATA[<ol>
+<li><p>Tesla Motors подписала договор с Panasonic о строительстве               гигафабрики стоимость 5 миллиардов долларов, что позволит сократить   стоимость на 30% и производить больше аккамуляторов, чем все            фабрики (производящие литий-ионные аккамуляторы) вместе взятые.</p></li>
+<li><p>Исследователи создали наночастицы (диаметр 15 нанометров), которые       могут доставлять лекарство или другие молекулы в заданные живые      клетки.</p>
+
+<p><iframe width="560" height="315" src="http://khakimov.github.com//www.youtube.com/embed/X5EzUyDrcjo" frameborder="0" allowfullscreen></iframe></p></li>
+<li><p>Hubble телескоп обнаружил самую отделенную линзированную (lensing?)    галактику. Насколько я понимаю, гравитационной линзой называют            массивные тела или системы тел, искревляющие своим гравитационным      полем направление распространения электромагнитного излучения.             Приблизительный вес в 180 миллиардов раз больше, чем наше солнце.        Свет от новой галактики был в пути 9.6 миллиардов лет, чтобы          достигнуть нашей планеты.</p>
+
+<p><img src="http://www.redorbit.com/media/uploads/2014/08/farthest-cosmic-lens-617x416.jpg" alt="" /></p></li>
+<li><p>Вакцина против малярии предохраняет детей от заражения на 18 месяцев   . Еще один шаг ближе к борьбе с малярией у детей в Африке, но             вопрос о цене остается открытым.</p>
+
+<p><a href="http://www.techtimes.com/articles/11632/20140801/malaria-vaccine-rts-s-as01-protects-children-for-18-months-when-will-it-be-ready.htm"></a></p></li>
+<li><p>Инженеры разработали прототип таблеточного экрана, который              компенсирует проблемы со зрением за счет добавления тонкого             микроточечного фильтра повышающий резкость изображения.</p>
+
+<p><img src="http://news.bbcimg.co.uk/media/images/76625000/jpg/_76625878_eyeglassdisplay-macaroons670.jpg" alt="" /></p>
+
+<p><a href="http://www.bbc.com/news/science-environment-28562432"></a></p></li>
+<li><p>Новый источник стволовых клеток обнаружен в зубах.</p>
+
+<p><img src="http://i.kinja-img.com/gawker-media/image/upload/s--tRUdUMlV--/c_fit,fl_progressive,q_80,w_636/aawpvrec67dbip89h7yo.jpg" alt="" /></p>
+
+<p><a href="http://gizmodo.com/there-are-cells-inside-teeth-that-can-turn-back-into-st-1614066776"></a></p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Science July 27, 2014]]></title>
@@ -29,7 +60,7 @@
 <p><img src="http://cs619631.vk.me/v619631842/12bf7/9U0CXcHiWnk.jpg" alt="" /></p>
 
 <p><a href="http://www.scientificamerican.com/article/most-dinosaurs-may-have-sported-birdlike-feathers">Most Dinosaurs May Have Sported Birdlike Feathers</a></p></li>
-<li><p>Стенфордский биолог предупредил о массов вымирании представителей мегафауны включая в себя          слонов, носорогов, полярных медведей и бесчисленное множество других видов по всему миру.            Крупные животные, как правило, имеют более низкий темп прироста и производят меньше потомства,       а их размер и количество мяса делает их легкой и более привлекательной добычей для охотников.</p>
+<li><p>Стенфордский биолог предупредил о массов вымирании представителей мегафауны включающих в себя        слонов, носорогов, полярных медведей и бесчисленное множество других видов по всему миру.            Крупные животные, как правило, имеют более низкий темп прироста и производят меньше потомства,       а их размер и количество мяса делает их легкой и более привлекательной добычей для охотников.</p>
 
 <p><img src="http://www.stihi.ru/pics/2012/10/04/5804.jpg" alt="" /></p>
 
@@ -44,7 +75,7 @@
 <p><img src="http://www.doctortipster.com/wp-content/uploads/2012/07/Ovarian-Cancer-Blood-Test.jpg" alt="" /></p>
 
 <p><a href="http://www.telegraph.co.uk/health/10993401/British-scientists-develop-blood-test-that-could-detect-all-forms-of-cancer.html">blood test that could detect all forms of cancer</a></p></li>
-<li><p>Исследователи создали первый биологический уселитель, который для уселения биологических             сигналов, используя ДНК и безвредную E.coli (кишечная палочка) бактерию. Возможно использовать        при создании нового типа сенсоров для определения вредных токсинов или заболеваний в организме        до того, как они нанесут вред.</p>
+<li><p>Исследователи создали первый биологический уселитель, который для уселения биологических             сигналов, использует ДНК и безвредную E.coli (кишечная палочка) бактерию. Возможно использовать  при создании нового типа сенсоров для определения вредных токсинов или заболеваний в организме        до того, как они нанесут вред.</p>
 
 <p><img src="http://newscenter.lbl.gov/wp-content/uploads/sites/2/2011/11/E.coli-Th1.jpg" alt="" /></p>
 
@@ -596,53 +627,6 @@ I teach classes because I am a professor.</p>
 
 <p> .
 . . (2) I am a professor (from 1)</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[modernart] Intensity and the Ordinary [humankind] Building Pyramids. Part 2]]></title>
-    <link href="http://khakimov.github.com/blog/2013/09/18/september-18-wednesday/"/>
-    <updated>2013-09-18T00:00:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2013/09/18/september-18-wednesday</id>
-    <content type="html"><![CDATA[<p>For Freud and Civilization&#8217;s of discontents <strong>guilt is a modern problem</strong>. As we have modernization, as we have a more and more sophisticated society <em>we have a greater and greater chance of the explosion of unsatisfied</em>.</p>
-
-<p>Freud is no friend of anarchism or hypermorality, no friend of socialism, because he thinks all of these are introducing new ideals that will be very difficult to live by.</p>
-
-<blockquote><p>Thus I have not the courage to rise up before my fellow-men as a prophet, and I bow to their reproach that I can offer them no consolation: for at bottom that is what they are demanding - the wildest revolutionaries no less passionately than the most virtuous believers. Civilization and Its Discontents</p></blockquote>
-
-<p>Freud wants to escape the pursuit of meaning through ideals. He doesn&#8217;t want us to strive to live on a plain that is divorced from our animal natures, divorced from instinct. He doesn&#8217;t want us to try to find a mode of consolation that obscures who we are. Because if we obscure who we are, then we create another source of suffering.</p>
-
-<p><em>There is no perfect life for Freud, because there&#8217;s no one good way of living. But we can figure out how to make ourselves suffer less and that would be a significant achievement.</em> All our desires are full of conflict.</p>
-
-<hr />
-
-<h2>Building Pyramids</h2>
-
-<p>Armies, police forces, courts and prisons are ceaselessly at work forcing people to act in accordance with the imagined order. A single priest often does the work of 100 soldiers far more cheaply and effectively. The priest convinces you to really believe this story, and then you don&#8217;t need all the soldiers and police forces to keep you in order. And this was the key for really creating stable social orders.</p>
-
-<p><em>How exactly do you cause people to really believe in an imagined order, such as Christianity, Democracy or Capitalism?</em></p>
-
-<p> Three main factors that prevent people from realizing that the order which organizes their lives and their society exists only in the imagination. We try to link it with the actual material reality which surrounds us.</p>
-
-<p> Many people believe that every human being is an individual whose worth, whose true value does not depent on his or her position in the social hierarchy and does not depend on what other people think about you. The main idea of individualism is that each one os us, have within ourselves some kind of brillian ray of light that gives value and meaning to our lives.</p>
-
-<p>The imagined order also shapes our deepest desires and wishes. Most people do not wish to accept the fact that the order governing their lives is imaginary, because it&#8217;s the imginary order that control and shapes the most fundamental wishes of the people.</p>
-
-<p><strong>Example:</strong> Many people today dream about going on vacation to some other country. But there is nothing natural or obvious about this desire. People today spend a great deal of time and effort and money on vacation abroad, because they have programmed by the main stories of their societies to want such things. <strong>People today are true believers in the stories of what scholars call the <em>romantic consumerism</em>.</strong></p>
-
-<p><strong>Romantic consumerism</strong> is one of the most powerful stories today in the world, is a mesh, is a combination between two of the dominant late modern ideologies: <em>romanticism</em> and <em>consumerism</em>.</p>
-
-<p><strong>Romanticism</strong> tells us that in order to make the most of your life, of your human potential, you must have as many different experiences as you can. You must open yourself to a wide spectrum of emotions. You must sample various kinds of relationships. You must try all kinds of different foods. <strong>The best way of doing it is to break free from your daily routine, leave behind your familiar neighborhood and city, and go travel in distant land.</strong></p>
-
-<p><strong>Consumerism</strong> tells us that in order to be happy - you must consume as many products and sevices as possible. If you feel what something is missing in your life, then you probably need to buy a new product, like a new car or new clothe. Or you need to buy some kind of service, yoga class or psychologie retreat, but <strong>you need to buy something to be really happy</strong>.</p>
-
-<p>Differenece between realities objective, subjective and inter-subjective.</p>
-
-<p><strong>Objective</strong> - something that exists independently of human consciousness and of what human believe and invent and tell one another. Example: radio activity - is not a story that people invented and tell one another, existed and influenced people long before anybody knew about it.</p>
-
-<p><strong>Subjective</strong> - is something that exists depending on the consciosness and beliefs of a single individual and it will disappear or change if that particular individual changes his or her beliefs. Exmaple: many children believe in the existence of imaginery friend that only the child himself can see and can talk to. And usually as a child grows up, he stops believing in this imaginary friend.</p>
-
-<p><strong>Inter-subjective</strong> - is something that exists within the communication network that link the subjective consciosness of many individuals. If a single individual changes his/her beliefs or even dies, it is of little importance. However, if most individuals in the network die or change their beliefs, then the inter-subjective phenomenon will mutate and change or completely disappear. Example: Gods, nations, human rights, money, corporations and so on.</p>
 ]]></content>
   </entry>
   
