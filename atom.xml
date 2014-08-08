@@ -4,7 +4,7 @@
   <title><![CDATA[nameless]]></title>
   <link href="http://khakimov.github.com/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-08-03T17:38:10-07:00</updated>
+  <updated>2014-08-08T14:41:24-07:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -12,6 +12,30 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Science August 8th, 2014]]></title>
+    <link href="http://khakimov.github.com/blog/2014/08/08/science-august-8th/"/>
+    <updated>2014-08-08T14:38:00-07:00</updated>
+    <id>http://khakimov.github.com/blog/2014/08/08/science-august-8th</id>
+    <content type="html"><![CDATA[<ol>
+<li><p>Новое исследование показало, что транскраниальная магнитная стимуляция (неинвазивно       стимуляция коры головного мозга при помощи коротких магнитных импульсов) может изменять     организацию мозга, что в свою очередь может помочь в борьбе с депрессией, эпилепсией и       звон в ушах (tinnitus).</p></li>
+<li><p>Колоссальное исследование показало, что генетически модифицированная мышь с              отсутствующим протеином TRAP-1 проживает дольше и в тоже время наблюдается значительно        уменьшение болезней связанных с возрастом, такие как дегенерация тканей и избыток веса.</p>
+
+<p><a href="http://www.kurzweilai.net/rewired-mice-show-signs-of-longer-lives-with-fewer-age-related-illnesses">&#8220;source&#8221;</a></p></li>
+<li><p>Инженеры разработали технологию под названием &#8220;Wi-Fi обратного рассеивания&#8221;, которая        используя присутствующие окружающие сигналы как источник энергии для безбатарейных            устройств.</p>
+
+<p><a href="http://www.computerworld.com/s/article/9250171/Researchers_promote_battery_free_Wi_Fi_technology">&#8220;source&#8221;</a></p></li>
+<li><p>IBM объявило о радикально новой архитектуре чипов, которые могут эмулировать структуры      головного мозга и уже достигли эмуляции 1 миллиона нейронов и более 256 миллионов          программируемых синапсисов.</p>
+
+<p><a href="http://www.kurzweilai.net/ibm-launches-functioning-brain-inspired-chip">&#8220;source&#8221;</a></p></li>
+<li><p>Исследовадетил из MIT, Adobe и Microsoft смогли реконструировать аудио разговор просто        снимая на видео и анализируя малейшие вибрации на объектах (например снимая на видео         пакет с чипсами находящийся в 5 метрах за звуконепроницаемым стеклом).</p>
+
+<p><a href="http://time.com/3080126/mit-potato-chip-bag-spying/">&#8220;source&#8221;</a></p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Science August 3, 2014]]></title>
@@ -579,54 +603,6 @@ Guarding Term = G
 Discounting Term = D
 Positive Evaluative Term = E+
 Negative Evaluative Term = E-</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[humankind] Building Pyramids. Part 3 [thinkagain] Standard Form]]></title>
-    <link href="http://khakimov.github.com/blog/2013/09/19/september-19-thursday/"/>
-    <updated>2013-09-19T00:00:00-07:00</updated>
-    <id>http://khakimov.github.com/blog/2013/09/19/september-19-thursday</id>
-    <content type="html"><![CDATA[<p>Food alone is not enough, you also need an imagined order, but we need one more thing - technique for storing and processing huge amounts of information. After Agricultural Revolution as human societies began to grow larger and larger, who things happened.</p>
-
-<p>First, the amounts of necessary information grew (run village with 5000 people versus band with 50). Second, if you really want to run a big town or kingdom, you need to store and process not only larger amounts of information but also a completely new kinds of infromation, for which the average human brain is ill-adopted - <strong>monotonous mathematical data (numbers)</strong>. Mathematical data is vital (taxes, debt, fines, credit).</p>
-
-<p>Writing is a method for storing and processing information and by using not our neurons in the brain, but by using material signs of all kinds and shapes. Writing was invented not in order to write poetry or philosophy with history because this could be done withour writing. The purpose was to store and process mathematical data for which the Sumerians invented the first script, the first system of writing.</p>
-
-<hr />
-
-<h2>[thinkagain] Standard Form</h2>
-
-<p>Because I am a professor, I teach classes.
-I teach classes because I am a professor.</p>
-
-<p>vs</p>
-
-<p>I teach classes, so I am a professor.</p>
-
-<p>(1) Premise
-(2) Premise</p>
-
-<hr />
-
-<p> .
-. . (3) Conclusion (from 1-2)</p>
-
-<p><strong>Example:</strong></p>
-
-<p>(1) I am a professor</p>
-
-<hr />
-
-<p> .
-. . (2) I teach classes (from 1)</p>
-
-<p>(1) I teach classes</p>
-
-<hr />
-
-<p> .
-. . (2) I am a professor (from 1)</p>
 ]]></content>
   </entry>
   
