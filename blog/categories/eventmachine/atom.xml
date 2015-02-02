@@ -4,7 +4,7 @@
   <title><![CDATA[Category: eventmachine | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/eventmachine/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[EventMachine and WebSockets]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/30/eventmachine-and-websockets/"/>
-    <updated>2012-04-30T18:46:00-07:00</updated>
+    <updated>2012-04-30T18:46:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/30/eventmachine-and-websockets</id>
     <content type="html"><![CDATA[<p>Few days couldn't use mt keyboard because fell of my bike and hurt my arms. Still using only one hand and that's enough to start doing some epic code ;) Today I'm going to start exploring world of websockets when you can send data from server to client's browser. Two things required - eventmachine as usual and em-websocket (<em>gem install em-websocket</em>)</p>
 
@@ -366,7 +366,7 @@ p "Total #{total_connection}, #{successes} successful, #{failures} failures in #
   <entry>
     <title type="html"><![CDATA[EventMachine. Day 4]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/24/eventmachine-day-4/"/>
-    <updated>2012-04-24T10:44:00-07:00</updated>
+    <updated>2012-04-24T10:44:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/24/eventmachine-day-4</id>
     <content type="html"><![CDATA[<p>I'm at MiniService for regular routine, drinking coffee and reading this article <a href="http://ninjasandrobots.com/you-need-some-experience">I have no idea what I'm doing</a> and after I read it the only one I wanna say <em>I'll figure this out. And you will too =)</em>. Let's start!</p>
 
@@ -466,7 +466,7 @@ t2 = Time.now</p>
   <entry>
     <title type="html"><![CDATA[EventMachine. Day 3]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/23/eventmachine-day-3/"/>
-    <updated>2012-04-23T12:41:00-07:00</updated>
+    <updated>2012-04-23T12:41:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/23/eventmachine-day-3</id>
     <content type="html"><![CDATA[<p>Just bought large coffee from Coupa cafe and ready for the next fight. Today I read few article and checked few github repositories with eventmachine examples.</p>
 
@@ -661,7 +661,7 @@ ruby client.rb</p>
   <entry>
     <title type="html"><![CDATA[EventMachine and web crawler]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/21/eventmachine-and-web-crawler/"/>
-    <updated>2012-04-21T14:47:00-07:00</updated>
+    <updated>2012-04-21T14:47:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/21/eventmachine-and-web-crawler</id>
     <content type="html"><![CDATA[<p>When I came back at home yesterday and tested the code on real data I realized that wasn't work well. 1000 urls was ok, but 1_000_000 wasn't, EM didn't callback anything.</p>
 
@@ -864,7 +864,7 @@ t2 = Time.now</p>
   <entry>
     <title type="html"><![CDATA[Ruby with EventMachine and JRuby with real threads: Part I]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads/"/>
-    <updated>2012-04-19T12:53:00-07:00</updated>
+    <updated>2012-04-19T12:53:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads</id>
     <content type="html"><![CDATA[<p>Welcome to the world of extremely high scalability, performance and stability for the most demanding production environments. Today I'm going to learn and describe a little bit about EventMachine that is a high perfomance implementation of the <a href="http://en.wikipedia.org/wiki/Reactor_pattern">Reactor Pattern</a>.</p>
 

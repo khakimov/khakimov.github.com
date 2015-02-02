@@ -4,7 +4,7 @@
   <title><![CDATA[Category: offsec | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/offsec/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Offensive Security Certified Professional]]></title>
     <link href="http://khakimov.github.com/blog/2013/01/06/offensive-security-certified-professional/"/>
-    <updated>2013-01-06T15:34:00-08:00</updated>
+    <updated>2013-01-06T15:34:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2013/01/06/offensive-security-certified-professional</id>
     <content type="html"><![CDATA[<p> I'm actively hacking away in a lab environment, preparing for the Offensive Security Certified Professional (OSCP) exam.</p>
 

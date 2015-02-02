@@ -4,7 +4,7 @@
   <title><![CDATA[Category: http | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/http/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Playing with HackerNews]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/20/playing-with-hackernews/"/>
-    <updated>2012-03-20T21:56:00-07:00</updated>
+    <updated>2012-03-20T21:56:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/20/playing-with-hackernews</id>
     <content type="html"><![CDATA[<p>Since monday I started playing with RubyOnRails and very happy that I
 didn't skip Ruby part as many beginers mistakenly do. I'm reading <a href="http://pragprog.com/book/rails4/agile-web-development-with-rails">Agile Web Development with Rails</a> (big thanks to <a href="http://ap.thinkeffect.com">Andrija</a>) now and still have a lot of questions, but

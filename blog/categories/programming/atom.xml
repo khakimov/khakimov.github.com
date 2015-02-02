@@ -4,7 +4,7 @@
   <title><![CDATA[Category: programming | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/programming/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Apple script and Skype]]></title>
     <link href="http://khakimov.github.com/blog/2012/08/13/apple-script-and-skype/"/>
-    <updated>2012-08-13T17:02:00-07:00</updated>
+    <updated>2012-08-13T17:02:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/08/13/apple-script-and-skype</id>
     <content type="html"><![CDATA[<p>Spent an hour to figure out how applescript works and wrote some epicly awesome tool what helps to kill anybody phone just doing crash pool calls repeatedly every N sec.</p>
 
@@ -47,7 +47,7 @@ set callAttemptsCounter to 1</p>
   <entry>
     <title type="html"><![CDATA[C tricks]]></title>
     <link href="http://khakimov.github.com/blog/2012/08/01/c-tricks/"/>
-    <updated>2012-08-01T18:25:00-07:00</updated>
+    <updated>2012-08-01T18:25:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/08/01/c-tricks</id>
     <content type="html"><![CDATA[<p>This C code shows me a big sign <strong>"You don't know C!"</strong> =) Trying to figure out how it works. Any idea?</p>
 
@@ -177,7 +177,7 @@ _main:
   <entry>
     <title type="html"><![CDATA[C Pointers The Hard Way]]></title>
     <link href="http://khakimov.github.com/blog/2012/07/14/c-pointers-the-hard-way/"/>
-    <updated>2012-07-14T12:57:00-07:00</updated>
+    <updated>2012-07-14T12:57:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/07/14/c-pointers-the-hard-way</id>
     <content type="html"><![CDATA[<p>Couple weeks ago read on stackoverflow question "<a href="http://stackoverflow.com/questions/4025768/what-do-people-find-difficult-about-c-pointers">What do people find difficult about C pointers?</a>" and I found interesting answers here. One of them is:</p>
 
@@ -243,7 +243,7 @@ $5 = 10
   <entry>
     <title type="html"><![CDATA[Put Off Procrastination]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/16/put-off-procrastination/"/>
-    <updated>2012-03-16T22:07:00-07:00</updated>
+    <updated>2012-03-16T22:07:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/16/put-off-procrastination</id>
     <content type="html"><![CDATA[<p>I've already written about idea with <a href="http://pupsor.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/">blocker</a> and today I really tired of this and in hour wrote the script which allow you to block facebook, gmail, HN and so on with automatic changing statuses in Skype and Adium (DND).</p>
 
@@ -270,7 +270,7 @@ off" /></p>
   <entry>
     <title type="html"><![CDATA[Next idea for hacking with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/"/>
-    <updated>2012-03-07T13:54:00-08:00</updated>
+    <updated>2012-03-07T13:54:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby</id>
     <content type="html"><![CDATA[<p>Right now I'm sitting at public library of Palo Alto because I have reason. This reason is based on my laziness and totally destructions by anything around me, probably correct word which can describe my problem is procrastination, you can read about  <a href="http://youarenotsosmart.com/2010/10/27/procrastination/">Proctastionation here</a>.</p>
 

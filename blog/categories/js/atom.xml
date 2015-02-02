@@ -4,7 +4,7 @@
   <title><![CDATA[Category: js | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/js/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Automatically Rewrite HTTP to HTTPS with JS]]></title>
     <link href="http://khakimov.github.com/blog/2012/12/23/automatically-rewrite-http-to-https-with-js/"/>
-    <updated>2012-12-23T11:15:00-08:00</updated>
+    <updated>2012-12-23T11:15:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/12/23/automatically-rewrite-http-to-https-with-js</id>
     <content type="html"><![CDATA[<p>I wrote the post <a href="http://khakimov.com/blog/2012/11/24/what-is-wrong-with-http-secure/">What Is Wrong With HTTP Secure</a> and my friend gave me an idea to try just rewrite hardcoded link (http:// -> https://). The beauty of JS are simplicity, documentations and tons of examples, so even if you don't know how to get element without using jQuery it will be easy to figure out in couple minutes as I did in the night.</p>
 

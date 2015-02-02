@@ -4,7 +4,7 @@
   <title><![CDATA[Category: concurrency | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/concurrency/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[EventMachine. Day 3]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/23/eventmachine-day-3/"/>
-    <updated>2012-04-23T12:41:00-07:00</updated>
+    <updated>2012-04-23T12:41:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/23/eventmachine-day-3</id>
     <content type="html"><![CDATA[<p>Just bought large coffee from Coupa cafe and ready for the next fight. Today I read few article and checked few github repositories with eventmachine examples.</p>
 
@@ -211,7 +211,7 @@ ruby client.rb</p>
   <entry>
     <title type="html"><![CDATA[EventMachine and web crawler]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/21/eventmachine-and-web-crawler/"/>
-    <updated>2012-04-21T14:47:00-07:00</updated>
+    <updated>2012-04-21T14:47:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/21/eventmachine-and-web-crawler</id>
     <content type="html"><![CDATA[<p>When I came back at home yesterday and tested the code on real data I realized that wasn't work well. 1000 urls was ok, but 1_000_000 wasn't, EM didn't callback anything.</p>
 

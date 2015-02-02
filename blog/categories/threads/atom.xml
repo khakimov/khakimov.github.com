@@ -4,7 +4,7 @@
   <title><![CDATA[Category: threads | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/threads/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Ruby with EventMachine and JRuby with real threads: Part I]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads/"/>
-    <updated>2012-04-19T12:53:00-07:00</updated>
+    <updated>2012-04-19T12:53:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/19/ruby-with-eventmachine-and-jruby-with-real-threads</id>
     <content type="html"><![CDATA[<p>Welcome to the world of extremely high scalability, performance and stability for the most demanding production environments. Today I'm going to learn and describe a little bit about EventMachine that is a high perfomance implementation of the <a href="http://en.wikipedia.org/wiki/Reactor_pattern">Reactor Pattern</a>.</p>
 

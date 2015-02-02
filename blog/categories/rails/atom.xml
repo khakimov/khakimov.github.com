@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Playing with Rails]]></title>
     <link href="http://khakimov.github.com/blog/2012/05/07/playing-with-rails/"/>
-    <updated>2012-05-07T23:55:00-07:00</updated>
+    <updated>2012-05-07T23:55:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/05/07/playing-with-rails</id>
     <content type="html"><![CDATA[<p>Only with Rails I've realized meaning of the word REST and how RESTful Controller works. When you will understand CRUD and Scaffolding, you will easily create simple application, like one more blog or twitter clone ;)</p>
 
@@ -253,7 +253,7 @@ end
   <entry>
     <title type="html"><![CDATA[EventMachine and WebSockets]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/30/eventmachine-and-websockets/"/>
-    <updated>2012-04-30T18:46:00-07:00</updated>
+    <updated>2012-04-30T18:46:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/30/eventmachine-and-websockets</id>
     <content type="html"><![CDATA[<p>Few days couldn't use mt keyboard because fell of my bike and hurt my arms. Still using only one hand and that's enough to start doing some epic code ;) Today I'm going to start exploring world of websockets when you can send data from server to client's browser. Two things required - eventmachine as usual and em-websocket (<em>gem install em-websocket</em>)</p>
 
@@ -603,7 +603,7 @@ p "Total #{total_connection}, #{successes} successful, #{failures} failures in #
   <entry>
     <title type="html"><![CDATA[First Rails project: Thoughts]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/14/first-rails-project-thoughts/"/>
-    <updated>2012-04-14T22:06:00-07:00</updated>
+    <updated>2012-04-14T22:06:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/14/first-rails-project-thoughts</id>
     <content type="html"><![CDATA[<p>Huh, long time no post there. I've been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants, drank some wine, beer, white russian and even sake. Whole week was disconnected and didn't touch laptop (confess, only hackernews), so now I'm really ready back to the big fight. So, I came back from airport and in few hours finished my first small project on Rails.</p>
 
@@ -645,7 +645,7 @@ p "Total #{total_connection}, #{successes} successful, #{failures} failures in #
   <entry>
     <title type="html"><![CDATA[tips and tricks]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/15/tips-and-tricks/"/>
-    <updated>2012-03-15T17:15:00-07:00</updated>
+    <updated>2012-03-15T17:15:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/15/tips-and-tricks</id>
     <content type="html"><![CDATA[<p>Class methods are usually called with the double colon.</p>
 

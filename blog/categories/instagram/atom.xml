@@ -4,7 +4,7 @@
   <title><![CDATA[Category: instagram | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/instagram/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[How to make new instagram's friends with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/09/how-to-make-new-instagrams-friends-with-ruby/"/>
-    <updated>2012-03-09T11:09:00-08:00</updated>
+    <updated>2012-03-09T11:09:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/09/how-to-make-new-instagrams-friends-with-ruby</id>
     <content type="html"><![CDATA[<p>I moved to Palo Alto few month ago from LA and realized that I didn't know anybody in Bay Area. I was looking for a new friends ;) I had one and his name is Ruby, so we decided to write some code which will help me to make new friends in instagram. First of all it was a good practice and also interesting task where you can easily get feedback from action (code and you get friends).</p>
 

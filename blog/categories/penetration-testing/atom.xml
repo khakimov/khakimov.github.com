@@ -4,7 +4,7 @@
   <title><![CDATA[Category: penetration testing | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/penetration-testing/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Attacking the Internet Voting System]]></title>
     <link href="http://khakimov.github.com/blog/2012/10/28/attacking-the-internet-voting-system/"/>
-    <updated>2012-10-28T14:08:00-07:00</updated>
+    <updated>2012-10-28T14:08:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/10/28/attacking-the-internet-voting-system</id>
     <content type="html"><![CDATA[<p>Today is Sunday, just finished my third week of Networking class, learned a lot about ip, tcp, udp, how tcp makes reliable data transer, whats congestion avoidance, how packets and windows works, queuing on the routers, TCP Tahoe, TCP Reno and many other interesting things.</p>
 

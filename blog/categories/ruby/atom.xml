@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Twitter Mass Unfollow with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/08/12/twitter-mass-unfollow-with-ruby/"/>
-    <updated>2012-08-12T17:26:00-07:00</updated>
+    <updated>2012-08-12T17:26:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/08/12/twitter-mass-unfollow-with-ruby</id>
     <content type="html"><![CDATA[<p>On Saturday morning decided to mass unfollow all of user from my list, because folowed ~800 and even with list it's a lot. So, ruby and couple lines of code solved this problem.</p>
 
@@ -28,7 +28,7 @@
   <entry>
     <title type="html"><![CDATA[X-RateLimit-Limit API]]></title>
     <link href="http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api/"/>
-    <updated>2012-06-18T14:38:00-07:00</updated>
+    <updated>2012-06-18T14:38:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api</id>
     <content type="html"><![CDATA[<p>some api have a limit requests, like to 5000 per hour as github has:
 ○ curl -i https://api.github.com/users/whatever</p>
@@ -57,7 +57,7 @@ X-RateLimit-Remaining: 978
   <entry>
     <title type="html"><![CDATA[Puzzle Node #1]]></title>
     <link href="http://khakimov.github.com/blog/2012/06/04/puzzle-node-number-1/"/>
-    <updated>2012-06-04T13:21:00-07:00</updated>
+    <updated>2012-06-04T13:21:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/06/04/puzzle-node-number-1</id>
     <content type="html"><![CDATA[<p>First of all I'm not going to spoil here any solution, just my thoughts about solving this. In my case the main problem with puzzles is focus. You don't need to be awesome programmer to solve it, just need to understand what to solve and then just write few lines of code.</p>
 
@@ -135,7 +135,7 @@ USD/CAD 0.9911 / AUD/CAD    1.0079 = 0.9833</p>
   <entry>
     <title type="html"><![CDATA[My first gem]]></title>
     <link href="http://khakimov.github.com/blog/2012/05/24/my-first-gem/"/>
-    <updated>2012-05-24T16:04:00-07:00</updated>
+    <updated>2012-05-24T16:04:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/05/24/my-first-gem</id>
     <content type="html"><![CDATA[<p>Long time no post here, was a busy month. Learning a lot of stuff about algorithms as I said before and now I know how packers work (like zip, tar etc). Will be also good to complete of those algorithms on ruby, like binary tree search and tries, will see.</p>
 
@@ -169,7 +169,7 @@ IdEncoder::UrlEncoder.decode_url('csqsc') # =&gt; 10
   <entry>
     <title type="html"><![CDATA[Back to school: Linked List with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/05/11/back-to-school-linked-list-with-ruby/"/>
-    <updated>2012-05-11T13:27:00-07:00</updated>
+    <updated>2012-05-11T13:27:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/05/11/back-to-school-linked-list-with-ruby</id>
     <content type="html"><![CDATA[<p>CS106B is awesome! Today was a lecture about <a href="/blog/2012/04/27/data-structure/">Linked List</a> as I've already mention about this Data structures.</p>
 

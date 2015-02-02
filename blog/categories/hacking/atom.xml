@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hacking | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/hacking/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[X-RateLimit-Limit API]]></title>
     <link href="http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api/"/>
-    <updated>2012-06-18T14:38:00-07:00</updated>
+    <updated>2012-06-18T14:38:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api</id>
     <content type="html"><![CDATA[<p>some api have a limit requests, like to 5000 per hour as github has:
 ○ curl -i https://api.github.com/users/whatever</p>
@@ -45,7 +45,7 @@ X-RateLimit-Remaining: 978
   <entry>
     <title type="html"><![CDATA[Playing with HackerNews]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/20/playing-with-hackernews/"/>
-    <updated>2012-03-20T21:56:00-07:00</updated>
+    <updated>2012-03-20T21:56:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/20/playing-with-hackernews</id>
     <content type="html"><![CDATA[<p>Since monday I started playing with RubyOnRails and very happy that I
 didn't skip Ruby part as many beginers mistakenly do. I'm reading <a href="http://pragprog.com/book/rails4/agile-web-development-with-rails">Agile Web Development with Rails</a> (big thanks to <a href="http://ap.thinkeffect.com">Andrija</a>) now and still have a lot of questions, but
@@ -107,7 +107,7 @@ sandwich arrived ;)</p>
   <entry>
     <title type="html"><![CDATA[Put Off Procrastination]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/16/put-off-procrastination/"/>
-    <updated>2012-03-16T22:07:00-07:00</updated>
+    <updated>2012-03-16T22:07:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/16/put-off-procrastination</id>
     <content type="html"><![CDATA[<p>I've already written about idea with <a href="http://pupsor.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/">blocker</a> and today I really tired of this and in hour wrote the script which allow you to block facebook, gmail, HN and so on with automatic changing statuses in Skype and Adium (DND).</p>
 
@@ -134,7 +134,7 @@ off" /></p>
   <entry>
     <title type="html"><![CDATA[How to make new instagram's friends with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/09/how-to-make-new-instagrams-friends-with-ruby/"/>
-    <updated>2012-03-09T11:09:00-08:00</updated>
+    <updated>2012-03-09T11:09:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/09/how-to-make-new-instagrams-friends-with-ruby</id>
     <content type="html"><![CDATA[<p>I moved to Palo Alto few month ago from LA and realized that I didn't know anybody in Bay Area. I was looking for a new friends ;) I had one and his name is Ruby, so we decided to write some code which will help me to make new friends in instagram. First of all it was a good practice and also interesting task where you can easily get feedback from action (code and you get friends).</p>
 
@@ -282,7 +282,7 @@ unfollow_mutual_friends(followers)
   <entry>
     <title type="html"><![CDATA[Next idea for hacking with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/"/>
-    <updated>2012-03-07T13:54:00-08:00</updated>
+    <updated>2012-03-07T13:54:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby</id>
     <content type="html"><![CDATA[<p>Right now I'm sitting at public library of Palo Alto because I have reason. This reason is based on my laziness and totally destructions by anything around me, probably correct word which can describe my problem is procrastination, you can read about  <a href="http://youarenotsosmart.com/2010/10/27/procrastination/">Proctastionation here</a>.</p>
 

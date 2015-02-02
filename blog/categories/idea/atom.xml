@@ -4,7 +4,7 @@
   <title><![CDATA[Category: idea | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/idea/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Freedom of information]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/16/freedom-of-information/"/>
-    <updated>2012-04-16T14:07:00-07:00</updated>
+    <updated>2012-04-16T14:07:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/16/freedom-of-information</id>
     <content type="html"><![CDATA[<p>Today I decided to try EventMachine in action. EventMachine provides a fast, lightweight framework for implementing Ruby programs that can use the network to communicate with other processes. As usual I can't just repeat "hello world" examples, like here is a fully-functional echo server:</p>
 
@@ -67,7 +67,7 @@ end</p>
   <entry>
     <title type="html"><![CDATA[Put Off Procrastination]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/16/put-off-procrastination/"/>
-    <updated>2012-03-16T22:07:00-07:00</updated>
+    <updated>2012-03-16T22:07:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/16/put-off-procrastination</id>
     <content type="html"><![CDATA[<p>I've already written about idea with <a href="http://pupsor.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/">blocker</a> and today I really tired of this and in hour wrote the script which allow you to block facebook, gmail, HN and so on with automatic changing statuses in Skype and Adium (DND).</p>
 
@@ -94,7 +94,7 @@ off" /></p>
   <entry>
     <title type="html"><![CDATA[Next idea for hacking with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/"/>
-    <updated>2012-03-07T13:54:00-08:00</updated>
+    <updated>2012-03-07T13:54:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby</id>
     <content type="html"><![CDATA[<p>Right now I'm sitting at public library of Palo Alto because I have reason. This reason is based on my laziness and totally destructions by anything around me, probably correct word which can describe my problem is procrastination, you can read about  <a href="http://youarenotsosmart.com/2010/10/27/procrastination/">Proctastionation here</a>.</p>
 

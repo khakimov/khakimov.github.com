@@ -4,7 +4,7 @@
   <title><![CDATA[Category: practice | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/practice/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[First Rails project: Thoughts]]></title>
     <link href="http://khakimov.github.com/blog/2012/04/14/first-rails-project-thoughts/"/>
-    <updated>2012-04-14T22:06:00-07:00</updated>
+    <updated>2012-04-14T22:06:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/04/14/first-rails-project-thoughts</id>
     <content type="html"><![CDATA[<p>Huh, long time no post there. I've been in LA, spent last weekend at the Santa Monica beach, was at few Hollywood clubs, bars and restaurants, drank some wine, beer, white russian and even sake. Whole week was disconnected and didn't touch laptop (confess, only hackernews), so now I'm really ready back to the big fight. So, I came back from airport and in few hours finished my first small project on Rails.</p>
 
@@ -58,7 +58,7 @@
   <entry>
     <title type="html"><![CDATA[Put Off Procrastination]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/16/put-off-procrastination/"/>
-    <updated>2012-03-16T22:07:00-07:00</updated>
+    <updated>2012-03-16T22:07:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/16/put-off-procrastination</id>
     <content type="html"><![CDATA[<p>I've already written about idea with <a href="http://pupsor.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/">blocker</a> and today I really tired of this and in hour wrote the script which allow you to block facebook, gmail, HN and so on with automatic changing statuses in Skype and Adium (DND).</p>
 
@@ -85,7 +85,7 @@ off" /></p>
   <entry>
     <title type="html"><![CDATA[Next idea for hacking with Ruby]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby/"/>
-    <updated>2012-03-07T13:54:00-08:00</updated>
+    <updated>2012-03-07T13:54:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/07/next-idea-for-hacking-with-ruby</id>
     <content type="html"><![CDATA[<p>Right now I'm sitting at public library of Palo Alto because I have reason. This reason is based on my laziness and totally destructions by anything around me, probably correct word which can describe my problem is procrastination, you can read about  <a href="http://youarenotsosmart.com/2010/10/27/procrastination/">Proctastionation here</a>.</p>
 

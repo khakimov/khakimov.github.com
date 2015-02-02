@@ -4,7 +4,7 @@
   <title><![CDATA[Category: computer security | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/computer-security/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Bypassing DEP/ASLR protections]]></title>
     <link href="http://khakimov.github.com/blog/2012/12/09/bypassing-dep-slash-aslr-protections/"/>
-    <updated>2012-12-09T21:13:00-08:00</updated>
+    <updated>2012-12-09T21:13:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/12/09/bypassing-dep-slash-aslr-protections</id>
     <content type="html"><![CDATA[<p>Today we are going to learn about data execution prevention (DEP) and address space layout randomization (ASLR). Last Sunday I read about <a href="http://khakimov.com/blog/2012/12/02/return-into-libc-without-function-calls/">return-into-libc</a> and one week before was post about <a href="http://khakimov.com/blog/2012/11/20/buffer-overflow/">buffer overflow</a> as-is. Both methods reqired to know the address of attacker shellcode and/or standard kernel library (we found out the address of system() function in the memory to use it in <strong>return-into-libc</strong> with this code int main() { system();}). Modern systems decided to implement something what will make stack addresses and addressess of library routines unpredictable and different from machine to machine (no more universal exploits =) kidding).</p>
 
@@ -51,7 +51,7 @@ space randomization and execute the exploit itself.
   <entry>
     <title type="html"><![CDATA[Return-into-libc without Function Calls]]></title>
     <link href="http://khakimov.github.com/blog/2012/12/02/return-into-libc-without-function-calls/"/>
-    <updated>2012-12-02T14:12:00-08:00</updated>
+    <updated>2012-12-02T14:12:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/12/02/return-into-libc-without-function-calls</id>
     <content type="html"><![CDATA[<p>Since OpenBSD has a nonexecutable stack by default and you can also patch your Linux kernel and make nonexecutable stack through PaX, AMD and Intel recently added to their processors a per-page execute disable bit to ease WOX implementation and even Microsoft implement WOX (no location in memory into which the attacker can inject code to execute, or just imagine no memory location in a process image is marked both writable - W and executable - X) all it means you can not execute your shellcode on the stack.</p>
 
@@ -107,7 +107,7 @@ Segmentation fault
   <entry>
     <title type="html"><![CDATA[Buffer Overflow]]></title>
     <link href="http://khakimov.github.com/blog/2012/11/20/buffer-overflow/"/>
-    <updated>2012-11-20T23:17:00-08:00</updated>
+    <updated>2012-11-20T23:17:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/11/20/buffer-overflow</id>
     <content type="html"><![CDATA[<p>I'm very interesting in research paper and want to know better what computer security research is like. I found Vitaly Shmatikov and his course about great papers in Computer Security and decided to try each weekend read and write about one paper.</p>
 
@@ -247,7 +247,7 @@ strcpy(c, arg);
   <entry>
     <title type="html"><![CDATA[Computer and Network Security specializations]]></title>
     <link href="http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations/"/>
-    <updated>2012-11-17T10:41:00-08:00</updated>
+    <updated>2012-11-17T10:41:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/11/17/computer-and-network-security-specializations</id>
     <content type="html"><![CDATA[<ol type="a">
 <li><p>Each of the following: CS 140, 144, 155, 244, 255</p></li>

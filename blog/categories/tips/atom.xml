@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tips | nameless]]></title>
   <link href="http://khakimov.github.com/blog/categories/tips/atom.xml" rel="self"/>
   <link href="http://khakimov.github.com/"/>
-  <updated>2014-12-30T14:27:48-08:00</updated>
+  <updated>2015-02-02T12:00:09-06:00</updated>
   <id>http://khakimov.github.com/</id>
   <author>
     <name><![CDATA[khakimov]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[X-RateLimit-Limit API]]></title>
     <link href="http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api/"/>
-    <updated>2012-06-18T14:38:00-07:00</updated>
+    <updated>2012-06-18T14:38:00-05:00</updated>
     <id>http://khakimov.github.com/blog/2012/06/18/x-ratelimit-limit-api</id>
     <content type="html"><![CDATA[<p>some api have a limit requests, like to 5000 per hour as github has:
 ○ curl -i https://api.github.com/users/whatever</p>
@@ -45,7 +45,7 @@ X-RateLimit-Remaining: 978
   <entry>
     <title type="html"><![CDATA[tips and tricks]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/15/tips-and-tricks/"/>
-    <updated>2012-03-15T17:15:00-07:00</updated>
+    <updated>2012-03-15T17:15:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/15/tips-and-tricks</id>
     <content type="html"><![CDATA[<p>Class methods are usually called with the double colon.</p>
 
@@ -96,7 +96,7 @@ rails g migration add_user_id_to_tester user_id:integer
   <entry>
     <title type="html"><![CDATA[C-style shorthand conditional operator ?]]></title>
     <link href="http://khakimov.github.com/blog/2012/03/07/c-style-shorthand-conditional-operator/"/>
-    <updated>2012-03-07T19:15:00-08:00</updated>
+    <updated>2012-03-07T19:15:00-06:00</updated>
     <id>http://khakimov.github.com/blog/2012/03/07/c-style-shorthand-conditional-operator</id>
     <content type="html"><![CDATA[<p><code>ruby C-style shorthand conditional operator
 1 == 2 ? "true value" : "false value"
